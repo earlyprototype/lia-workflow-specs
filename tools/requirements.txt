@@ -1,0 +1,10 @@
+# Lia Workflow Specs - Tool Requirements
+
+# TOML parsing
+tomli==2.0.1
+
+# Future tools may require:
+# pillow>=10.0.0        # For image generation
+# matplotlib>=3.7.0     # For visualization
+# graphviz>=0.20.0      # For diagram generation
+

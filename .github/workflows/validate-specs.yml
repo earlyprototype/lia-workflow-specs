@@ -1,0 +1,215 @@
+name: Validate Workflow Specs
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'specs/**/*.toml'
+      - 'tools/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'specs/**/*.toml'
+      - 'tools/**'
+
+jobs:
+  validate-toml-syntax:
+    runs-on: ubuntu-latest
+    name: Validate TOML Syntax
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install toml tomli tomli-w
+        
+    - name: Validate TOML files
+      run: |
+        python -c "
+        import sys
+        import os
+        import tomli
+        
+        errors = []
+        spec_dir = 'specs'
+        
+        for root, dirs, files in os.walk(spec_dir):
+            for file in files:
+                if file.endswith('.toml'):
+                    filepath = os.path.join(root, file)
+                    try:
+                        with open(filepath, 'rb') as f:
+                            tomli.load(f)
+                        print(f'✓ {filepath}')
+                    except Exception as e:
+                        errors.append(f'{filepath}: {str(e)}')
+                        print(f'✗ {filepath}: {str(e)}')
+        
+        if errors:
+            print(f'\n❌ Found {len(errors)} TOML syntax errors')
+            sys.exit(1)
+        else:
+            print(f'\n✅ All TOML files are valid')
+        "
+
+  validate-spec-structure:
+    runs-on: ubuntu-latest
+    name: Validate Spec Structure
+    needs: validate-toml-syntax
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install toml tomli
+        
+    - name: Check required sections
+      run: |
+        python -c "
+        import sys
+        import os
+        import tomli
+        
+        required_keys = ['description', 'prompt']
+        required_sections = [
+            'Workflow Mode System',
+            'Goal',
+            'workflow-definition',
+            'Workflow Diagram',
+            'IMPORTANT EXECUTION INSTRUCTIONS',
+            '0-Notepad Template'
+        ]
+        
+        errors = []
+        warnings = []
+        spec_dir = 'specs'
+        
+        for root, dirs, files in os.walk(spec_dir):
+            for file in files:
+                if file.endswith('.toml'):
+                    filepath = os.path.join(root, file)
+                    
+                    with open(filepath, 'rb') as f:
+                        data = tomli.load(f)
+                    
+                    # Check required keys
+                    for key in required_keys:
+                        if key not in data:
+                            errors.append(f'{filepath}: Missing required key \"{key}\"')
+                    
+                    # Check required sections in prompt
+                    if 'prompt' in data:
+                        prompt_content = data['prompt']
+                        for section in required_sections:
+                            if section not in prompt_content:
+                                warnings.append(f'{filepath}: Missing recommended section \"{section}\"')
+                    
+                    print(f'Checked: {filepath}')
+        
+        if warnings:
+            print(f'\n⚠️  Found {len(warnings)} warnings:')
+            for w in warnings:
+                print(f'  {w}')
+        
+        if errors:
+            print(f'\n❌ Found {len(errors)} errors:')
+            for e in errors:
+                print(f'  {e}')
+            sys.exit(1)
+        else:
+            print(f'\n✅ All specs have required structure')
+        "
+
+  validate-markdown-links:
+    runs-on: ubuntu-latest
+    name: Validate Markdown Links
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Check markdown files
+      run: |
+        python -c "
+        import sys
+        import os
+        import re
+        
+        errors = []
+        
+        # Check main markdown files
+        md_files = ['README.md', 'CONTRIBUTING.md', 'GETTING_STARTED.md', 'CHANGELOG.md']
+        
+        for md_file in md_files:
+            if os.path.exists(md_file):
+                with open(md_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    
+                # Find internal links [text](path)
+                links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+                
+                for text, link in links:
+                    # Check internal file links
+                    if not link.startswith('http') and not link.startswith('#'):
+                        # Remove anchors
+                        file_path = link.split('#')[0]
+                        if file_path and not os.path.exists(file_path):
+                            errors.append(f'{md_file}: Broken link to {file_path}')
+                
+                print(f'Checked: {md_file}')
+        
+        if errors:
+            print(f'\n❌ Found {len(errors)} broken links:')
+            for e in errors:
+                print(f'  {e}')
+            sys.exit(1)
+        else:
+            print(f'\n✅ All markdown links are valid')
+        "
+
+  summary:
+    runs-on: ubuntu-latest
+    name: Validation Summary
+    needs: [validate-toml-syntax, validate-spec-structure, validate-markdown-links]
+    if: always()
+    
+    steps:
+    - name: Check results
+      run: |
+        echo "### Validation Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.validate-toml-syntax.result }}" == "success" ]; then
+          echo "✅ TOML Syntax: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ TOML Syntax: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.validate-spec-structure.result }}" == "success" ]; then
+          echo "✅ Spec Structure: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Spec Structure: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.validate-markdown-links.result }}" == "success" ]; then
+          echo "✅ Markdown Links: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Markdown Links: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+
