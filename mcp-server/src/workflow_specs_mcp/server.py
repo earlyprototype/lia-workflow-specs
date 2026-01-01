@@ -298,6 +298,38 @@ async def list_tools() -> list[Tool]:
                 "required": ["task_description"],
             },
         ),
+        Tool(
+            name="get_workflow_chain",
+            description="Get the recommended workflow chain starting from a spec, showing what comes next",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_spec": {
+                        "type": "string",
+                        "description": "Name of the starting spec (e.g., 'spec', 'research')",
+                    },
+                    "depth": {
+                        "type": "integer",
+                        "description": "How many steps to show in the chain (default: 3)",
+                    }
+                },
+                "required": ["start_spec"],
+            },
+        ),
+        Tool(
+            name="find_specs_that_provide",
+            description="Find specs that provide a specific output (e.g., 'requirements.md', 'test_suite')",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "output": {
+                        "type": "string",
+                        "description": "The output to search for",
+                    }
+                },
+                "required": ["output"],
+            },
+        ),
     ]
 
 
@@ -391,7 +423,10 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
                     "name": metadata.name,
                     "category": metadata.category,
                     "description": metadata.description,
+                    "version": metadata.version,
                     "path": metadata.path,
+                    "authors": metadata.authors,
+                    "tags": metadata.tags,
                     "phases": metadata.phases,
                     "phase_count": len(metadata.phases),
                     "constraints": metadata.constraints,
@@ -399,6 +434,12 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
                     "has_notepad_template": metadata.has_notepad_template,
                     "modes": metadata.modes,
                     "output_directory": metadata.output_directory,
+                    "triggers": {
+                        "on_complete": metadata.on_complete,
+                        "can_chain_from": metadata.can_chain_from,
+                        "provides": metadata.provides,
+                        "requires": metadata.requires,
+                    },
                 }
                 return [TextContent(type="text", text=json.dumps(output, indent=2))]
         return [TextContent(type="text", text=f"Spec '{spec_name}' not found")]
@@ -515,6 +556,66 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
             "suggestions": suggestions[:3],  # Return top 3 suggestions
         }
         return [TextContent(type="text", text=json.dumps(output, indent=2))]
+
+    if name == "get_workflow_chain":
+        start_spec = arguments.get("start_spec")
+        depth = arguments.get("depth", 3)
+
+        spec_path = _find_spec(start_spec, None)
+        if not spec_path:
+            return [TextContent(type="text", text=f"Spec '{start_spec}' not found")]
+
+        # Build the chain
+        chain = []
+        visited = set()
+        current_specs = [start_spec]
+
+        for level in range(depth):
+            next_specs = []
+            for spec_name in current_specs:
+                if spec_name in visited:
+                    continue
+                visited.add(spec_name)
+
+                spec_path = _find_spec(spec_name, None)
+                if spec_path:
+                    metadata = spec_loader.extract_metadata(spec_path)
+                    if metadata:
+                        chain.append({
+                            "level": level,
+                            "spec": spec_name,
+                            "category": metadata.category,
+                            "on_complete": metadata.on_complete,
+                            "provides": metadata.provides,
+                        })
+                        next_specs.extend(metadata.on_complete)
+            current_specs = next_specs
+
+        output = {
+            "start": start_spec,
+            "depth": depth,
+            "chain": chain,
+        }
+        return [TextContent(type="text", text=json.dumps(output, indent=2))]
+
+    if name == "find_specs_that_provide":
+        output_search = arguments.get("output", "").lower()
+
+        results = []
+        for spec_path in spec_loader.discover_specs():
+            metadata = spec_loader.extract_metadata(spec_path)
+            if metadata:
+                for provided in metadata.provides:
+                    if output_search in provided.lower():
+                        results.append({
+                            "spec": metadata.name,
+                            "category": metadata.category,
+                            "provides": metadata.provides,
+                            "matched": provided,
+                        })
+                        break
+
+        return [TextContent(type="text", text=json.dumps(results, indent=2))]
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
 

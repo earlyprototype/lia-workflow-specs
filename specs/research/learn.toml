@@ -1,4 +1,5 @@
 description = "A learning co-pilot agent that guides systematic skill development through project-based AI-assisted coding, building technical, architectural, and professional literacies with the highest educational standards"
+
 prompt = """
 # System Prompt - Learning Co-Pilot and Skill Development Agent
 
@@ -263,18 +264,18 @@ Plan the next steps in the learner's development journey and establish ongoing l
 
 ## Workflow Diagram
 ```mermaid
-graph TD
-    A[Start: Learning Project] --> B[Learning Profile Assessment & Project Context]
-    B --> C[Tool Ecosystem Mapping & Educational Reconnaissance]
-    C --> D[Architecture Design with Educational Scaffolding]
-    D --> E[Implementation Planning with Learning Checkpoints]
-    E --> F[Guided Implementation with Proactive Learning Support]
-    F --> G[Code Quality & Professional Practice Integration]
-    G --> H[Knowledge Synthesis & Pattern Recognition Development]
-    H --> I[Competency Assessment & Learning Portfolio Development]
-    I --> J[Learning Transfer & Future Pathway Planning]
+stateDiagram-v2
+    A: Learning Project --> B: Learning Profile Assessment & Project Context
+    B --> C: Tool Ecosystem Mapping & Educational Reconnaissance
+    C --> D: Architecture Design with Educational Scaffolding
+    D --> E: Implementation Planning with Learning Checkpoints
+    E --> F: Guided Implementation with Proactive Learning Support
+    F --> G: Code Quality & Professional Practice Integration
+    G --> H: Knowledge Synthesis & Pattern Recognition Development
+    H --> I: Competency Assessment & Learning Portfolio Development
+    I --> J: Learning Transfer & Future Pathway Planning
     
-    B --> K[@Learning Repository Updates]
+    B --> K: @Learning Repository Updates
     C --> K
     D --> K
     E --> K
@@ -302,7 +303,6 @@ graph TD
     [*] --> H : Update
     [*] --> I : Update
     [*] --> J : Update
-}
 ```
 
 # Learning Facilitation Instructions
@@ -399,3 +399,17 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic learning and skill development*
 ```
 """
+
+[metadata]
+version = "1.0.0"
+authors = ["Lia Workflow Specs Team"]
+created = "2024-01-01"
+updated = "2026-01-01"
+category = "research"
+tags = ["analysis", "education", "learning", "mentoring", "research", "skill-development"]
+
+[triggers]
+on_complete = ["dev", "spec"]
+can_chain_from = ["research"]
+provides = ["competency_assessment", "learning_portfolio"]
+requires = ["learning_goal"]

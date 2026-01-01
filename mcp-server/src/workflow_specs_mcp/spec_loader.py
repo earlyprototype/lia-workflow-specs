@@ -27,6 +27,13 @@ class SpecMetadata:
     has_notepad_template: bool = False
     modes: list[str] = field(default_factory=list)
     output_directory: str = ""
+    # New trigger fields
+    on_complete: list[str] = field(default_factory=list)
+    can_chain_from: list[str] = field(default_factory=list)
+    provides: list[str] = field(default_factory=list)
+    requires: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
+    authors: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -206,17 +213,37 @@ class SpecLoader:
         # Extract output directory pattern
         output_dir = self._extract_output_directory(prompt)
 
+        # Extract triggers
+        triggers = data.get("triggers", {})
+        on_complete = triggers.get("on_complete", [])
+        can_chain_from = triggers.get("can_chain_from", [])
+        provides = triggers.get("provides", [])
+        requires = triggers.get("requires", [])
+
+        # Extract metadata fields
+        metadata_section = data.get("metadata", {})
+        tags = metadata_section.get("tags", [])
+        authors = metadata_section.get("authors", [])
+        version = metadata_section.get("version", "1.0.0")
+
         return SpecMetadata(
             name=spec_path.stem,
             path=str(spec_path.relative_to(self.specs_directory.parent)),
             category=category,
             description=description,
+            version=version,
             phases=phases,
             constraints=constraints,
             has_mermaid_diagram=has_mermaid,
             has_notepad_template=has_notepad,
             modes=modes,
             output_directory=output_dir,
+            on_complete=on_complete,
+            can_chain_from=can_chain_from,
+            provides=provides,
+            requires=requires,
+            tags=tags,
+            authors=authors,
         )
 
     def _extract_phases(self, prompt: str) -> list[str]:

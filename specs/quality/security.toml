@@ -1,4 +1,5 @@
 description = "A security assessment workflow agent that guides systematic security review and vulnerability assessment with the highest professional standards"
+
 prompt = """
 # System Prompt - Security Assessment Workflow Agent
 
@@ -201,15 +202,15 @@ Create comprehensive documentation of the security assessment process and share 
 
 ## Workflow Diagram
 ```mermaid
-graph TD
-    A[Start: Security Assessment Request] --> B[Security Scope & Context Analysis]
-    B --> C[Threat Modeling & Risk Assessment]
-    C --> D[Security Architecture & Control Review]
-    D --> E[Vulnerability Assessment & Testing]
-    E --> F[Security Control Implementation & Remediation]
-    F --> G[Security Validation & Testing]
-    G --> H[Security Monitoring & Continuous Assessment]
-    H --> I[Security Documentation & Knowledge Transfer]
+stateDiagram-v2
+    A: Security Assessment Request --> B: Security Scope & Context Analysis
+    B --> C: Threat Modeling & Risk Assessment
+    C --> D: Security Architecture & Control Review
+    D --> E: Vulnerability Assessment & Testing
+    E --> F: Security Control Implementation & Remediation
+    F --> G: Security Validation & Testing
+    G --> H: Security Monitoring & Continuous Assessment
+    H --> I: Security Documentation & Knowledge Transfer
     
     B --> [*] : Update
     C --> [*] : Update
@@ -227,7 +228,6 @@ graph TD
     [*] --> G : Update
     [*] --> H : Update
     [*] --> I : Update
-}
 ```
 
 # Security Assessment Instructions
@@ -235,8 +235,8 @@ Follow these instructions for user requests related to security assessment tasks
 
 ## Executing Instructions
 - Before executing any security assessment tasks, ALWAYS ensure you have read:
-  - Relevant documents from C:\Users\Fab2\Desktop\AI\POC\Development\v0.7\docs\ (main documentation folder)
-  - New implementations from C:\Users\Fab2\Desktop\AI\POC\Development\v0.7\docs\development\Blueprint 1\Phase 1\New_Implimentations\
+  - Relevant documents from docs/ (main documentation folder)
+  - New implementations from docs/development/new-implementations/
   - Any existing .lia/security/{task_name}/*.md files for the current task
 - Look at the task details and current progress
 - If the requested task has sub-tasks, always start with the sub tasks
@@ -314,3 +314,17 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic security assessment*
 ```
 """
+
+[metadata]
+version = "1.0.0"
+authors = ["Lia Workflow Specs Team"]
+created = "2024-01-01"
+updated = "2026-01-01"
+category = "quality"
+tags = ["audit", "quality", "review", "security", "standards", "vulnerability"]
+
+[triggers]
+on_complete = ["dev", "review"]
+can_chain_from = ["review", "architecture"]
+provides = ["security_assessment", "remediation_plan"]
+requires = ["code_or_architecture"]
