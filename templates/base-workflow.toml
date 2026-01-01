@@ -1,0 +1,153 @@
+# Base Workflow Template
+# 
+# This template provides the common structure shared by all workflow specs.
+# New specs can reference this as a foundation and override specific sections.
+#
+# Usage: Copy this file and customise the [workflow], [phases], and prompt sections.
+
+# =============================================================================
+# METADATA
+# =============================================================================
+
+[meta]
+version = "1.0.0"
+schema = "lia-workflow-spec/v1"
+# Override these in your spec:
+# name = "your-workflow-name"
+# category = "development|quality|problem-solving|research|knowledge|strategy"
+# tags = ["tag1", "tag2"]
+
+# =============================================================================
+# CONFIGURATION
+# =============================================================================
+
+[config]
+# Output directory pattern - use {task_name} as placeholder
+output_dir = ".lia/{workflow_type}/{task_name}"
+
+# Required tools (for documentation purposes)
+requires_tools = ["file_write", "user_input"]
+
+# Resumability support
+resumable = true
+checkpoint_interval = "per_phase"
+
+# =============================================================================
+# WORKFLOW MODE SYSTEM (Common to all workflows)
+# =============================================================================
+# 
+# All workflows support two distinct modes:
+#
+# **Collaboration Mode** (Default)
+# - Stepwise execution with user approval at each stage
+# - Interactive feedback and iterative refinement
+# - User control over workflow progression
+# - Collaborative decision-making throughout the process
+#
+# **Silent Mode** (User-Triggered Only)
+# - Continuous autonomous execution without user interruption
+# - Complete workflow execution from start to finish
+# - Assumption-based progression when user input would normally be required
+# - All assumptions MUST be recorded in the 0-notepad.md file
+# - No user approval requests during workflow execution
+#
+# Mode Selection: The workflow defaults to Collaboration Mode. 
+# Silent Mode must be explicitly requested by the user.
+
+# =============================================================================
+# COMMON EXECUTION INSTRUCTIONS
+# =============================================================================
+#
+# These instructions apply to ALL workflows:
+#
+# - When you want the user to review a document, you MUST use the 'userInput' 
+#   tool to ask the user a question
+# - You MUST have the user review each phase document before proceeding to the next
+# - After each phase completion or revision, you MUST explicitly ask the user 
+#   to approve the work using the 'userInput' tool
+# - You MUST NOT proceed to the next phase until you receive explicit approval 
+#   from the user (a clear "yes", "approved", or equivalent affirmative response)
+# - If the user provides feedback, you MUST make the requested modifications 
+#   and then explicitly ask for approval again
+# - You MUST continue this feedback-revision cycle until the user explicitly 
+#   approves the work
+# - You MUST follow the workflow steps in sequential order
+# - You MUST NOT skip ahead to later steps without completing earlier ones 
+#   and receiving explicit user approval
+# - You MUST treat each constraint in the workflow as a strict requirement
+# - You MUST NOT assume user preferences or requirements - always ask explicitly
+# - You MUST maintain a clear record of which step you are currently on
+# - You MUST NOT combine multiple steps into a single interaction
+# - You MUST ONLY execute one task at a time. Once it is complete, do not move 
+#   to the next task automatically
+
+# =============================================================================
+# NOTEPAD TEMPLATE
+# =============================================================================
+#
+# Every workflow creates a 0-notepad.md file using this structure:
+#
+# ```markdown
+# # {Workflow Name} Notepad
+# **Workflow**: {Workflow Type}  
+# **Task**: {task_name}  
+# **Created**: {date}
+#
+# ---
+#
+# ## 🧠 Key Insights & Discoveries
+# <!-- Unexpected findings, patterns, or "aha moments" -->
+#
+# ## 🔧 Technical Notes & Implementation Details  
+# <!-- Technical considerations, constraints, implementation details -->
+#
+# ## 💡 Ideas & Future Enhancements
+# <!-- Ideas, improvements, enhancement opportunities -->
+#
+# ## 🔗 Cross-System Connections
+# <!-- Links to other components, related work, architectural insights -->
+#
+# ## 📝 User Notes
+# <!-- Space for user to add their own observations -->
+#
+# ## 🤖 LLM Observations
+# <!-- AI-generated insights about patterns and strategies -->
+#
+# ---
+# *This notepad captures valuable insights that emerge during systematic analysis*
+# ```
+
+# =============================================================================
+# DOCUMENT LOCATIONS (Portable paths)
+# =============================================================================
+#
+# Before executing tasks, ensure you have read relevant documents from:
+# - ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+# - ${WORKSPACE}/docs/development/new-implementations/ (recent implementations)
+# - Any existing .lia/{workflow}/{task_name}/*.md files for the current task
+
+# =============================================================================
+# AGENT MINDSET (Common qualities)
+# =============================================================================
+#
+# As you execute any workflow, embody these qualities:
+#
+# **Resilience and Adaptability:**
+# - Maintain composure when faced with complex or ambiguous problems
+# - If initial approaches fail, adapt your strategy and try alternatives
+# - View setbacks as learning opportunities
+#
+# **Comfort in Ambiguity:**
+# - Work confidently with incomplete or conflicting information
+# - Make reasonable assumptions when necessary and validate them systematically
+# - Navigate unclear situations by focusing on what can be determined
+#
+# **Self-Reliance and Critical Thinking:**
+# - Trust your analytical capabilities and systematic approach
+# - Make independent decisions based on evidence and logical reasoning
+# - Question assumptions and validate information
+#
+# **Growth Mindset:**
+# - Approach each session as an opportunity to enhance skills
+# - Learn from every interaction and incorporate new knowledge
+# - Maintain curiosity and openness to discovering unexpected solutions

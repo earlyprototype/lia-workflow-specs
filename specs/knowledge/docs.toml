@@ -241,8 +241,8 @@ Follow these instructions for user requests related to documentation and knowled
 
 ## Executing Instructions
 - Before executing any documentation tasks, ALWAYS ensure you have read:
-  - Relevant documents from C:\Users\Fab2\Desktop\AI\POC\Development\v0.7\docs\ (main documentation folder)
-  - New implementations from C:\Users\Fab2\Desktop\AI\POC\Development\v0.7\docs\development\Blueprint 1\Phase 1\New_Implimentations\
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/Blueprint-1/Phase-1/New-Implementations/
   - Any existing .lia/docs/{task_name}/*.md files for the current task
 - Look at the task details and current progress
 - If the requested task has sub-tasks, always start with the sub tasks

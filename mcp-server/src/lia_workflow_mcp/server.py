@@ -363,6 +363,57 @@ async def list_tools() -> list[Tool]:
                 "required": ["spec1", "spec2"],
             },
         ),
+        Tool(
+            name="get_execution_guide",
+            description="Get a step-by-step execution guide for a workflow, including what to do at each phase and how to handle approvals.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "spec_name": {
+                        "type": "string",
+                        "description": "Name of the spec to get execution guide for",
+                    },
+                    "mode": {
+                        "type": "string",
+                        "enum": ["collaboration", "silent"],
+                        "description": "Execution mode (default: collaboration)",
+                    },
+                },
+                "required": ["spec_name"],
+            },
+        ),
+        Tool(
+            name="get_phase_checklist",
+            description="Get a detailed checklist for a specific phase of a workflow, including constraints and deliverables.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "spec_name": {
+                        "type": "string",
+                        "description": "Name of the spec",
+                    },
+                    "phase_number": {
+                        "type": "integer",
+                        "description": "Phase number (1-based)",
+                    },
+                },
+                "required": ["spec_name", "phase_number"],
+            },
+        ),
+        Tool(
+            name="suggest_workflow_sequence",
+            description="Suggest a sequence of workflows for a complex task that may require multiple workflows.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "task_description": {
+                        "type": "string",
+                        "description": "Description of the complex task",
+                    },
+                },
+                "required": ["task_description"],
+            },
+        ),
     ]
 
 
@@ -505,6 +556,33 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> Sequence[TextConten
         comparison = compare_specs(spec1, spec2)
         return [TextContent(type="text", text=comparison)]
     
+    elif name == "get_execution_guide":
+        spec_name = arguments.get("spec_name", "")
+        mode = arguments.get("mode", "collaboration")
+        
+        spec = spec_collection.get_by_name(spec_name)
+        if not spec:
+            return [TextContent(type="text", text=f"Spec '{spec_name}' not found.")]
+        
+        guide = generate_execution_guide(spec, mode)
+        return [TextContent(type="text", text=guide)]
+    
+    elif name == "get_phase_checklist":
+        spec_name = arguments.get("spec_name", "")
+        phase_number = arguments.get("phase_number", 1)
+        
+        spec = spec_collection.get_by_name(spec_name)
+        if not spec:
+            return [TextContent(type="text", text=f"Spec '{spec_name}' not found.")]
+        
+        checklist = generate_phase_checklist(spec, phase_number)
+        return [TextContent(type="text", text=checklist)]
+    
+    elif name == "suggest_workflow_sequence":
+        task_desc = arguments.get("task_description", "")
+        sequence = suggest_workflow_sequence(task_desc)
+        return [TextContent(type="text", text=sequence)]
+    
     else:
         return [TextContent(
             type="text",
@@ -622,6 +700,236 @@ def compare_specs(spec1: WorkflowSpec, spec2: WorkflowSpec) -> str:
     output.append(f"**Use {spec1.name}** when: {use_cases.get(spec1.name, spec1.description[:100])}")
     output.append("")
     output.append(f"**Use {spec2.name}** when: {use_cases.get(spec2.name, spec2.description[:100])}")
+    
+    return "\n".join(output)
+
+
+def generate_execution_guide(spec: WorkflowSpec, mode: str = "collaboration") -> str:
+    """Generate a step-by-step execution guide for a workflow."""
+    is_silent = mode == "silent"
+    
+    output = [
+        f"# Execution Guide: {spec.name}",
+        f"**Mode**: {mode.title()}",
+        "",
+        "## Before Starting",
+        "",
+        "1. Create the workflow directory: `.lia/{workflow}/{task_name}/`",
+        "2. Create `0-notepad.md` for capturing insights",
+        "3. Read relevant existing documentation",
+        "",
+        "## Workflow Execution",
+        "",
+    ]
+    
+    for phase in spec.phases:
+        output.append(f"### Phase {phase.number}: {phase.name}")
+        output.append("")
+        
+        # Extract constraints for this phase from the prompt if possible
+        output.append("**Actions:**")
+        output.append(f"- Create phase output file: `{phase.number}-*.md`")
+        output.append("- Complete all phase requirements")
+        output.append("- Document findings and decisions")
+        output.append("")
+        
+        if is_silent:
+            output.append("**Silent Mode:**")
+            output.append("- Record all assumptions in `0-notepad.md`")
+            output.append("- Proceed automatically to next phase")
+        else:
+            output.append("**Collaboration Mode:**")
+            output.append("- Present completed work to user")
+            output.append("- Request explicit approval")
+            output.append("- Iterate based on feedback until approved")
+            output.append("- Only proceed after receiving approval")
+        output.append("")
+    
+    output.extend([
+        "## Completion",
+        "",
+        "- Ensure all phase documents are complete",
+        "- Review `0-notepad.md` for captured insights",
+        "- Provide summary of completed work",
+    ])
+    
+    return "\n".join(output)
+
+
+def generate_phase_checklist(spec: WorkflowSpec, phase_number: int) -> str:
+    """Generate a detailed checklist for a specific phase."""
+    phase = None
+    for p in spec.phases:
+        if p.number == phase_number:
+            phase = p
+            break
+    
+    if not phase:
+        return f"Phase {phase_number} not found in {spec.name}. Available phases: {len(spec.phases)}"
+    
+    output = [
+        f"# Phase {phase.number}: {phase.name}",
+        f"**Workflow**: {spec.name}",
+        "",
+        "## Checklist",
+        "",
+        f"- [ ] Create output file: `.lia/{spec.name}/{{task_name}}/{phase.number}-*.md`",
+        "- [ ] Analyse requirements for this phase",
+        "- [ ] Document all findings",
+        "- [ ] Review for completeness",
+        "- [ ] Request user approval (Collaboration mode)",
+        "- [ ] Iterate on feedback if needed",
+        "- [ ] Receive explicit approval before proceeding",
+        "",
+        "## Common Constraints",
+        "",
+        "- MUST complete all required documentation",
+        "- MUST NOT proceed without user approval (Collaboration mode)",
+        "- MUST record assumptions in notepad (Silent mode)",
+        "- SHOULD capture insights in `0-notepad.md`",
+        "",
+        "## Tips",
+        "",
+        f"- Focus only on Phase {phase.number} tasks",
+        "- Don't jump ahead to later phases",
+        "- Ask clarifying questions if requirements are unclear",
+        "- Document decisions and rationale",
+    ]
+    
+    return "\n".join(output)
+
+
+def suggest_workflow_sequence(task_description: str) -> str:
+    """Suggest a sequence of workflows for a complex task."""
+    task_lower = task_description.lower()
+    
+    sequences = []
+    
+    # Pattern matching for common task sequences
+    if "new feature" in task_lower or "build" in task_lower or "implement" in task_lower:
+        if "design" in task_lower or "plan" in task_lower:
+            sequences.append({
+                "name": "Full Feature Development",
+                "steps": [
+                    ("spec", "Create requirements and design documents"),
+                    ("dev", "Implement the feature"),
+                    ("test", "Design and implement tests"),
+                    ("review", "Conduct code review"),
+                ],
+            })
+        else:
+            sequences.append({
+                "name": "Quick Implementation",
+                "steps": [
+                    ("dev", "Implement the feature"),
+                    ("test", "Write tests"),
+                ],
+            })
+    
+    if "bug" in task_lower or "fix" in task_lower or "debug" in task_lower:
+        sequences.append({
+            "name": "Bug Fix Workflow",
+            "steps": [
+                ("troubleshoot", "Diagnose the issue"),
+                ("dev", "Implement the fix"),
+                ("test", "Verify the fix with tests"),
+            ],
+        })
+    
+    if "security" in task_lower or "audit" in task_lower:
+        sequences.append({
+            "name": "Security Assessment",
+            "steps": [
+                ("security", "Conduct security assessment"),
+                ("review", "Review security-related code"),
+                ("dev", "Implement security improvements"),
+            ],
+        })
+    
+    if "performance" in task_lower or "slow" in task_lower or "optimize" in task_lower:
+        sequences.append({
+            "name": "Performance Optimization",
+            "steps": [
+                ("optimize", "Profile and identify bottlenecks"),
+                ("dev", "Implement optimizations"),
+                ("test", "Validate performance improvements"),
+            ],
+        })
+    
+    if "learn" in task_lower or "understand" in task_lower:
+        if "legacy" in task_lower or "existing" in task_lower:
+            sequences.append({
+                "name": "Codebase Understanding",
+                "steps": [
+                    ("wtf", "Understand mysterious/legacy code"),
+                    ("review", "Review code quality"),
+                    ("docs", "Document findings"),
+                ],
+            })
+        else:
+            sequences.append({
+                "name": "Learning Path",
+                "steps": [
+                    ("research", "Research the technology"),
+                    ("learn", "Project-based learning"),
+                    ("docs", "Document learnings"),
+                ],
+            })
+    
+    if "research" in task_lower or "evaluate" in task_lower or "compare" in task_lower:
+        sequences.append({
+            "name": "Technology Evaluation",
+            "steps": [
+                ("research", "Research and evaluate options"),
+                ("architecture", "Design integration approach"),
+                ("integrate", "Implement integration"),
+            ],
+        })
+    
+    if "api" in task_lower or "integration" in task_lower:
+        sequences.append({
+            "name": "API Development",
+            "steps": [
+                ("spec", "Define API requirements"),
+                ("integrate", "Design and implement API"),
+                ("test", "Create API tests"),
+                ("docs", "Document API"),
+            ],
+        })
+    
+    # Default suggestion if no specific pattern matched
+    if not sequences:
+        sequences.append({
+            "name": "General Development",
+            "steps": [
+                ("spec", "Define requirements (if complex)"),
+                ("dev", "Implement solution"),
+                ("review", "Review code quality"),
+            ],
+        })
+    
+    # Build output
+    output = [
+        f"# Suggested Workflow Sequences",
+        f"**Task**: {task_description}",
+        "",
+    ]
+    
+    for i, seq in enumerate(sequences, 1):
+        output.append(f"## Option {i}: {seq['name']}")
+        output.append("")
+        for j, (workflow, purpose) in enumerate(seq['steps'], 1):
+            output.append(f"{j}. **{workflow}** - {purpose}")
+        output.append("")
+    
+    output.extend([
+        "## Tips",
+        "",
+        "- Start with the first workflow in the sequence",
+        "- Complete each workflow before moving to the next",
+        "- Artifacts from earlier workflows feed into later ones",
+        "- You can skip workflows if not needed for your task",
+    ])
     
     return "\n".join(output)
 

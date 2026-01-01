@@ -336,8 +336,8 @@ Follow these instructions for user requests related to spec tasks. The user may 
 ## Executing Instructions
 
 - Before executing any tasks, ALWAYS ensure you have read:
-  - Relevant documents from C:\Users\Fab2\Desktop\AI\POC\Development\v0.7\docs\ (main documentation folder)
-  - New implementations from C:\Users\Fab2\Desktop\AI\POC\Development\v0.7\docs\development\Blueprint 1\Phase 1\New_Implimentations\
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/Blueprint-1/Phase-1/New-Implementations/
   - The specs 1-requirements.md, 2-design.md and 3-tasks.md files for the current feature Executing tasks without the requirements or design will lead to inaccurate implementations.
 - Look at the task details in the task list
 - If the requested task has sub-tasks, always start with the sub tasks
