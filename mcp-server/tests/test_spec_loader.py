@@ -9,13 +9,26 @@ from workflow_specs_mcp.spec_loader import SpecLoader, SpecMetadata, ValidationR
 
 @pytest.fixture
 def specs_dir():
-    """Get the specs directory path."""
+    """
+    Return the project's top-level specs directory path resolved relative to this file.
+    
+    Returns:
+        Path: Filesystem path to the `specs` directory located three levels above this module.
+    """
     return Path(__file__).parent.parent.parent / "specs"
 
 
 @pytest.fixture
 def spec_loader(specs_dir):
-    """Create a spec loader instance."""
+    """
+    Create a SpecLoader configured for the given specs directory.
+    
+    Parameters:
+    	specs_dir (str): Path to the directory containing spec TOML files.
+    
+    Returns:
+    	SpecLoader: SpecLoader instance configured to load specs from the given directory.
+    """
     return SpecLoader(specs_dir)
 
 
