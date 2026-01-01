@@ -57,6 +57,56 @@ SUMMARY:
 
 ---
 
+## MCP Server
+
+### workflow-specs-mcp (NEW!)
+
+Model Context Protocol (MCP) server enabling remote AI agent access to workflow specs.
+
+**Location:** [`../mcp-server/`](../mcp-server/)
+
+**Features:**
+- 📚 **Resources**: Browse and read specs via `specs://` URIs
+- 🔧 **Tools**: Search, validate, compare, and get metadata
+- 💬 **Prompts**: Execute workflows with pre-built templates
+- 🔍 **Suggestions**: AI-powered workflow recommendations
+
+**Installation:**
+
+```bash
+cd mcp-server
+pip install -e .
+```
+
+**Claude Desktop Configuration:**
+
+```json
+{
+  "mcpServers": {
+    "workflow-specs": {
+      "command": "workflow-specs-mcp",
+      "env": {
+        "WORKFLOW_SPECS_DIR": "/path/to/specs"
+      }
+    }
+  }
+}
+```
+
+**Available Tools:**
+- `list_specs` - List all specs by category
+- `get_spec` - Get full spec content
+- `get_spec_prompt` - Get workflow instructions only
+- `validate_spec` - Check spec validity
+- `search_specs` - Keyword search
+- `get_spec_metadata` - Extract structured metadata
+- `compare_specs` - Compare two specs
+- `suggest_workflow` - Task-based recommendations
+
+See [`../mcp-server/README.md`](../mcp-server/README.md) for full documentation.
+
+---
+
 ## Planned Tools
 
 ### workflow-visualizer.py (Coming Soon)
