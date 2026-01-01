@@ -159,6 +159,40 @@ This returns the complete prompt that defines the workflow phases, constraints, 
 | **knowledge** | Documentation | docs |
 | **strategy** | Innovation and integration | innovate, integrate, nexus |
 
+## Prompts
+
+The server provides ready-to-use prompt templates for starting workflows:
+
+### Workflow Starters
+
+Each workflow has a `start-{name}` prompt:
+
+```python
+# Example: Start a dev workflow
+prompt = get_prompt("start-dev", {
+    "task": "Implement user authentication",
+    "mode": "collaboration"  # or "silent"
+})
+```
+
+### Helper Prompts
+
+| Prompt | Description | Arguments |
+|--------|-------------|-----------|
+| `choose-workflow` | Help choose the right workflow | `task` |
+| `workflow-sequence` | Plan a sequence for complex projects | `project` |
+| `resume-workflow` | Resume an interrupted workflow | `workflow`, `task_name` |
+
+### Using Prompts with Claude
+
+Once configured, you can use prompts directly:
+
+> "Use the start-spec prompt for: Create a REST API for user management"
+
+The MCP client will automatically fill in the prompt template and start the workflow.
+
+---
+
 ## Architecture
 
 ```

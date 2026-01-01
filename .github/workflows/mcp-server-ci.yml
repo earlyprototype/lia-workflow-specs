@@ -1,0 +1,183 @@
+name: MCP Server CI
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'mcp-server/**'
+      - 'specs/**'
+      - '.github/workflows/mcp-server-ci.yml'
+  pull_request:
+    branches: [master, main]
+    paths:
+      - 'mcp-server/**'
+      - 'specs/**'
+
+jobs:
+  test:
+    name: Test MCP Server
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          cd mcp-server
+          pip install -e ".[dev]"
+      
+      - name: Run tests
+        run: |
+          cd mcp-server
+          pytest tests/ -v --tb=short
+        env:
+          LIA_SPECS_DIR: ${{ github.workspace }}/specs
+      
+      - name: Test spec loading
+        run: |
+          cd mcp-server
+          python -c "
+          import sys
+          sys.path.insert(0, 'src')
+          from lia_workflow_mcp.models import SpecCollection
+          from pathlib import Path
+          
+          collection = SpecCollection()
+          collection.load_from_directory(Path('../specs'))
+          
+          print(f'Loaded {len(collection.specs)} specs')
+          assert len(collection.specs) >= 15, f'Expected at least 15 specs, got {len(collection.specs)}'
+          
+          # Test categories
+          categories = collection.get_categories()
+          expected_categories = ['development', 'quality', 'problem-solving', 'research', 'knowledge', 'strategy']
+          for cat in expected_categories:
+              assert cat in categories, f'Missing category: {cat}'
+          
+          print('All spec loading tests passed!')
+          "
+  
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      
+      - name: Run linter
+        run: |
+          cd mcp-server
+          ruff check src/ --ignore E501
+
+  validate-specs:
+    name: Validate Specs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install tomli
+      
+      - name: Validate all specs
+        run: |
+          python tools/spec-validator.py specs/
+
+  integration:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    needs: [test, validate-specs]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install MCP server
+        run: |
+          cd mcp-server
+          pip install -e .
+      
+      - name: Test MCP server functions
+        run: |
+          python -c "
+          import asyncio
+          import os
+          import sys
+          
+          sys.path.insert(0, 'mcp-server/src')
+          os.environ['LIA_SPECS_DIR'] = 'specs'
+          
+          from lia_workflow_mcp.server import (
+              initialise_specs,
+              list_resources,
+              list_tools,
+              list_prompts,
+              call_tool,
+          )
+          
+          initialise_specs()
+          
+          async def test():
+              # Test resources
+              resources = await list_resources()
+              assert len(resources) > 30, f'Expected >30 resources, got {len(resources)}'
+              print(f'✓ Resources: {len(resources)}')
+              
+              # Test tools
+              tools = await list_tools()
+              assert len(tools) >= 10, f'Expected >=10 tools, got {len(tools)}'
+              print(f'✓ Tools: {len(tools)}')
+              
+              # Test prompts
+              prompts = await list_prompts()
+              assert len(prompts) >= 15, f'Expected >=15 prompts, got {len(prompts)}'
+              print(f'✓ Prompts: {len(prompts)}')
+              
+              # Test tool call
+              result = await call_tool('search_specs', {'query': 'security'})
+              assert len(result) > 0
+              print('✓ Tool calls working')
+              
+              # Test recommendation
+              result = await call_tool('recommend_workflow', {'task_description': 'implement a feature'})
+              assert 'dev' in result[0].text.lower()
+              print('✓ Recommendations working')
+              
+              print()
+              print('All integration tests passed!')
+          
+          asyncio.run(test())
+          "

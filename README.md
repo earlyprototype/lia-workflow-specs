@@ -93,6 +93,62 @@ Every workflow creates structured documentation:
 
 ---
 
+## 🔌 MCP Server - Remote Agent Access
+
+Connect any MCP-compatible AI agent to your workflow specs with the built-in MCP server.
+
+### Quick Setup
+
+```bash
+# Install the MCP server
+cd mcp-server
+pip install -e .
+
+# Or use the installer
+./install.sh --global
+```
+
+### Configure Your Client
+
+**Claude Desktop** (`~/.config/claude/claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "lia-workflow-specs": {
+      "command": "python3",
+      "args": ["-m", "lia_workflow_mcp.server"],
+      "env": {"LIA_SPECS_DIR": "~/.lia/specs"}
+    }
+  }
+}
+```
+
+### Available Features
+
+| Feature | Description |
+|---------|-------------|
+| **37 Resources** | Access specs, metadata, and quick reference guides |
+| **11 Tools** | Search, recommend, validate, compare workflows |
+| **20+ Prompts** | Ready-to-use workflow starter templates |
+
+### Example Usage
+
+```
+User: "I need to implement a secure authentication feature"
+
+Agent uses MCP tools:
+→ recommend_workflow("implement secure authentication")
+→ Returns: spec → dev → security → test
+
+Agent uses MCP prompt:
+→ start-spec(task="user authentication with OAuth2")
+→ Begins systematic requirements gathering
+```
+
+📖 See [mcp-server/README.md](mcp-server/README.md) for full documentation.
+
+---
+
 ## 💡 Why Use Workflow Specs?
 
 ### Before: Ad-Hoc AI Assistance

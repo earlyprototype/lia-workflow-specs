@@ -19,6 +19,9 @@ from mcp.types import (
     TextResourceContents,
     Tool,
     TextContent,
+    Prompt,
+    PromptMessage,
+    PromptArgument,
 )
 
 from .models import SpecCollection, SpecCategory, WorkflowSpec
@@ -236,6 +239,234 @@ def generate_quick_reference() -> str:
     ])
     
     return "\n".join(lines)
+
+
+# ============================================================================
+# PROMPTS
+# ============================================================================
+
+@server.list_prompts()
+async def list_prompts() -> list[Prompt]:
+    """List all available prompt templates."""
+    prompts = []
+    
+    # Add workflow starter prompts for each spec
+    for spec in spec_collection.specs:
+        prompts.append(Prompt(
+            name=f"start-{spec.name}",
+            description=f"Start a {spec.name} workflow session",
+            arguments=[
+                PromptArgument(
+                    name="task",
+                    description="Description of your task or goal",
+                    required=True,
+                ),
+                PromptArgument(
+                    name="mode",
+                    description="Execution mode: 'collaboration' or 'silent'",
+                    required=False,
+                ),
+            ],
+        ))
+    
+    # Add general helper prompts
+    prompts.extend([
+        Prompt(
+            name="choose-workflow",
+            description="Help me choose the right workflow for my task",
+            arguments=[
+                PromptArgument(
+                    name="task",
+                    description="Description of what you want to accomplish",
+                    required=True,
+                ),
+            ],
+        ),
+        Prompt(
+            name="workflow-sequence",
+            description="Plan a sequence of workflows for a complex project",
+            arguments=[
+                PromptArgument(
+                    name="project",
+                    description="Description of the project or complex task",
+                    required=True,
+                ),
+            ],
+        ),
+        Prompt(
+            name="resume-workflow",
+            description="Resume an interrupted workflow session",
+            arguments=[
+                PromptArgument(
+                    name="workflow",
+                    description="Name of the workflow to resume",
+                    required=True,
+                ),
+                PromptArgument(
+                    name="task_name",
+                    description="Task name (directory name under .lia/)",
+                    required=True,
+                ),
+            ],
+        ),
+    ])
+    
+    return prompts
+
+
+@server.get_prompt()
+async def get_prompt(name: str, arguments: dict[str, str] | None = None) -> list[PromptMessage]:
+    """Get a specific prompt with arguments filled in."""
+    args = arguments or {}
+    
+    # Handle workflow starter prompts
+    if name.startswith("start-"):
+        spec_name = name[6:]  # Remove "start-" prefix
+        spec = spec_collection.get_by_name(spec_name)
+        
+        if not spec:
+            return [PromptMessage(
+                role="user",
+                content=TextContent(
+                    type="text",
+                    text=f"Error: Workflow '{spec_name}' not found.",
+                ),
+            )]
+        
+        task = args.get("task", "")
+        mode = args.get("mode", "collaboration")
+        
+        # Build the prompt
+        prompt_text = f"""# Starting {spec.name} Workflow
+
+## Task
+{task}
+
+## Mode
+{mode.title()} Mode
+
+## Instructions
+You are now operating as a {spec.name} workflow agent. Follow the systematic workflow defined below.
+
+{spec.prompt}
+
+---
+
+**Begin the workflow now.** Start with Phase 1, creating the necessary directory structure and `0-notepad.md` file.
+"""
+        
+        return [PromptMessage(
+            role="user",
+            content=TextContent(type="text", text=prompt_text),
+        )]
+    
+    # Handle choose-workflow prompt
+    elif name == "choose-workflow":
+        task = args.get("task", "")
+        recommendations = spec_collection.recommend_for_task(task)
+        
+        rec_text = "\n".join([
+            f"- **{r.name}**: {r.description[:80]}..."
+            for r in recommendations
+        ])
+        
+        prompt_text = f"""# Help Me Choose a Workflow
+
+## My Task
+{task}
+
+## Recommended Workflows
+Based on your task, here are the recommended workflows:
+
+{rec_text}
+
+## All Available Workflows
+{generate_quick_reference()}
+
+Please help me choose the best workflow for my task and explain why.
+"""
+        
+        return [PromptMessage(
+            role="user",
+            content=TextContent(type="text", text=prompt_text),
+        )]
+    
+    # Handle workflow-sequence prompt
+    elif name == "workflow-sequence":
+        project = args.get("project", "")
+        sequence = suggest_workflow_sequence(project)
+        
+        prompt_text = f"""# Plan Workflow Sequence
+
+## Project Description
+{project}
+
+## Suggested Sequence
+{sequence}
+
+Please help me refine this workflow sequence for my project. Consider:
+1. Are there any workflows I should add or remove?
+2. Is the order optimal?
+3. What deliverables should flow between workflows?
+"""
+        
+        return [PromptMessage(
+            role="user",
+            content=TextContent(type="text", text=prompt_text),
+        )]
+    
+    # Handle resume-workflow prompt
+    elif name == "resume-workflow":
+        workflow = args.get("workflow", "")
+        task_name = args.get("task_name", "")
+        
+        spec = spec_collection.get_by_name(workflow)
+        if not spec:
+            return [PromptMessage(
+                role="user",
+                content=TextContent(
+                    type="text",
+                    text=f"Error: Workflow '{workflow}' not found.",
+                ),
+            )]
+        
+        prompt_text = f"""# Resume {workflow} Workflow
+
+## Task
+{task_name}
+
+## Instructions
+You are resuming an interrupted {workflow} workflow session.
+
+1. First, read the existing files in `.lia/{workflow}/{task_name}/`:
+   - `0-notepad.md` - Review captured insights and assumptions
+   - Any phase documents (1-*.md, 2-*.md, etc.)
+
+2. Determine which phase was last completed
+
+3. Resume from the next incomplete phase
+
+## Workflow Definition
+{spec.prompt}
+
+---
+
+**Please read the existing workflow files and determine where to resume.**
+"""
+        
+        return [PromptMessage(
+            role="user",
+            content=TextContent(type="text", text=prompt_text),
+        )]
+    
+    else:
+        return [PromptMessage(
+            role="user",
+            content=TextContent(
+                type="text",
+                text=f"Unknown prompt: {name}",
+            ),
+        )]
 
 
 # ============================================================================
