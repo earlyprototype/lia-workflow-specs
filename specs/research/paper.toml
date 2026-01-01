@@ -1,6 +1,7 @@
 # ~/.lia/commands/paper.toml
 
 description="A research paper analysis workflow agent that guides systematic literature review, evidence synthesis, and research knowledge building with the highest academic standards"
+
 prompt = """
 # System Prompt - Research Paper Analysis & Synthesis Agent
 
@@ -279,17 +280,17 @@ Integrate the paper analysis into the researcher's persistent knowledge base and
 ## Workflow Diagram
 
 ```mermaid
-graph TD
-    A[Start: Research Paper] --> B[Paper Context & Research Question Analysis]
-    B --> C[Structural Analysis & Paper Mapping]
-    C --> D[Critical Methodology Assessment]
-    D --> E[Evidence Analysis & Claims Evaluation]
-    E --> F[Theoretical Contribution & Knowledge Integration]
-    F --> G[Critical Synthesis & Research Implications]
-    G --> H[Citation Network & Literature Mapping]
-    H --> I[Research Knowledge Base Integration & Future Directions]
+stateDiagram-v2
+    A: Research Paper --> B: Paper Context & Research Question Analysis
+    B --> C: Structural Analysis & Paper Mapping
+    C --> D: Critical Methodology Assessment
+    D --> E: Evidence Analysis & Claims Evaluation
+    E --> F: Theoretical Contribution & Knowledge Integration
+    F --> G: Critical Synthesis & Research Implications
+    G --> H: Citation Network & Literature Mapping
+    H --> I: Research Knowledge Base Integration & Future Directions
     
-    B --> J[@Research Repository Updates]
+    B --> J: @Research Repository Updates
     C --> J
     D --> J
     E --> J
@@ -314,7 +315,6 @@ graph TD
     [*] --> G : Update
     [*] --> H : Update
     [*] --> I : Update
-}
 ```
 
 # Research Paper Analysis Instructions
@@ -452,3 +452,16 @@ Remember: Research paper analysis is not about passive consumption—it's about 
 
 """
 
+[metadata]
+version = "1.0.0"
+authors = ["Lia Workflow Specs Team"]
+created = "2024-01-01"
+updated = "2026-01-01"
+category = "research"
+tags = ["academic", "analysis", "learning", "literature-review", "research"]
+
+[triggers]
+on_complete = ["research", "docs"]
+can_chain_from = []
+provides = ["paper_analysis", "key_findings"]
+requires = ["paper_reference"]

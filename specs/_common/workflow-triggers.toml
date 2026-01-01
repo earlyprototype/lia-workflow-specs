@@ -1,0 +1,128 @@
+# Workflow Triggers and Composition Schema
+# Defines how workflows can chain and compose with each other
+
+[triggers.schema]
+description = """
+Workflow triggers define how specs can chain together:
+
+- `on_complete`: Suggestions for follow-up workflows
+- `can_chain_from`: Workflows that can lead into this one
+- `provides`: Outputs this workflow produces
+- `requires`: Inputs this workflow expects
+"""
+
+# Example trigger definitions for common workflow chains
+
+[triggers.development_chain]
+description = "Feature development chain: research → spec → dev → test"
+chain = ["research", "spec", "dev", "test"]
+
+[triggers.quality_chain]
+description = "Quality assurance chain: review → security → optimize"
+chain = ["review", "security", "optimize"]
+
+[triggers.problem_solving_chain]
+description = "Problem solving chain: troubleshoot → investigate → dev"
+chain = ["troubleshoot", "investigate", "dev"]
+
+[triggers.learning_chain]
+description = "Learning chain: research → learn → dev"
+chain = ["research", "learn", "dev"]
+
+# Per-spec trigger definitions
+
+[triggers.spec]
+on_complete = ["dev", "test"]
+can_chain_from = ["research"]
+provides = ["requirements.md", "design.md", "tasks.md"]
+requires = ["feature_idea"]
+
+[triggers.dev]
+on_complete = ["test", "review"]
+can_chain_from = ["spec", "troubleshoot"]
+provides = ["implementation", "code"]
+requires = ["design", "tasks"]
+
+[triggers.test]
+on_complete = ["review", "deploy"]
+can_chain_from = ["dev"]
+provides = ["test_suite", "coverage_report"]
+requires = ["implementation"]
+
+[triggers.review]
+on_complete = ["optimize", "security", "dev"]
+can_chain_from = ["dev", "test"]
+provides = ["review_report", "recommendations"]
+requires = ["code_to_review"]
+
+[triggers.research]
+on_complete = ["spec", "learn"]
+can_chain_from = []
+provides = ["research_findings", "recommendations"]
+requires = ["research_topic"]
+
+[triggers.troubleshoot]
+on_complete = ["dev", "investigate"]
+can_chain_from = ["review"]
+provides = ["diagnosis", "solution"]
+requires = ["problem_description"]
+
+[triggers.investigate]
+on_complete = ["dev", "docs"]
+can_chain_from = ["troubleshoot"]
+provides = ["recovery_plan", "root_cause"]
+requires = ["incident_description"]
+
+[triggers.learn]
+on_complete = ["dev", "spec"]
+can_chain_from = ["research"]
+provides = ["competency_assessment", "learning_portfolio"]
+requires = ["learning_goal"]
+
+[triggers.innovate]
+on_complete = ["spec", "dev"]
+can_chain_from = ["review", "research"]
+provides = ["innovation_roadmap", "feature_ideas"]
+requires = ["existing_implementation"]
+
+[triggers.architecture]
+on_complete = ["spec", "dev", "security"]
+can_chain_from = ["research", "review"]
+provides = ["architecture_design", "adr"]
+requires = ["system_requirements"]
+
+[triggers.security]
+on_complete = ["dev", "review"]
+can_chain_from = ["review", "architecture"]
+provides = ["security_assessment", "remediation_plan"]
+requires = ["code_or_architecture"]
+
+[triggers.optimize]
+on_complete = ["test", "review"]
+can_chain_from = ["review", "test"]
+provides = ["optimization_report", "improvements"]
+requires = ["performance_baseline"]
+
+[triggers.docs]
+on_complete = []
+can_chain_from = ["dev", "investigate"]
+provides = ["documentation"]
+requires = ["content_to_document"]
+
+[triggers.integrate]
+on_complete = ["test", "docs"]
+can_chain_from = ["spec", "architecture"]
+provides = ["integration_implementation", "api_docs"]
+requires = ["integration_requirements"]
+
+[triggers.nexus]
+on_complete = ["spec", "dev"]
+can_chain_from = []
+provides = ["consulting_deliverables", "recommendations"]
+requires = ["innovation_challenge"]
+
+[triggers.wtf]
+on_complete = ["docs", "dev"]
+can_chain_from = ["review"]
+provides = ["feature_understanding", "integration_strategy"]
+requires = ["mysterious_feature"]
