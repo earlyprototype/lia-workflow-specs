@@ -95,13 +95,15 @@ class SpecLoader:
 
     def load_spec(self, spec_path: Path) -> Optional[dict]:
         """
-        Load and parse a spec file.
-
-        Args:
-            spec_path: Path to the spec file
-
+        Load and parse a TOML spec file and cache the parsed result.
+        
+        Attempts to parse the file as TOML and stores the resulting dict in an internal cache keyed by the file path. If TOML decoding fails, a fallback parser is attempted. Returns the parsed spec data on success or `None` if loading or parsing fails.
+        
+        Parameters:
+            spec_path (Path): Path to the spec file.
+        
         Returns:
-            Parsed spec data or None if loading fails
+            dict or None: Parsed spec data if successful, `None` on failure.
         """
         cache_key = str(spec_path)
         if cache_key in self._cache:
@@ -128,8 +130,12 @@ class SpecLoader:
 
     def _parse_spec_fallback(self, content: str) -> Optional[dict]:
         """
-        Fallback parser for specs with TOML escape sequence issues.
-        Extracts description and prompt fields manually.
+        Attempt to recover a spec's key fields from raw TOML text when standard parsing fails.
+        
+        Searches the content for a single-line `description = "..."` and a triple-quoted `prompt = """..."""` block and returns a dictionary with any fields found. Returns `None` if neither field is present.
+        
+        Returns:
+            dict: A dictionary containing one or both of the keys `"description"` and `"prompt"` with their extracted string values, or `None` if nothing was extracted.
         """
         result = {}
 
@@ -151,12 +157,9 @@ class SpecLoader:
     def get_spec_content(self, spec_path: Path) -> Optional[str]:
         """
         Get the raw content of a spec file.
-
-        Args:
-            spec_path: Path to the spec file
-
+        
         Returns:
-            Raw file content or None
+            The file content as a string, or `None` if the file could not be read.
         """
         try:
             return spec_path.read_text(encoding="utf-8")
@@ -165,13 +168,13 @@ class SpecLoader:
 
     def extract_metadata(self, spec_path: Path) -> Optional[SpecMetadata]:
         """
-        Extract metadata from a spec file.
-
-        Args:
-            spec_path: Path to the spec file
-
+        Builds a SpecMetadata object by extracting name, description, phases, constraints, flags, modes, triggers, tags, authors, and related fields from the TOML spec at the given path.
+        
+        Parameters:
+            spec_path (Path): Path to the spec file.
+        
         Returns:
-            SpecMetadata object or None
+            SpecMetadata | None: A SpecMetadata instance populated from the spec, or None if the spec cannot be loaded.
         """
         data = self.load_spec(spec_path)
         if not data:
@@ -247,7 +250,17 @@ class SpecLoader:
         )
 
     def _extract_phases(self, prompt: str) -> list[str]:
-        """Extract phase names from a spec prompt."""
+        """
+        Derive the ordered phase names declared in a spec prompt.
+        
+        Searches the prompt for headings of the form "### <number>. <phase name>" and returns the captured phase names in the order they appear.
+        
+        Parameters:
+            prompt (str): The spec prompt text to search for phase headings.
+        
+        Returns:
+            list[str]: Phase names extracted from the prompt, in document order.
+        """
         phases = []
         # Look for numbered phases like "### 1. Phase Name"
         pattern = r"###\s*\d+\.\s*([^\n]+)"
@@ -256,7 +269,15 @@ class SpecLoader:
         return phases
 
     def _extract_output_directory(self, prompt: str) -> str:
-        """Extract the output directory pattern from a spec."""
+        """
+        Derive the default output directory path referenced in a spec prompt.
+        
+        Parameters:
+            prompt (str): Raw spec prompt text to search for an output directory pattern.
+        
+        Returns:
+            str: Directory path ending with '/', for example '.lia/segment/', or an empty string if no directory pattern is found.
+        """
         patterns = [
             r"\.lia/([a-z-]+)/\{[a-z_]+\}",
             r"'\.lia/([a-z-]+)/",
@@ -269,13 +290,15 @@ class SpecLoader:
 
     def validate_spec(self, spec_path: Path) -> ValidationResult:
         """
-        Validate a spec file.
-
-        Args:
-            spec_path: Path to the spec file
-
+        Validate a workflow spec file and collect validation results including errors, warnings, and informational messages.
+        
+        Performs checks for file existence, TOML parseability, presence of required keys and required/recommended sections in the prompt, detection of a Mermaid diagram, counts of `MUST`/`SHOULD` constraints, completeness of the notepad template sections, and the description length.
+        
+        Parameters:
+            spec_path (Path): Path to the TOML spec file to validate.
+        
         Returns:
-            ValidationResult with errors, warnings, and info
+            ValidationResult: Result object with `is_valid` set to False if any fatal errors were found and lists of `errors`, `warnings`, and `info` describing the findings.
         """
         result = ValidationResult(is_valid=True)
 
@@ -356,14 +379,16 @@ class SpecLoader:
         self, query: str, category: Optional[str] = None
     ) -> list[tuple[Path, SpecMetadata]]:
         """
-        Search specs by keyword in name, description, or content.
-
-        Args:
-            query: Search query string
-            category: Optional category filter
-
+        Search specs for a keyword in the filename stem, description, or prompt content.
+        
+        Performs a case-insensitive match against the spec's name (stem), the "description" field, and the "prompt" content. If `category` is provided, only specs whose parent directory name equals the category are considered.
+        
+        Parameters:
+            query (str): Keyword to search for (case-insensitive).
+            category (Optional[str]): Optional category (subdirectory) name to filter results.
+        
         Returns:
-            List of (path, metadata) tuples matching the query
+            list[tuple[Path, SpecMetadata]]: List of (spec path, extracted metadata) tuples for specs that match the query.
         """
         results = []
         query_lower = query.lower()
@@ -404,10 +429,10 @@ class SpecLoader:
 
     def get_categories(self) -> list[str]:
         """
-        Get all unique categories (subdirectories) in the specs directory.
-
+        Collect unique categories inferred from the parent directories of discovered spec files.
+        
         Returns:
-            List of category names
+            list[str]: Sorted list of unique category names.
         """
         categories = set()
         for spec_path in self.discover_specs():
@@ -434,5 +459,9 @@ class SpecLoader:
         return by_category
 
     def clear_cache(self):
-        """Clear the spec cache."""
+        """
+        Remove all entries from the loader's internal TOML parsing cache.
+        
+        After calling this, subsequent calls to load_spec will reload files from disk rather than using cached data.
+        """
         self._cache.clear()

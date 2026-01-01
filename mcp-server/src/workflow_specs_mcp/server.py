@@ -43,7 +43,14 @@ spec_loader = SpecLoader(SPECS_DIR)
 
 @server.list_resources()
 async def list_resources() -> list[Resource]:
-    """List all available workflow spec resources."""
+    """
+    Enumerates available workflow specification resources exposed by the MCP server.
+    
+    Includes a catalogue resource, one resource per category, and one resource per discovered spec with basic metadata and MIME type.
+    
+    Returns:
+        resources (list[Resource]): List of Resource objects representing the specs catalogue, per-category listings, and individual spec entries.
+    """
     resources = []
 
     # Add a resource for the specs catalogue
@@ -85,7 +92,18 @@ async def list_resources() -> list[Resource]:
 
 @server.read_resource()
 async def read_resource(uri: str) -> str:
-    """Read a specific workflow spec resource."""
+    """
+    Return the content for a workflow-spec resource identified by its URI.
+    
+    Parameters:
+        uri (str): Resource URI. Supported forms:
+            - "specs://catalogue" — returns a JSON object mapping categories to arrays of spec summaries.
+            - "specs://category/{category}" — returns a JSON array of specs in the given category.
+            - "specs://spec/{category}/{name}" — returns the raw spec file content for the named spec.
+    
+    Returns:
+        str: The resource content. For catalogue and category URIs this is a pretty-printed JSON string; for spec URIs it's the spec file text. If the URI is unknown or the requested resource is not found, returns an explanatory error string.
+    """
     # Parse the URI
     if uri == "specs://catalogue":
         # Return full catalogue
@@ -145,7 +163,12 @@ async def read_resource(uri: str) -> str:
 
 @server.list_tools()
 async def list_tools() -> list[Tool]:
-    """List all available tools for working with workflow specs."""
+    """
+    List available tools for interacting with workflow specifications.
+    
+    Returns:
+        tools (list[Tool]): A list of Tool objects describing each available operation, including its name, description, and expected input schema.
+    """
     return [
         Tool(
             name="list_specs",
@@ -335,7 +358,30 @@ async def list_tools() -> list[Tool]:
 
 @server.call_tool()
 async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
-    """Handle tool calls."""
+    """
+    Dispatch a named tool invocation and return its textual result(s).
+    
+    This function handles a set of workflow-spec-related tools (including
+    list_specs, get_spec, get_spec_prompt, validate_spec, search_specs,
+    get_spec_metadata, get_categories, compare_specs, suggest_workflow,
+    get_workflow_chain, and find_specs_that_provide). Each tool reads
+    tool-specific entries from `arguments`, performs the requested operation
+    via the SpecLoader, and returns one or more TextContent objects whose
+    `text` payload contains the result (usually JSON-formatted data or a
+    plain error/message string). If the tool name is not recognized, a
+    single TextContent with an "Unknown tool" message is returned.
+    
+    Parameters:
+        name (str): The name of the tool to invoke.
+        arguments (dict[str, Any]): Tool-specific arguments; keys and expected
+            values vary by tool (e.g., "name", "category", "query", "task_description",
+            "start_spec", "depth", etc.).
+    
+    Returns:
+        list[TextContent]: A list of TextContent objects containing the tool output.
+        A typical response is a single TextContent whose `text` is a JSON string
+        with the requested data or an explanatory message (e.g., not-found or error).
+    """
 
     if name == "list_specs":
         category = arguments.get("category")
@@ -621,7 +667,16 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
 
 
 def _find_spec(name: str, category: str | None) -> Path | None:
-    """Find a spec file by name and optional category."""
+    """
+    Locate a spec file by name, optionally restricted to a specific category.
+    
+    Parameters:
+        name (str): Spec filename without extension.
+        category (str | None): Category to restrict the search to; if `None`, all categories are searched.
+    
+    Returns:
+        Path | None: Path to the spec file if found, `None` otherwise.
+    """
     if category:
         spec_path = SPECS_DIR / category / f"{name}.toml"
         if spec_path.exists():
@@ -641,7 +696,14 @@ def _find_spec(name: str, category: str | None) -> Path | None:
 
 @server.list_prompts()
 async def list_prompts() -> list[Prompt]:
-    """List available prompts for workflow execution."""
+    """
+    Enumerates execution prompts generated from discovered workflow specifications.
+    
+    For each discovered spec returns a Prompt named `execute_{spec_name}` whose arguments include a required `task` (description of the task to run) and an optional `mode` (e.g., "collaboration" or "silent").
+    
+    Returns:
+        prompts (list[Prompt]): A list of Prompt objects, one per discovered spec, each named `execute_{spec_name}` and expecting `task` and optional `mode` arguments.
+    """
     prompts = []
 
     for spec_path in spec_loader.discover_specs():
@@ -671,7 +733,24 @@ async def list_prompts() -> list[Prompt]:
 
 @server.get_prompt()
 async def get_prompt(name: str, arguments: dict[str, str] | None) -> GetPromptResult:
-    """Get a specific workflow prompt for execution."""
+    """
+    Builds a user-facing execution prompt for a named workflow spec.
+    
+    Validates that `name` follows the "execute_<spec_name>" pattern, locates and loads the corresponding spec, and constructs a composite prompt that includes the workflow description, execution mode, task, and the spec's embedded prompt.
+    
+    Parameters:
+        name (str): Prompt identifier in the form "execute_<spec_name>".
+        arguments (dict[str, str] | None): Optional arguments for the prompt. Recognized keys:
+            - "task": user-provided task description (defaults to empty string).
+            - "mode": execution mode, e.g., "collaboration" or "silent" (defaults to "collaboration").
+    
+    Returns:
+        GetPromptResult: Result object containing a human-readable description and one or more PromptMessage entries:
+            - If `name` is not an "execute_" prompt: a result describing an unknown prompt with a user-facing message.
+            - If the spec cannot be found: a result describing the missing spec with a user-facing message.
+            - If the spec exists but lacks a `prompt` field: a result describing an invalid spec with a user-facing message.
+            - On success: a result whose message content is the assembled full execution prompt text.
+    """
     # Extract spec name from prompt name (format: execute_<spec_name>)
     if not name.startswith("execute_"):
         return GetPromptResult(
@@ -755,13 +834,19 @@ async def get_prompt(name: str, arguments: dict[str, str] | None) -> GetPromptRe
 
 
 async def run_server():
-    """Run the MCP server."""
+    """
+    Start and run the MCP server using standard I/O streams until the server stops.
+    """
     async with stdio_server() as (read_stream, write_stream):
         await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
 def main():
-    """Main entry point."""
+    """
+    Start the MCP server and run its asyncio event loop.
+    
+    This initializes and runs the stdio-backed MCP server until it exits.
+    """
     asyncio.run(run_server())
 
 
