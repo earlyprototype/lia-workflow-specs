@@ -67,34 +67,34 @@
 - Implementation phase: Expensive to change
 
 **When to Iterate:**
-- ✅ Missing requirements discovered
-- ✅ Better approach identified
-- ✅ Unclear acceptance criteria
-- ✅ Design doesn't align with constraints
+- Missing requirements discovered
+- Better approach identified
+- Unclear acceptance criteria
+- Design doesn't align with constraints
 
 **When to Move Forward:**
-- ✅ Good enough for now
-- ✅ Can refine during implementation
-- ✅ Minor details that won't block progress
+- Good enough for now
+- Can refine during implementation
+- Minor details that won't block progress
 
 ### Approval Mindset
 
 **Take Your Time:**
 ```
-❌ Rushed approval: "Sure, looks fine" (without reading)
-✅ Thoughtful review: "Let me check... can you clarify point 3?"
+BAD:  Rushed approval: "Sure, looks fine" (without reading)
+GOOD: Thoughtful review: "Let me check... can you clarify point 3?"
 ```
 
 **Ask Questions:**
 ```
-❌ Accepting confusion: "I don't fully understand but ok"
-✅ Seeking clarity: "Why JWT instead of sessions here?"
+BAD:  Accepting confusion: "I don't fully understand but ok"
+GOOD: Seeking clarity: "Why JWT instead of sessions here?"
 ```
 
 **Challenge Assumptions:**
 ```
-❌ Passive acceptance: "If you say so"
-✅ Active engagement: "Have we considered the scalability impact?"
+BAD:  Passive acceptance: "If you say so"
+GOOD: Active engagement: "Have we considered the scalability impact?"
 ```
 
 ### Phase Documentation
@@ -210,8 +210,8 @@ See: .lia/specs/user-authentication/
 
 ## Self-Review
 Ran review.toml workflow:
-- ✅ No critical issues
-- ⚠️ 2 minor improvements documented
+- [x] No critical issues
+- [!] 2 minor improvements documented
 See: .lia/reviews/user-auth-self-review/
 ```
 
@@ -334,7 +334,7 @@ All artifacts committed with PR
 
 ## Anti-Patterns to Avoid
 
-### ❌ Anti-Pattern: Skipping Approval Gates
+### Anti-Pattern: Skipping Approval Gates
 
 **Problem:**
 ```
@@ -353,7 +353,7 @@ AI: Here's the requirements [shows output]
 Don't proceed to the next phase without explicit confirmation."
 ```
 
-### ❌ Anti-Pattern: Ignoring the Notepad
+### Anti-Pattern: Ignoring the Notepad
 
 **Problem:**
 ```
@@ -371,7 +371,7 @@ No insights captured during workflow
 - Review and update notepad
 - Use it as thinking space
 
-### ❌ Anti-Pattern: Wrong Workflow Selection
+### Anti-Pattern: Wrong Workflow Selection
 
 **Problem:**
 ```
@@ -389,7 +389,7 @@ Using troubleshoot.toml for a mystery feature (need wtf.toml)
 - Use spec.toml for new features
 - Match workflow to context
 
-### ❌ Anti-Pattern: Passive Collaboration Mode
+### Anti-Pattern: Passive Collaboration Mode
 
 **Problem:**
 ```
@@ -407,7 +407,7 @@ User: "Approved" (didn't read artifacts)
 - Ask questions
 - Iterate until genuinely satisfied
 
-### ❌ Anti-Pattern: Silent Mode Overuse
+### Anti-Pattern: Silent Mode Overuse
 
 **Problem:**
 ```
@@ -427,7 +427,7 @@ Using silent mode for:
 - Reserve silent mode for routine tasks
 - Review assumptions in notepad carefully
 
-### ❌ Anti-Pattern: Abandoning Artifacts
+### Anti-Pattern: Abandoning Artifacts
 
 **Problem:**
 ```
@@ -467,8 +467,8 @@ Don't overthink routine decisions
 
 **3. Iterate in Batches:**
 ```
-❌ Sequential: "Add OAuth" → wait → "Add 2FA" → wait
-✅ Batched: "Add OAuth and 2FA support"
+BAD:  Sequential: "Add OAuth" → wait → "Add 2FA" → wait
+GOOD: Batched: "Add OAuth and 2FA support"
 ```
 
 **4. Prepare Context:**
@@ -484,8 +484,8 @@ Before starting workflow:
 
 **Be Specific Initially:**
 ```
-❌ Vague: "Build user authentication"
-✅ Specific: "Build JWT-based authentication with OAuth 
+BAD:  Vague: "Build user authentication"
+GOOD: Specific: "Build JWT-based authentication with OAuth 
              support for Google and GitHub, password reset, 
              and rate limiting"
 ```
@@ -575,23 +575,23 @@ Benefits: Shared context, knowledge preservation
 ## Summary
 
 ### Do:
-- ✅ Choose appropriate workflows
-- ✅ Iterate within phases
-- ✅ Take time to review
-- ✅ Capture knowledge in notepad
-- ✅ Commit artifacts to git
-- ✅ Reference artifacts in discussions
-- ✅ Update artifacts as project evolves
-- ✅ Share workflows with team
+- Choose appropriate workflows
+- Iterate within phases
+- Take time to review
+- Capture knowledge in notepad
+- Commit artifacts to git
+- Reference artifacts in discussions
+- Update artifacts as project evolves
+- Share workflows with team
 
 ### Don't:
-- ❌ Skip approval gates
-- ❌ Ignore the notepad
-- ❌ Use wrong workflow for context
-- ❌ Rush through reviews
-- ❌ Overuse silent mode
-- ❌ Abandon artifacts after workflow
-- ❌ Keep knowledge siloed
+- Skip approval gates
+- Ignore the notepad
+- Use wrong workflow for context
+- Rush through reviews
+- Overuse silent mode
+- Abandon artifacts after workflow
+- Keep knowledge siloed
 
 ---
 
@@ -605,4 +605,3 @@ Benefits: Shared context, knowledge preservation
 ---
 
 **Build better software through systematic AI collaboration.**
-

@@ -1,12 +1,12 @@
 # Getting Started with Lia
 
-> New to slow-code? See [What is Slow-Code?](README.md#-what-is-slow-code) in our README.
+> New to slow-code? See [What is Slow-Code?](README.md#what-is-slow-code) in our README.
 
 This guide will help you start using Lia's workflow specs in 5 minutes.
 
 ---
 
-## 🎯 What You'll Learn
+## What You'll Learn
 
 1. How to choose the right workflow
 2. How to load and execute a workflow
@@ -16,7 +16,7 @@ This guide will help you start using Lia's workflow specs in 5 minutes.
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
 ### Required
 - Access to an AI assistant (Claude, GPT-4, or compatible LLM)
@@ -30,7 +30,7 @@ This guide will help you start using Lia's workflow specs in 5 minutes.
 
 ---
 
-## 🚀 Quick Start (5 Minutes)
+## Quick Start (5 Minutes)
 
 ### Step 1: Choose Your First Workflow
 
@@ -122,11 +122,11 @@ Check the generated documentation:
         └── 3-tasks.md            # Your implementation checklist
 ```
 
-**Congratulations!** You've completed your first workflow. 🎉
+**Congratulations!** You've completed your first workflow.
 
 ---
 
-## 📚 Understanding Workflows
+## Understanding Workflows
 
 ### Core Concepts
 
@@ -138,9 +138,9 @@ Each workflow is divided into discrete phases:
 
 **2. Approval Gates**
 You must explicitly approve each phase:
-- ✅ "Yes", "approved", "looks good" → Proceed
-- 🔄 "Change X", "Add Y" → Iterate
-- ❌ "Go back", "restart" → Revise
+- YES: "Yes", "approved", "looks good" → Proceed
+- ITERATE: "Change X", "Add Y" → Revise
+- BACK: "Go back", "restart" → Return to previous phase
 
 **3. Artifacts**
 Every workflow creates structured markdown files:
@@ -177,7 +177,7 @@ Note: Assumptions recorded in notepad
 
 ---
 
-## 🎓 Workflow Selection Guide
+## Workflow Selection Guide
 
 ### When to Use Which Workflow
 
@@ -231,12 +231,14 @@ Note: Assumptions recorded in notepad
 
 ---
 
-## 💡 Tips for Success
+## Tips for Success
 
 ### 1. Be Specific in Feedback
 
-❌ Bad: "This doesn't look right"
-✅ Good: "Change the authentication approach from sessions to JWT tokens"
+```
+BAD:  "This doesn't look right"
+GOOD: "Change the authentication approach from sessions to JWT tokens"
+```
 
 ### 2. Don't Skip Phases
 
@@ -251,7 +253,7 @@ Skipping phases leads to confusion later.
 
 Add your own observations to 0-notepad.md:
 ```markdown
-## 📝 User Notes
+## User Notes
 - Need to check with security team about password requirements
 - Consider adding 2FA in version 2
 - OAuth integration might conflict with existing LDAP
@@ -298,7 +300,7 @@ Fork and adapt specs to your needs:
 
 ---
 
-## 🔧 Common Patterns
+## Common Patterns
 
 ### Pattern 1: The Learning Loop
 
@@ -344,7 +346,7 @@ Continuous improvement:
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### "The AI isn't following the workflow"
 
@@ -382,12 +384,12 @@ Ask for clarification before approving.
 
 ---
 
-## 📖 Next Steps
+## Next Steps
 
 ### Learn More
-- Read [Workflow Guide](workflow-guide.md) for detailed concepts
-- Review [Best Practices](best-practices.md) for patterns
-- Check [Examples](../examples/) for real-world usage
+- Read [Workflow Guide](docs/workflow-guide.md) for detailed concepts
+- Review [Best Practices](docs/best-practices.md) for patterns
+- Check [Examples](examples/) for real-world usage
 
 ### Try More Workflows
 - Start with **spec.toml** (you've done this!)
@@ -409,11 +411,10 @@ Ask for clarification before approving.
 
 ---
 
-## 🆘 Getting Help
+## Getting Help
 
 **Questions about workflows?**
 - Open a [Discussion](../../discussions)
-- Check [FAQ](docs/faq.md)
 - Join [Discord](https://discord.gg/lia-workflows)
 
 **Found a bug?**
@@ -430,7 +431,6 @@ Ask for clarification before approving.
 
 **Ready to become a systematic AI collaborator?**
 
-Start with [spec.toml](../specs/development/spec.toml) and transform your next feature idea into a complete specification.
+Start with [spec.toml](specs/development/spec.toml) and transform your next feature idea into a complete specification.
 
-Happy systematic development! 🚀
-
+Happy systematic development!

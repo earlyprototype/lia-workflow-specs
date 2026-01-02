@@ -21,17 +21,17 @@ Every item is evaluated against three questions:
 
 ## Current State Assessment
 
-### What We Have (✅)
+### What We Have
 
 | Category | Specs | Status |
 |----------|-------|--------|
-| **Development** | `dev.toml`, `spec.toml`, `test.toml` | ✅ Strong |
-| **Quality** | `review.toml`, `architecture.toml`, `optimize.toml`, `security.toml`, `constitution.toml` | ✅ Strong |
-| **Problem-Solving** | `troubleshoot.toml`, `investigate.toml`, `wtf.toml` | ✅ **Competitive advantage** |
-| **Research** | `research.toml`, `learn.toml`, `paper.toml`, `recon.toml` | ✅ Strong |
-| **Knowledge** | `docs.toml` | ✅ Adequate |
-| **Strategy** | `innovate.toml`, `integrate.toml`, `nexus.toml` | ✅ Adequate |
-| **Infrastructure** | MCP Server, base-workflow patterns | ✅ Functional |
+| **Development** | `dev.toml`, `spec.toml`, `test.toml` | Strong |
+| **Quality** | `review.toml`, `architecture.toml`, `optimize.toml`, `security.toml`, `constitution.toml` | Strong |
+| **Problem-Solving** | `troubleshoot.toml`, `investigate.toml`, `wtf.toml` | **Competitive advantage** |
+| **Research** | `research.toml`, `learn.toml`, `paper.toml`, `recon.toml` | Strong |
+| **Knowledge** | `docs.toml` | Adequate |
+| **Strategy** | `innovate.toml`, `integrate.toml`, `nexus.toml` | Adequate |
+| **Infrastructure** | MCP Server, base-workflow patterns | Functional |
 
 ### Recent Additions (from Research)
 
@@ -73,11 +73,11 @@ Add to `base-workflow.toml`:
 # BACKUP METHOD PHILOSOPHY
 # 
 # Valid backups are ALTERNATIVE REASONING PATHS, not retries:
-# ✅ "If documentation incomplete, inspect source code directly"
-# ✅ "If unit tests insufficient, try integration testing approach"
-# ✅ "If automated analysis fails, apply manual heuristics"
-# ❌ "Try again" (NOT a valid backup)
-# ❌ "Retry with same approach" (NOT a valid backup)
+# "If documentation incomplete, inspect source code directly"      [VALID]
+# "If unit tests insufficient, try integration testing approach"   [VALID]
+# "If automated analysis fails, apply manual heuristics"           [VALID]
+# "Try again"                                                       [INVALID]
+# "Retry with same approach"                                        [INVALID]
 #
 # When primary approach fails:
 # 1. Document why it failed
@@ -149,8 +149,8 @@ Add to `base-workflow.toml`:
 # ```
 #
 # Status based on OUTCOME, not INTENT.
-# "I wrote the fix" ≠ "It's fixed"
-# "I tested and it works" = "It's fixed"
+# "I wrote the fix" does not equal "It's fixed"
+# "I tested and it works" equals "It's fixed"
 ```
 
 **Acceptance Criteria**:

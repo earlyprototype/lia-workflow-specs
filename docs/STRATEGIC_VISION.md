@@ -73,17 +73,17 @@ While everyone else races to make AI faster, we help developers **understand**.
 
 ### What We're NOT
 
-- ❌ "Vibe coding" — Fast AI output without comprehension
-- ❌ "Autonomous execution engine"
-- ❌ "Move fast and break things"
-- ❌ "Black box code generation"
+- "Vibe coding" — Fast AI output without comprehension
+- "Autonomous execution engine"
+- "Move fast and break things"
+- "Black box code generation"
 
 ### What We ARE
 
-- ✅ **Slow-code** — Deliberate AI development
-- ✅ "AI that teaches you while you work"
-- ✅ "Glass box development"
-- ✅ "Understand deeply, build confidently"
+- **Slow-code** — Deliberate AI development
+- "AI that teaches you while you work"
+- "Glass box development"
+- "Understand deeply, build confidently"
 
 ---
 
@@ -148,13 +148,13 @@ While everyone else races to make AI faster, we help developers **understand**.
 
 | Pattern | Source | Status |
 |---------|--------|--------|
-| Constitutional governance | Spec Kit | ✅ `constitution.toml` |
-| Scope guards | Vibe Check | ✅ In `base-workflow.toml` |
-| Self-correction loops | Industry | ✅ In `base-workflow.toml` |
-| Context markers | Liatrio SDD | ✅ In `dev.toml`, `spec.toml` |
-| Proof artifacts | Liatrio SDD | ✅ In `dev.toml` |
-| Brownfield support | OpenSpec | ✅ In `spec.toml` |
-| Recon methodology | Internal | ✅ `recon.toml` |
+| Constitutional governance | Spec Kit | `constitution.toml` |
+| Scope guards | Vibe Check | In `base-workflow.toml` |
+| Self-correction loops | Industry | In `base-workflow.toml` |
+| Context markers | Liatrio SDD | In `dev.toml`, `spec.toml` |
+| Proof artifacts | Liatrio SDD | In `dev.toml` |
+| Brownfield support | OpenSpec | In `spec.toml` |
+| Recon methodology | Internal | `recon.toml` |
 
 ---
 

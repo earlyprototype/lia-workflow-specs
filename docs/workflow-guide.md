@@ -143,12 +143,12 @@ Critical constraints and requirements:
 Standard structure for knowledge capture:
 
 ```markdown
-## 🧠 Key Insights & Discoveries
-## 🔧 Technical Notes & Implementation Details
-## 💡 Ideas & Future Enhancements
-## 🔗 Cross-[Domain] Connections
-## 📝 User Notes
-## 🤖 LLM Observations
+## KEY INSIGHTS & DISCOVERIES
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS
+## IDEAS & FUTURE ENHANCEMENTS
+## CROSS-[DOMAIN] CONNECTIONS
+## USER NOTES
+## LLM OBSERVATIONS
 ```
 
 ---
@@ -222,7 +222,7 @@ AI: [Executes all phases]
     I've completed the full specification workflow for user 
     authentication. Here's what was created:
     
-    📁 .lia/specs/user-authentication/
+    .lia/specs/user-authentication/
     ├── 0-notepad.md (including assumptions made)
     ├── 1-requirements.md (8 requirements with EARS format)
     ├── 2-design.md (JWT-based architecture)
@@ -333,8 +333,8 @@ Approval gates ensure:
 - Challenge assumptions
 
 **Be specific:**
-- ❌ "This doesn't look right"
-- ✅ "Change authentication from sessions to JWT"
+- BAD: "This doesn't look right"
+- GOOD: "Change authentication from sessions to JWT"
 
 **Use the process:**
 - Early feedback is cheap
@@ -451,37 +451,37 @@ cat .lia/specs/user-auth/0-notepad.md
 
 Every workflow creates `0-notepad.md` as the first artifact. This captures:
 
-**🧠 Key Insights & Discoveries**
+**KEY INSIGHTS & DISCOVERIES**
 - Unexpected findings
 - Pattern recognition
 - "Aha!" moments
 - Decision rationale
 
-**🔧 Technical Notes**
+**TECHNICAL NOTES**
 - Implementation constraints
 - Performance considerations
 - Security implications
 - Integration challenges
 
-**💡 Ideas & Future Enhancements**
+**IDEAS & FUTURE ENHANCEMENTS**
 - Version 2 features
 - Optimization opportunities
 - Alternative approaches
 - Related innovations
 
-**🔗 Cross-System Connections**
+**CROSS-SYSTEM CONNECTIONS**
 - Dependencies
 - Integration points
 - Related systems
 - Architectural impacts
 
-**📝 User Notes**
+**USER NOTES**
 - User-added observations
 - Requirements from stakeholders
 - Constraints from other teams
 - Business context
 
-**🤖 LLM Observations**
+**LLM OBSERVATIONS**
 - Patterns in user decisions
 - Preferences detected
 - Suggestions based on history
@@ -586,9 +586,9 @@ base = "specs/quality/review.toml"
 
 [additional_phases]
 7.5 = "Medical Device Compliance"
-  • ISO 13485 requirements
-  • FDA 21 CFR Part 11
-  • Risk management per ISO 14971
+  # ISO 13485 requirements
+  # FDA 21 CFR Part 11
+  # Risk management per ISO 14971
 ```
 
 ---
@@ -613,14 +613,14 @@ Don't settle for first draft:
 ### 3. Use Silent Mode Appropriately
 
 Silent mode for:
-- ✅ Routine tasks
-- ✅ Batch operations
-- ✅ Well-understood domains
+- Routine tasks
+- Batch operations
+- Well-understood domains
 
 Not for:
-- ❌ Learning situations
-- ❌ High-stakes decisions
-- ❌ Ambiguous requirements
+- Learning situations
+- High-stakes decisions
+- Ambiguous requirements
 
 ### 4. Maintain Artifacts
 
@@ -684,4 +684,3 @@ update the design accordingly"
 ---
 
 **Master systematic AI collaboration and transform how you build software.**
-

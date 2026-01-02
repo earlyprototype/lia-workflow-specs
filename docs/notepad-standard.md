@@ -23,22 +23,22 @@ All workflow notepads should use this structure:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Technical considerations, constraints, implementation specifics -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Ideas, improvements, enhancement opportunities for later -->
 
-## 🔗 Cross-System Connections
+## CROSS-SYSTEM CONNECTIONS
 <!-- Links to other components, related work, architectural insights -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about patterns and strategies -->
 
 ---
@@ -51,12 +51,12 @@ All workflow notepads should use this structure:
 
 | Section | What to Capture | Examples |
 |---------|-----------------|----------|
-| **🧠 Key Insights** | Unexpected discoveries, "aha" moments, pattern recognition | "The auth module is tightly coupled to the user model - this explains the circular import" |
-| **🔧 Technical Notes** | Implementation details, constraints, gotchas | "Rate limiting needs Redis; SQLite won't scale" |
-| **💡 Ideas & Future** | Enhancement opportunities, "nice to have" items | "Could add caching here for 10x speedup" |
-| **🔗 Cross-System** | Connections to other parts of the system | "This relates to the logging module we reviewed last week" |
-| **📝 User Notes** | Reserved for human annotations | User adds context the AI might miss |
-| **🤖 LLM Observations** | AI meta-observations about the work | "This codebase follows repository pattern consistently" |
+| **KEY INSIGHTS** | Unexpected discoveries, "aha" moments, pattern recognition | "The auth module is tightly coupled to the user model - this explains the circular import" |
+| **TECHNICAL NOTES** | Implementation details, constraints, gotchas | "Rate limiting needs Redis; SQLite won't scale" |
+| **IDEAS & FUTURE** | Enhancement opportunities, "nice to have" items | "Could add caching here for 10x speedup" |
+| **CROSS-SYSTEM** | Connections to other parts of the system | "This relates to the logging module we reviewed last week" |
+| **USER NOTES** | Reserved for human annotations | User adds context the AI might miss |
+| **LLM OBSERVATIONS** | AI meta-observations about the work | "This codebase follows repository pattern consistently" |
 
 ---
 
@@ -78,17 +78,17 @@ Update the notepad when you encounter:
 Some workflows may add domain-specific sections **after** the standard 6:
 
 ```markdown
-## 🧠 Key Insights & Discoveries
-## 🔧 Technical Notes & Implementation Details  
-## 💡 Ideas & Future Enhancements
-## 🔗 Cross-System Connections
-## 📝 User Notes
-## 🤖 LLM Observations
+## KEY INSIGHTS & DISCOVERIES
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
+## IDEAS & FUTURE ENHANCEMENTS
+## CROSS-SYSTEM CONNECTIONS
+## USER NOTES
+## LLM OBSERVATIONS
 
 # --- Workflow-specific sections below ---
 
-## 🔒 Security Considerations        # security.toml specific
-## 📊 Performance Observations       # optimize.toml specific
+## SECURITY CONSIDERATIONS        # security.toml specific
+## PERFORMANCE OBSERVATIONS       # optimize.toml specific
 ```
 
 The standard 6 sections should be present; additional sections are optional.
@@ -97,14 +97,14 @@ The standard 6 sections should be present; additional sections are optional.
 
 The `nexus.toml` (Innovation Consulting Coordinator) uses 8 sections tailored for consulting engagements:
 
-- 🎯 Strategic Insights & Key Discoveries
-- 👥 Team Coordination Notes
-- 💼 Client Relationship Management
-- 🔧 Methodology & Process Notes
-- 💡 Innovation Opportunities & Ideas
-- 🔗 Cross-Project Connections
-- 📝 Client Feedback & Iterations
-- 🤖 Nexus Observations
+- STRATEGIC INSIGHTS & KEY DISCOVERIES
+- TEAM COORDINATION NOTES
+- CLIENT RELATIONSHIP MANAGEMENT
+- METHODOLOGY & PROCESS NOTES
+- INNOVATION OPPORTUNITIES & IDEAS
+- CROSS-PROJECT CONNECTIONS
+- CLIENT FEEDBACK & ITERATIONS
+- NEXUS OBSERVATIONS
 
 This is acceptable because nexus.toml coordinates multi-agent consulting teams with specific client management needs.
 
@@ -112,7 +112,7 @@ This is acceptable because nexus.toml coordinates multi-agent consulting teams w
 
 ## Anti-Patterns
 
-❌ **Don't do this:**
+**Don't do this:**
 
 - Empty notepad (defeats the purpose)
 - Duplicating main deliverables (notepad is for *incidental* insights)
@@ -120,7 +120,7 @@ This is acceptable because nexus.toml coordinates multi-agent consulting teams w
 - Skipping sections (at minimum write "Nothing notable")
 - Mixing concerns between sections
 
-✅ **Do this:**
+**Do this:**
 
 - Brief, scannable bullet points
 - Concrete observations with context
@@ -139,30 +139,30 @@ This is acceptable because nexus.toml coordinates multi-agent consulting teams w
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 - The existing session middleware already has hooks for auth - can reuse
 - Password hashing is inconsistent across the codebase (some bcrypt, some argon2)
 - Found undocumented rate limiting in the login route
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 - JWT tokens set to 24h expiry - matches existing API tokens
 - Refresh token rotation implemented to prevent token reuse
 - Had to patch passport.js for async/await compatibility
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 - [ ] Add "remember me" functionality (extend token to 30 days)
 - [ ] Consider OAuth2 social login for v2
 - [ ] Password strength meter on frontend would improve UX
 
-## 🔗 Cross-System Connections
+## CROSS-SYSTEM CONNECTIONS
 - Auth module connects to: User model, Session middleware, Email service
 - Related PR: #142 (added email verification)
 - See also: security.toml review from last week
 
-## 📝 User Notes
+## USER NOTES
 - Client prefers email-based 2FA over SMS (cost reasons)
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 - Codebase consistently uses middleware pattern for cross-cutting concerns
 - Error handling follows the AppError class pattern throughout
 - Test coverage expectation appears to be >80% based on existing tests

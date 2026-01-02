@@ -4,7 +4,7 @@
 
 Complete reference for all 18 workflow specs.
 
-**Quick Links**: [Problem-Solving](#-problem-solving--diagnosis--our-strength) | [Research](#-research--learning--educational-dna) | [Development](#️-development--implementation) | [Quality](#-code-quality--architecture)
+**Quick Links**: [Problem-Solving](#problem-solving--diagnosis--our-strength) | [Research](#research--learning--educational-dna) | [Development](#development--implementation) | [Quality](#code-quality--architecture)
 
 ---
 
@@ -357,7 +357,7 @@ All workflows support two distinct modes:
 - **Documentation:** Comprehensive documentation is created throughout each workflow
 
 **Advanced Patterns (from Research):**
-- **Context Markers:** `LIA-DEV-1️⃣` markers detect context rot in long sessions
+- **Context Markers:** `LIA-DEV-1` markers detect context rot in long sessions
 - **Proof Artifacts:** Evidence created BEFORE commits, not just outputs
 - **Scope Guards:** Mandatory simplicity checks before implementation
 - **Self-Correction Loops:** Verify and retry (max 3 attempts, then escalate)
@@ -370,7 +370,7 @@ All workflows support two distinct modes:
 
 ## Workflow Selection Guide
 
-### 🔧 Problem Solving & Diagnosis ← OUR STRENGTH
+### Problem Solving & Diagnosis — OUR STRENGTH
 
 | When You Need To... | Use This Spec |
 |---------------------|---------------|
@@ -380,7 +380,7 @@ All workflows support two distinct modes:
 
 *Most AI tools help you create. Lia helps you debug. This is our competitive advantage.*
 
-### 📚 Research & Learning ← EDUCATIONAL DNA
+### Research & Learning — EDUCATIONAL DNA
 
 | When You Need To... | Use This Spec |
 |---------------------|---------------|
@@ -389,7 +389,7 @@ All workflows support two distinct modes:
 | Analyse academic papers | `paper` |
 | Scout a competitive landscape | `recon` |
 
-### 🛠️ Development & Implementation
+### Development & Implementation
 
 | When You Need To... | Use This Spec |
 |---------------------|---------------|
@@ -398,7 +398,7 @@ All workflows support two distinct modes:
 | Design testing strategies | `test` |
 | Build APIs or integrate systems | `integrate` |
 
-### ✅ Code Quality & Architecture
+### Code Quality & Architecture
 
 | When You Need To... | Use This Spec |
 |---------------------|---------------|
@@ -408,7 +408,7 @@ All workflows support two distinct modes:
 | Assess security | `security` |
 | Improve performance | `optimize` |
 
-### 📝 Knowledge & Strategy
+### Knowledge & Strategy
 
 | When You Need To... | Use This Spec |
 |---------------------|---------------|
@@ -433,4 +433,3 @@ To use any command, invoke it through the Lia CLI system with your specific task
 ---
 
 *Document generated from command specifications in .lia/commands/*
-

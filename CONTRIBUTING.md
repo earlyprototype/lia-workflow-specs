@@ -4,32 +4,32 @@ Thank you for your interest in contributing! This document provides guidelines a
 
 ---
 
-## 🎯 Ways to Contribute
+## Ways to Contribute
 
-### 1. **New Workflow Specs**
+### 1. New Workflow Specs
 Design and submit new systematic workflows for different domains or use cases.
 
-### 2. **Improve Existing Specs**
+### 2. Improve Existing Specs
 Enhance phases, constraints, templates, or documentation in current specs.
 
-### 3. **Examples & Case Studies**
+### 3. Examples & Case Studies
 Share real-world usage examples, before/after scenarios, and outcomes.
 
-### 4. **Documentation**
+### 4. Documentation
 Improve guides, add tutorials, clarify concepts, or fix typos.
 
-### 5. **Tools & Utilities**
+### 5. Tools & Utilities
 Build validators, visualizers, generators, or integrations.
 
-### 6. **Bug Reports**
+### 6. Bug Reports
 Report issues with specs, documentation, or tooling.
 
-### 7. **Community Support**
+### 7. Community Support
 Help others in discussions, answer questions, share experiences.
 
 ---
 
-## 📋 Before You Start
+## Before You Start
 
 ### Read These First
 - [README.md](README.md) - Project overview and philosophy
@@ -43,7 +43,7 @@ Help others in discussions, answer questions, share experiences.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Fork and Clone
 ```bash
@@ -96,7 +96,7 @@ git push origin feature/new-data-analysis-spec
 
 ---
 
-## ✍️ Spec Design Guidelines
+## Spec Design Guidelines
 
 ### Spec Structure Requirements
 
@@ -155,8 +155,8 @@ prompt = """
 
 **1. Clear Objectives**
 Each phase must have a single, clear purpose:
-- ✅ "Evidence Analysis and Claims Evaluation"
-- ❌ "Do some analysis and stuff"
+- GOOD: "Evidence Analysis and Claims Evaluation"
+- BAD: "Do some analysis and stuff"
 
 **2. Explicit Constraints**
 Use precise requirement language:
@@ -195,12 +195,12 @@ Define the philosophical approach:
 
 **Notepad Structure:**
 ```markdown
-## 🧠 Key Insights & Discoveries
-## 🔧 Technical Notes & Implementation Details
-## 💡 Ideas & Future Enhancements
-## 🔗 Cross-[Domain] Connections
-## 📝 User Notes
-## 🤖 LLM Observations
+## KEY INSIGHTS & DISCOVERIES
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS
+## IDEAS & FUTURE ENHANCEMENTS
+## CROSS-[DOMAIN] CONNECTIONS
+## USER NOTES
+## LLM OBSERVATIONS
 ```
 
 **Approval Pattern:**
@@ -216,7 +216,7 @@ Define the philosophical approach:
 
 ### Anti-Patterns to Avoid
 
-❌ **Don't:**
+**Don't:**
 - Skip approval gates
 - Combine multiple phases into one
 - Make assumptions without recording them (in Silent Mode)
@@ -225,7 +225,7 @@ Define the philosophical approach:
 - Forget the workflow diagram
 - Omit the 0-notepad template
 
-✅ **Do:**
+**Do:**
 - Create discrete, focused phases
 - Require explicit user approval
 - Document all assumptions
@@ -235,7 +235,7 @@ Define the philosophical approach:
 
 ---
 
-## 📝 Documentation Guidelines
+## Documentation Guidelines
 
 ### Markdown Standards
 - Use ATX-style headers (`#` not `====`)
@@ -260,7 +260,7 @@ Define the philosophical approach:
 
 ---
 
-## 🔧 Code Guidelines
+## Code Guidelines
 
 ### Python (for tools)
 ```python
@@ -304,7 +304,7 @@ required_fields = [
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Spec Validation
 All specs must pass validation:
@@ -313,29 +313,29 @@ python tools/spec-validator.py specs/your-category/your-spec.toml
 ```
 
 Checks:
-- ✅ Valid TOML syntax
-- ✅ Required sections present
-- ✅ Workflow diagram exists
-- ✅ Phase constraints properly formatted
-- ✅ Notepad template included
+- Valid TOML syntax
+- Required sections present
+- Workflow diagram exists
+- Phase constraints properly formatted
+- Notepad template included
 
 ### Example Testing
 Examples should be:
-- ✅ Reproducible
-- ✅ Well-documented
-- ✅ Representative of real usage
-- ✅ Include expected outputs
+- Reproducible
+- Well-documented
+- Representative of real usage
+- Include expected outputs
 
 ### Documentation Testing
 Documentation should be:
-- ✅ Accurate and up-to-date
-- ✅ Free of broken links
-- ✅ Clear and understandable
-- ✅ Properly formatted
+- Accurate and up-to-date
+- Free of broken links
+- Clear and understandable
+- Properly formatted
 
 ---
 
-## 📬 Pull Request Process
+## Pull Request Process
 
 ### 1. Use the Template
 Our PR template will guide you through:
@@ -379,7 +379,7 @@ Types:
 
 ---
 
-## 🎨 Style Guide
+## Style Guide
 
 ### Voice and Tone
 - **Professional but approachable** - Avoid overly casual or overly formal
@@ -404,7 +404,7 @@ Use consistent terms:
 
 ---
 
-## 🐛 Bug Reports
+## Bug Reports
 
 ### Before Reporting
 1. Check [existing issues](../../issues)
@@ -441,7 +441,7 @@ If applicable, add logs or screenshots.
 
 ---
 
-## 💡 Feature Requests
+## Feature Requests
 
 ### Before Requesting
 1. Check [existing requests](../../issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement)
@@ -469,7 +469,7 @@ Examples, mockups, related projects, etc.
 
 ---
 
-## 🤝 Code of Conduct
+## Code of Conduct
 
 ### Our Pledge
 We are committed to making participation in this project a harassment-free experience for everyone, regardless of level of experience, gender, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, ethnicity, age, religion, or nationality.
@@ -498,7 +498,7 @@ Report violations to [conduct@lia-workflows.org](mailto:conduct@lia-workflows.or
 
 ---
 
-## 📚 Resources
+## Resources
 
 ### Learning
 - [Workflow Design Patterns](docs/workflow-patterns.md)
@@ -513,20 +513,18 @@ Report violations to [conduct@lia-workflows.org](mailto:conduct@lia-workflows.or
 ### Community
 - [Discussions](../../discussions)
 - [Discord](https://discord.gg/lia-workflows)
-- [Blog](https://blog.lia-workflows.org)
 
 ---
 
-## 🙏 Recognition
+## Recognition
 
 Contributors are recognized in:
 - README.md Contributors section
 - CHANGELOG.md for significant contributions
 - Annual contributor spotlight blog posts
 
-Thank you for making Lia Workflow Specs better! 🎉
+Thank you for making Lia Workflow Specs better!
 
 ---
 
 **Questions?** Open a [discussion](../../discussions) or reach out on [Discord](https://discord.gg/lia-workflows).
-

@@ -10,14 +10,14 @@ The "composition" features described below are purely **optional suggestions** -
 
 ## What Composition Actually Means
 
-### ❌ What It Does NOT Mean
+### What It Does NOT Mean
 
 - Specs do NOT have mandatory prerequisites
 - You are NOT required to run specs in any order
 - No spec "needs" another spec to function
 - There are no blocking dependencies
 
-### ✅ What It DOES Mean
+### What It DOES Mean
 
 - **Suggestions**: "After finishing X, you might find Y useful"
 - **Common patterns**: "Users often do X → Y → Z for this type of task"
@@ -145,10 +145,10 @@ The MCP server provides tools that reference these compositions:
 
 | Aspect | Reality |
 |--------|---------|
-| **Spec independence** | ✅ All specs work standalone |
-| **Running order** | ✅ Any order you choose |
-| **Prerequisites** | ❌ None required |
-| **Chains** | 📋 Optional templates |
-| **Triggers** | 💡 Suggestions only |
+| **Spec independence** | All specs work standalone |
+| **Running order** | Any order you choose |
+| **Prerequisites** | None required |
+| **Chains** | Optional templates |
+| **Triggers** | Suggestions only |
 
 **Bottom line**: Pick any spec, run it with your task. That's it. Everything else is optional guidance.
