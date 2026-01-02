@@ -1,5 +1,21 @@
 # Strategic Recommendations for Lia Workflow Specs
-*Analysis based on AI-assisted coding trends (December 2025)*
+*Analysis based on AI-assisted coding trends (January 2026)*  
+*Updated with web research from GitHub API*
+
+---
+
+## Market Context (NEW)
+
+**Key Competitors Identified:**
+| Project | Stars | Key Feature |
+|---------|-------|-------------|
+| **GitHub Spec Kit** | 59,000+ | Industry-standard spec-driven development |
+| **Claude-Flow** | 11,000+ | Hive-mind agent orchestration |
+| **APM** | 1,600+ | Context retention and session handoff |
+| **Vibe Check MCP** | 440+ | Prevents over-engineering (+27% success) |
+| **OpenAgents** | 572 | Plan-first with approval gates |
+
+**Critical Gap Discovered**: GitHub Spec Kit uses a "constitution" pattern to set project-wide standards. We now have `constitution.toml` to address this.
 
 ---
 
@@ -248,21 +264,45 @@ Phase 5: Documentation & Deployment
 
 ## Recommended Next Steps
 
-1. **Immediate** (this PR): 
-   - Add context handoff template to base-workflow.toml
-   - Document the 6-section notepad standard
+### ✅ Completed (This PR)
+- [x] Add context handoff template to base-workflow.toml
+- [x] Document the 6-section notepad standard (`docs/notepad-standard.md`)
+- [x] Create `constitution.toml` spec (Spec Kit pattern)
+- [x] Add scope guard pattern to base-workflow.toml (Vibe Check pattern)
+- [x] Add self-correction loop to base-workflow.toml
+- [x] Add confidence signals pattern
+- [x] Add abort conditions
 
-2. **Short-term** (next sprint):
-   - Create `mcp.toml` spec
-   - Create `migrate.toml` spec  
-   - Add self-correction checkpoints to top 5 used specs
+### Short-term (Next Sprint)
+- [ ] Create `mcp.toml` spec
+- [ ] Create `migrate.toml` spec  
+- [ ] Apply new patterns (scope guard, self-correction) to existing specs
+- [ ] Test constitution workflow end-to-end
 
-3. **Medium-term** (next month):
-   - Implement adaptive phase execution
-   - Create `refactor.toml` and `debug.toml`
-   - Build spec selection decision tree
+### Medium-term (Next Month)
+- [ ] Implement adaptive phase execution
+- [ ] Create `refactor.toml` and `debug.toml`
+- [ ] Build spec selection decision tree
+- [ ] Consider progress tracking (à la Spec Kitty dashboard)
+
+### Positioning vs Competition
+- **Against Spec Kit**: We emphasise transparency and learning; they emphasise autonomous execution
+- **Against Claude-Flow**: We're tool-agnostic; they're Claude-specific
+- **Against APM**: Similar context management; we have richer workflow structure
 
 ---
 
-*Analysis performed: January 2026*
+## Research Sources
+
+- GitHub Spec Kit (59k stars): https://github.com/github/spec-kit
+- Claude-Flow (11k stars): https://github.com/ruvnet/claude-flow
+- APM (1.6k stars): https://github.com/sdi2200262/agentic-project-management
+- Vibe Check MCP (440 stars): https://github.com/PV-Bhat/vibe-check-mcp-server
+- OpenAgents (572 stars): https://github.com/darrenhinde/OpenAgents
+- Spec Kitty (282 stars): https://github.com/Priivacy-ai/spec-kitty
+
+---
+
+*Analysis performed: January 2026*  
+*Updated with live web research via GitHub API*  
 *Based on: AI-assisted coding trends, MCP ecosystem growth, and observed workflow patterns*

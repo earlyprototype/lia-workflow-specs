@@ -1,5 +1,19 @@
 # Feature Impact Matrix
-**Quick Reference for Prioritisation**
+**Quick Reference for Prioritisation**  
+*Updated with web research - January 2026*
+
+---
+
+## Market Context
+
+| Project | Stars | Category | Key Differentiator |
+|---------|-------|----------|-------------------|
+| **GitHub Spec Kit** | 59,000+ | Spec-Driven Dev | Industry standard, autonomous execution |
+| **Claude-Flow** | 11,000+ | Agent Orchestration | Hive-mind swarms, 100 MCP tools |
+| **APM** | 1,600+ | Context Management | Solves context window limits |
+| **OpenAgents** | 572 | Plan-First Dev | Approval-based execution |
+| **Vibe Check MCP** | 440+ | Agent Oversight | Prevents over-engineering |
+| **Lia Specs** | New | Guided Workflows | Transparent, educational, MCP-native |
 
 ---
 
@@ -13,20 +27,21 @@
             │                │                │
             │  ★ DO FIRST    │  ⚡ PLAN       │
      High   │                │                │
-            │ 1. Self-correct│ • Visual editor│
-       I    │ 2. Context mgmt│ • Multi-agent  │
-       M    │ 3. Abort conds │ • State system │
-       P    │ 4. Confidence  │ • Analytics    │
-       A    │ 5. Phase skip  │                │
-       C    │                │                │
-       T    ├────────────────┼────────────────┤
+            │ 1. Constitution│ • Visual editor│
+       I    │ 2. Self-correct│ • Multi-agent  │
+       M    │ 3. Scope guard │ • State system │
+       P    │ 4. Context mgmt│ • Analytics    │
+       A    │ 5. Abort conds │ • Dashboard    │
+       C    │ 6. Confidence  │                │
+       T    │                │                │
+            ├────────────────┼────────────────┤
             │                │                │
      Low    │  ✓ BACKLOG     │  ✗ DON'T DO   │
             │                │                │
             │ • More examples│ • Custom DSL   │
             │ • CLI tools    │ • Marketplace  │
             │ • Schema valid │ • Cloud exec   │
-            │                │ • NL creation  │
+            │ • More agents  │ • NL creation  │
             │                │                │
             └────────────────┴────────────────┘
 ```
@@ -37,26 +52,27 @@
 
 ### 🔴 P0 - Do Now (High Impact, Low Effort)
 
-| # | Feature | Impact | Effort | Notes |
-|---|---------|--------|--------|-------|
-| 1 | **Self-correction loops** | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️ | Add verify/retry to each phase |
-| 2 | **Context summarisation** | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️ | Checkpoint every 2-3 phases |
-| 3 | **Abort conditions** | ⬆️⬆️⬆️⬆️ | ⬇️ | When to stop and escalate |
-| 4 | **Confidence signals** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️ | 🟢🟡🔴 uncertainty rating |
-| 5 | **Dynamic phase skip** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️ | Conditional phase execution |
+| # | Feature | Impact | Effort | Market Driver |
+|---|---------|--------|--------|---------------|
+| 1 | **Constitution spec** | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️ | Spec Kit has it, we don't |
+| 2 | **Self-correction loops** | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️ | Industry standard (Claude-Flow) |
+| 3 | **Scope guard pattern** | ⬆️⬆️⬆️⬆️⬆️ | ⬇️ | Vibe Check proves +27% success |
+| 4 | **Context checkpoints** | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️ | APM's core innovation |
+| 5 | **Abort conditions** | ⬆️⬆️⬆️⬆️ | ⬇️ | Safety standard |
+| 6 | **Confidence signals** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️ | OpenAgents validation |
 
-**Estimated total effort**: 2-3 days  
-**Impact**: Brings specs to market parity
+**Estimated total effort**: ~13 hours  
+**Impact**: Brings specs to market parity + differentiation
 
 ---
 
 ### 🟡 P1 - Near Term (High Impact, Medium Effort)
 
-| # | Feature | Impact | Effort | Notes |
-|---|---------|--------|--------|-------|
-| 6 | **MCP client guidance** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️ | How to use specs via MCP |
-| 7 | **Tool capability matching** | ⬆️⬆️⬆️ | ⬇️⬇️⬇️ | Declare required tools |
-| 8 | **State persistence spec** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️ | Resume interrupted workflows |
+| # | Feature | Impact | Effort | Market Driver |
+|---|---------|--------|--------|---------------|
+| 7 | **Dynamic phase skip** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️ | Flexibility for experts |
+| 8 | **Tool capability matching** | ⬆️⬆️⬆️ | ⬇️⬇️⬇️ | Spec Kit influence |
+| 9 | **State persistence spec** | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️ | APM session handoff |
 
 **Estimated total effort**: 1-2 weeks
 
@@ -64,11 +80,11 @@
 
 ### 🟢 P2 - Future (High Impact, High Effort)
 
-| # | Feature | Impact | Effort | Notes |
-|---|---------|--------|--------|-------|
-| 9 | Visual workflow editor | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️⬇️ | GUI for workflow design |
-| 10 | Multi-agent orchestration | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️⬇️ | Coordinate specialist agents |
-| 11 | Learning from outcomes | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️⬇️ | Improve based on results |
+| # | Feature | Impact | Effort | Market Driver |
+|---|---------|--------|--------|---------------|
+| 10 | Visual workflow editor | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️⬇️ | Spec Kitty dashboard |
+| 11 | Multi-agent orchestration | ⬆️⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️⬇️ | Claude-Flow standard |
+| 12 | Learning from outcomes | ⬆️⬆️⬆️⬆️ | ⬇️⬇️⬇️⬇️⬇️ | AgentDB integration |
 
 **Estimated total effort**: 1-3 months each
 
@@ -86,38 +102,90 @@
 
 ---
 
-## Competitive Gap Analysis
+## Competitive Gap Analysis (Updated)
 
-| Feature | Market Has | Lia Has | Gap |
-|---------|------------|---------|-----|
-| Structured workflows | ⚪ Few | ✅ Strong | **Advantage** |
-| Self-correction | ✅ Standard | ❌ Missing | **Critical gap** |
-| Context management | ✅ Standard | ⚪ Partial | **Gap** |
-| Progress checkpoints | ✅ Standard | ⚪ New | Closing |
-| MCP support | ⚪ Growing | ✅ Built | **Advantage** |
-| Transparency | ⚪ Rare | ✅ Strong | **Advantage** |
-| Zero-config | ⚪ Rare | ✅ Strong | **Advantage** |
-| Phase flexibility | ✅ Standard | ❌ Missing | **Gap** |
+| Feature | Spec Kit | Claude-Flow | APM | Lia Has | Gap |
+|---------|----------|-------------|-----|---------|-----|
+| Constitution/Standards | ✅ | ⚪ | ⚪ | ❌ | **Critical gap** |
+| Structured workflows | ✅ | ⚪ | ✅ | ✅ | **Advantage** |
+| Self-correction | ⚪ | ✅ | ⚪ | ❌ | **Critical gap** |
+| Scope guard | ❌ | ❌ | ❌ | ❌ | **Opportunity** |
+| Context management | ⚪ | ✅ | ✅ | ✅ New | Closing |
+| Progress checkpoints | ⚪ | ✅ | ✅ | ✅ New | Closing |
+| MCP support | ❌ | ✅ | ❌ | ✅ | **Advantage** |
+| Transparency | ⚪ | ❌ | ✅ | ✅ | **Advantage** |
+| Zero-config | ⚪ | ⚪ | ✅ | ✅ | **Advantage** |
+| Tool agnostic | ⚪ | ❌ Claude | ✅ | ✅ | **Advantage** |
 
 ---
 
-## Implementation Order
+## Lia Positioning vs Market Leaders
+
+| Spec Kit | Lia Specs |
+|----------|-----------|
+| Specs execute autonomously | **Guided with checkpoints** |
+| Implementation focus | **Understanding focus** |
+| Black box execution | **Transparent process** |
+| Complex CLI tooling | **Zero-config start** |
+| GitHub ecosystem | **Tool agnostic** |
+
+**Tagline**: "Lia teaches you to fish. Spec Kit fishes for you."
+
+---
+
+## Implementation Order (Revised)
 
 ```
-Week 1:  [P0-1] Self-correction  →  [P0-2] Context checkpoints
+Week 1:  [P0-1] Constitution spec  →  [P0-2] Self-correction
          ↓
-Week 1:  [P0-3] Abort conditions →  [P0-4] Confidence signals  
+Week 1:  [P0-3] Scope guard       →  [P0-4] Context checkpoints  
          ↓
-Week 2:  [P0-5] Dynamic phases   →  [P1-6] MCP client docs
+Week 2:  [P0-5] Abort conditions  →  [P0-6] Confidence signals
          ↓
-Week 3+: [P1-7] Tool capabilities → [P1-8] State persistence
+Week 2:  [P1-7] Dynamic phases    →  [P1-8] Tool capabilities
 ```
 
 ---
 
 ## Must-Have Patterns (Copy-Paste Ready)
 
-### Self-Correction Pattern
+### 1. Constitution Pattern (NEW - from Spec Kit)
+```toml
+# constitution.toml - Project-wide standards
+[project]
+name = "Project Name"
+type = "web-app|library|cli|api"
+
+[standards.code]
+style = "Follow existing patterns in codebase"
+testing = "New code requires tests"
+documentation = "Public APIs must be documented"
+
+[standards.process]
+review_required = true
+security_check = "Before external integrations"
+
+[standards.quality]
+complexity = "Functions under 50 lines"
+dependencies = "Prefer stdlib, justify external"
+```
+
+### 2. Scope Guard Pattern (NEW - from Vibe Check)
+```markdown
+### Scope Check
+**Before implementing, verify:**
+- [ ] This is the simplest solution
+- [ ] No unnecessary abstractions
+- [ ] No premature optimisation  
+- [ ] No speculative features
+- [ ] A junior dev could understand this
+
+**Assessment**: 🟢 Minimal | 🟡 Reasonable | 🔴 Over-engineered
+
+**If 🔴**: Simplify before proceeding. Document what was removed.
+```
+
+### 3. Self-Correction Pattern
 ```markdown
 ### Verification Checkpoint
 Before proceeding:
@@ -132,7 +200,7 @@ Before proceeding:
 4. After 3 failures → escalate to user
 ```
 
-### Context Summary Pattern
+### 4. Context Summary Pattern
 ```markdown
 ### Context Checkpoint
 **Progress**: Phase {N} of {M} complete ({X}%)
@@ -150,7 +218,7 @@ Before proceeding:
 **Remaining**: {Phases left}
 ```
 
-### Abort Conditions Pattern
+### 5. Abort Conditions Pattern
 ```markdown
 ### When to Stop & Escalate
 Immediately pause and consult user if:
@@ -162,7 +230,7 @@ Immediately pause and consult user if:
 - 🔴 Conflicting requirements discovered
 ```
 
-### Confidence Signal Pattern
+### 6. Confidence Signal Pattern
 ```markdown
 ### Confidence Assessment
 **Phase confidence**: 🟢 High | 🟡 Medium | 🔴 Low
@@ -178,16 +246,27 @@ Immediately pause and consult user if:
 
 ## Summary
 
-**Do these 5 things to close critical gaps:**
+**Do these 6 things to close critical gaps:**
 
-| Priority | Feature | Effort | 
-|----------|---------|--------|
-| 1 | Self-correction loops | ~4 hours |
-| 2 | Context checkpoints | ~2 hours |
-| 3 | Abort conditions | ~1 hour |
-| 4 | Confidence signals | ~2 hours |
-| 5 | Dynamic phase skipping | ~4 hours |
+| Priority | Feature | Effort | Source |
+|----------|---------|--------|--------|
+| 1 | Constitution spec | ~3 hours | Spec Kit |
+| 2 | Self-correction loops | ~4 hours | Claude-Flow |
+| 3 | Scope guard pattern | ~2 hours | Vibe Check |
+| 4 | Context checkpoints | ~2 hours | APM |
+| 5 | Abort conditions | ~1 hour | Industry |
+| 6 | Confidence signals | ~2 hours | OpenAgents |
 
-**Total: ~13 hours to reach market parity**
+**Total: ~14 hours to reach market parity + unique advantages**
 
 Everything else is P1+ and should wait until these are done.
+
+---
+
+## Research Sources
+
+- GitHub Spec Kit (59k stars): https://github.com/github/spec-kit
+- Claude-Flow (11k stars): https://github.com/ruvnet/claude-flow
+- APM (1.6k stars): https://github.com/sdi2200262/agentic-project-management
+- Vibe Check MCP (440 stars): https://github.com/PV-Bhat/vibe-check-mcp-server
+- OpenAgents (572 stars): https://github.com/darrenhinde/OpenAgents

@@ -1,415 +1,372 @@
 # AI-Assisted Coding Workflow Landscape Analysis
-**Research Date**: December 2025  
+**Research Date**: January 2026 (Updated with web research)  
 **Purpose**: Inform Lia Workflow Specs strategic direction
 
 ---
 
 ## Executive Summary
 
-The AI-assisted coding space has matured significantly in 2025. Key shifts:
+**Critical Finding**: GitHub's **Spec Kit** (59,000+ stars) has become the dominant spec-driven development toolkit. Our approach aligns well but we need to differentiate.
 
-1. **Agentic workflows are mainstream** - Not just autocomplete, but autonomous task execution
-2. **MCP is winning** - Anthropic's Model Context Protocol becoming de facto standard
-3. **Multi-agent collaboration** - Specialized agents working together
-4. **Context is king** - Whoever manages context best wins
-5. **Structured prompting** - Ad-hoc prompts → systematic workflows
-
-**Strategic implication for Lia**: Our workflow specs are well-positioned but need updates to match agentic patterns.
-
----
-
-## Major Projects Analysis
-
-### Tier 1: Market Leaders
-
-| Project | Type | Key Innovation | Weakness |
-|---------|------|----------------|----------|
-| **Cursor** | IDE | Background agents, .cursorrules, composer | Closed ecosystem |
-| **Claude (Anthropic)** | Model + MCP | Computer use, artifacts, projects | No local execution |
-| **GitHub Copilot Workspace** | Cloud IDE | Issue → PR pipeline | GitHub lock-in |
-| **Windsurf (Codeium)** | IDE | Cascade (agentic), flows | Newer, less mature |
-
-### Tier 2: Autonomous Agents
-
-| Project | Type | Key Innovation | Weakness |
-|---------|------|----------------|----------|
-| **Devin** | Autonomous agent | Full SDLC autonomy | Expensive, black box |
-| **OpenHands** | Open source agent | Devin alternative, transparent | Complex setup |
-| **SWE-agent** | Research agent | Benchmark performance | Research-focused |
-| **Aider** | Terminal agent | Git-native, multi-file | CLI only |
-
-### Tier 3: Frameworks & Orchestration
-
-| Project | Type | Key Innovation | Weakness |
-|---------|------|----------------|----------|
-| **LangGraph** | Agent framework | Stateful multi-agent graphs | Complexity |
-| **CrewAI** | Multi-agent | Role-based agent teams | Overhead for simple tasks |
-| **AutoGen** | Microsoft agent | Multi-agent conversations | Enterprise focus |
-| **Semantic Kernel** | Microsoft SDK | Planner patterns | .NET/Python only |
-
-### Tier 4: Standards & Protocols
-
-| Project | Type | Key Innovation | Weakness |
-|---------|------|----------------|----------|
-| **MCP** | Protocol | Universal tool integration | Still maturing |
-| **OpenAI Functions** | API standard | Structured tool calling | OpenAI-specific |
-| **Anthropic Tool Use** | API standard | Robust tool execution | Anthropic-specific |
+Key market shifts:
+1. **Spec-Driven Development is mainstream** - GitHub legitimized it with Spec Kit
+2. **Multi-agent orchestration** - Claude-Flow, Spec Kitty lead with swarm intelligence
+3. **Context management is critical** - APM specifically addresses context window limits
+4. **Agent oversight matters** - Vibe Check MCP prevents over-engineering
+5. **Plan-first execution** - OpenAgents, Spec Kit establish planning before coding
 
 ---
 
-## Feature Comparison Matrix
+## Tier 0: Market Dominant
 
-### Core Capabilities
+### GitHub Spec Kit ⭐ 59,000+ stars
+**The benchmark for spec-driven development**
 
-| Feature | Cursor | Claude | Copilot WS | Devin | Aider | Lia Specs |
-|---------|--------|--------|------------|-------|-------|-----------|
-| Multi-file editing | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ N/A |
-| Background execution | ✅ | ❌ | ✅ | ✅ | ❌ | ⚪ N/A |
-| Git integration | ✅ | ❌ | ✅ | ✅ | ✅ | ⚪ N/A |
-| Custom rules/prompts | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ |
-| Structured workflows | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ |
-| Phase-based execution | ❌ | ❌ | ⚪ | ✅ | ❌ | ✅ |
-| Context persistence | ✅ | ✅ | ✅ | ✅ | ⚪ | ⚪ Partial |
-| Self-correction loops | ⚪ | ⚪ | ⚪ | ✅ | ✅ | ❌ |
-| Progress checkpoints | ❌ | ❌ | ✅ | ✅ | ❌ | ⚪ New |
-| MCP support | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ New |
+| Aspect | Details |
+|--------|---------|
+| **Philosophy** | Specifications are executable, not scaffolding |
+| **Workflow** | constitution → specify → plan → tasks → implement |
+| **Commands** | `/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, `/speckit.implement` |
+| **Agents** | Qoder CLI, Amazon Q, Amp, Auggie CLI, Claude Code, Cursor |
+| **Key Innovation** | "Flip the script" - specs generate implementations |
 
-Legend: ✅ Full | ⚪ Partial | ❌ None
-
-### Workflow Orchestration
-
-| Feature | LangGraph | CrewAI | AutoGen | Lia Specs |
-|---------|-----------|--------|---------|-----------|
-| Visual workflow design | ✅ | ❌ | ❌ | ❌ |
-| Role-based agents | ⚪ | ✅ | ✅ | ⚪ |
-| State management | ✅ | ⚪ | ⚪ | ❌ |
-| Human-in-loop | ✅ | ✅ | ✅ | ✅ |
-| Declarative specs | ❌ | ❌ | ❌ | ✅ |
-| Tool-agnostic | ⚪ | ⚪ | ❌ | ✅ |
-| Zero-config start | ❌ | ❌ | ❌ | ✅ |
-
----
-
-## Emerging Patterns (Dec 2025)
-
-### 1. **Plan-Execute-Verify Loop**
-Most successful agents follow:
+**Spec Kit Workflow**:
 ```
-Plan → Execute → Verify → (Correct if needed) → Continue
-```
-**Gap in Lia**: No explicit verify/correct steps in workflow phases.
-
-### 2. **Context Windowing**
-Techniques for managing limited context:
-- Summarization checkpoints
-- Hierarchical memory
-- RAG over conversation history
-
-**Gap in Lia**: No guidance on context management in long workflows.
-
-### 3. **Agentic Handoffs**
-Patterns for transferring between specialized agents:
-- Explicit handoff protocols
-- Shared memory/state
-- Task decomposition
-
-**Gap in Lia**: Composition exists but handoff is informal.
-
-### 4. **Structured Reasoning**
-Chain-of-thought, tree-of-thought, self-consistency:
-- Explicit reasoning traces
-- Multiple solution paths
-- Confidence scoring
-
-**Gap in Lia**: Reasoning embedded in prompts but not structured.
-
-### 5. **Tool Discovery & Selection**
-Dynamic tool loading based on task:
-- MCP resource discovery
-- Capability matching
-- Fallback chains
-
-**Gap in Lia**: Static tool assumptions per workflow.
-
----
-
-## Competitor Deep Dives
-
-### Cursor's .cursorrules
-
-**What they do well:**
-- Project-level rules in `.cursorrules` file
-- Automatic context from codebase
-- Background agent execution
-- Composer for multi-file edits
-
-**Key insight**: Rules are simple, declarative, and co-located with code.
-
-```
-// Example .cursorrules
-You are an expert in TypeScript and React.
-Always use functional components.
-Prefer named exports.
-Use TailwindCSS for styling.
+1. /speckit.constitution  → Project principles & guidelines
+2. /speckit.specify       → What to build (product focus)
+3. /speckit.plan          → Technical implementation plan
+4. /speckit.tasks         → Actionable task breakdown
+5. /speckit.implement     → Execute all tasks
 ```
 
-**Lia comparison**: Our specs are more comprehensive but higher friction.
+**Implications for Lia**:
+- Our `spec.toml` aligns with `/speckit.specify` + `/speckit.plan`
+- We need explicit "constitution" equivalent (project standards)
+- Our execution is more guided; Spec Kit is more autonomous
 
 ---
 
-### Devin's Workflow Pattern
+## Tier 1: Major Projects (1k+ stars)
 
-**What they do well:**
-- Full autonomy from issue to PR
-- Browser + terminal + editor integration
-- Persistent memory across sessions
-- Self-debugging loops
+### Claude-Flow ⭐ 11,000+ stars
+**Enterprise agent orchestration platform**
 
-**Key insight**: Devin doesn't expose "workflows" - it infers them from goals.
+| Feature | Description |
+|---------|-------------|
+| **Hive-Mind** | Queen-led AI coordination with worker agents |
+| **25 Skills** | Natural language-activated development skills |
+| **100 MCP Tools** | Swarm orchestration and automation |
+| **AgentDB** | 96x-164x faster vector search for memory |
+| **Dynamic Agents** | Self-organizing with fault tolerance |
 
-**Lia comparison**: We're more transparent (good for learning) but require more guidance.
-
----
-
-### Aider's Conventions
-
-**What they do well:**
-- Git-native (commits after each change)
-- `/commands` for workflow control
-- Architect mode (plan) vs. Code mode (execute)
-- Map of repository structure
-
-**Key insight**: Separation of planning and execution phases.
-
-```
-/architect  # Plan mode - discuss approach
-/code       # Execute mode - make changes
-/commit     # Checkpoint
+**Key Pattern**: Natural language skill activation
+```bash
+"Let's pair program on this feature"        → pair-programming skill
+"Review this PR for security issues"        → github-code-review skill
+"Create a swarm to build this API"          → swarm-orchestration skill
 ```
 
-**Lia comparison**: Our phases are more detailed but less dynamic switching.
+### Agentic Project Management (APM) ⭐ 1,600+ stars
+**AI workflow framework for context retention**
+
+| Feature | Description |
+|---------|-------------|
+| **Core Problem** | Context window limitations cause hallucinations |
+| **Solution** | Context retention techniques + smooth handoffs |
+| **Agent Types** | Project Manager, Developers, Specialists, Setup Expert |
+| **Supported Tools** | Cursor, Claude Code, Copilot, Windsurf, Roo, Qwen, Gemini |
+
+**Key Innovation**: Structured context handoff when windows fill up
+
+**Implications for Lia**: Our new handoff template aligns with APM's approach.
+
+### Flock ⭐ 1,000+ stars
+**Workflow-based low-code platform**
+
+- Visual workflow builder
+- LangGraph + Langchain + FastAPI + NextJS
+- RAG integration
+- Multi-agent coordination
 
 ---
 
-### GitHub Copilot Workspace
+## Tier 2: Emerging Projects (500-1000 stars)
 
-**What they do well:**
-- Issue → Spec → Plan → Code → PR pipeline
-- Visual representation of plan
-- Parallel file editing
-- Iteration on plan before execution
+### OpenAgents ⭐ 572 stars
+**Plan-first development with approval-based execution**
 
-**Key insight**: Explicit "specification" step before coding.
+| Feature | Description |
+|---------|-------------|
+| **Philosophy** | Agents propose plans before implementing |
+| **Languages** | TypeScript, Python, Go, Rust |
+| **Quality** | Automatic testing, type checking, code review |
+| **Execution** | Step-by-step with validation |
 
-**Lia comparison**: Very similar to our spec → dev flow, but with better visualization.
+**Key Pattern**: Plan → Approve → Execute → Validate
 
----
+### Vibe Check MCP ⭐ 440+ stars
+**Agent oversight tool - prevents over-engineering**
 
-## Must-Have Features Analysis
+| Feature | Description |
+|---------|-------------|
+| **Research-backed** | +27% success rate, -41% harmful actions |
+| **Purpose** | KISS principle enforcement for AI agents |
+| **Integration** | MCP server for Claude, Cursor, Windsurf |
+| **Innovation** | "Chain-Pattern Interrupt" (CPI) methodology |
 
-Based on market analysis, here are features categorized by necessity:
+**Key Insight**: AI agents need guardrails against over-engineering
 
-### 🔴 Critical (Market expects these)
-
-| Feature | Current State | Gap |
-|---------|---------------|-----|
-| Self-correction loops | Not explicit | Add verify/retry steps |
-| Context checkpoints | Partially added | Complete implementation |
-| MCP integration | Server built | Need client guidance |
-| Progress persistence | Notepad only | Add state management |
-
-### 🟡 Important (Competitive advantage)
-
-| Feature | Current State | Gap |
-|---------|---------------|-----|
-| Dynamic phase skipping | Rigid phases | Add conditional execution |
-| Tool discovery | Static | Add capability matching |
-| Confidence/uncertainty signals | None | Add uncertainty handling |
-| Visual workflow representation | Mermaid only | Could enhance |
-
-### 🟢 Nice-to-Have (Differentiation)
-
-| Feature | Current State | Gap |
-|---------|---------------|-----|
-| Multi-agent coordination | Single agent | Future consideration |
-| Learning from outcomes | None | Advanced feature |
-| Workflow analytics | None | Future consideration |
-| Natural language workflow creation | TOML only | Low priority |
+**Implications for Lia**: We need "scope guard" / simplicity checks.
 
 ---
 
-## Impact vs Effort Matrix
+## Tier 3: Spec Kit Ecosystem
+
+### Spec Kitty ⭐ 282 stars
+**Community fork of GitHub Spec Kit**
+
+Additions over Spec Kit:
+- ✅ Real-time kanban dashboard with live tracking
+- ✅ Multi-agent orchestration (12 agents)
+- ✅ Worktree strategy for parallel development
+- ✅ Mission system (Software Dev + Deep Research)
+- ✅ Constitution framework for team standards
+- ✅ Activity logging and metadata tracking
+- ✅ Accept/merge workflow with quality gates
+
+**When to use Spec Kit**: Simpler workflows, GitHub-first teams  
+**When to use Spec Kitty**: Multi-agent coordination, real-time visibility
+
+---
+
+## Feature Comparison: Lia vs Market Leaders
+
+| Feature | GitHub Spec Kit | Claude-Flow | APM | Lia Specs |
+|---------|----------------|-------------|-----|-----------|
+| **Philosophy** | Specs → Implementation | Swarm Intelligence | Context Retention | Guided Workflows |
+| **Stars** | 59,000+ | 11,000+ | 1,600+ | New |
+| Constitution/Standards | ✅ | ⚪ | ⚪ | ❌ **Gap** |
+| Specification Phase | ✅ | ⚪ | ⚪ | ✅ |
+| Planning Phase | ✅ | ⚪ | ✅ | ✅ |
+| Task Breakdown | ✅ | ⚪ | ✅ | ✅ |
+| Implementation | ✅ Auto | ✅ Swarm | ✅ Guided | ✅ Guided |
+| Multi-agent | ❌ | ✅ | ✅ | ❌ |
+| Context Handoff | ⚪ | ✅ | ✅ | ✅ New |
+| Self-correction | ⚪ | ✅ | ⚪ | ❌ **Gap** |
+| Progress Dashboard | ❌ | ✅ | ⚪ | ❌ |
+| MCP Support | ❌ | ✅ | ❌ | ✅ |
+| Scope Guard | ❌ | ❌ | ❌ | ❌ **Gap** |
+| Tool Agnostic | ⚪ | ❌ Claude | ✅ | ✅ |
+| Transparency | ⚪ | ❌ | ✅ | ✅ **Advantage** |
+
+---
+
+## Critical Gaps Identified
+
+### 1. No "Constitution" Equivalent
+**Market**: Spec Kit's `/speckit.constitution` sets project-wide standards  
+**Gap**: Lia has no equivalent  
+**Fix**: Add `constitution.toml` or project standards spec
+
+### 2. No Self-Correction Loops
+**Market**: Claude-Flow, Aider have explicit verify/retry  
+**Gap**: Lia phases don't verify before proceeding  
+**Fix**: Add verification checkpoints (already planned)
+
+### 3. No Scope Guard
+**Market**: Vibe Check MCP prevents over-engineering (+27% success)  
+**Gap**: Lia has no simplicity enforcement  
+**Fix**: Add "scope check" pattern to prevent feature creep
+
+### 4. No Multi-Agent Support
+**Market**: Claude-Flow (swarms), Spec Kitty (12 agents), APM (specialists)  
+**Gap**: Lia assumes single agent  
+**Priority**: Lower - our transparency advantage matters more
+
+---
+
+## Updated Impact vs Effort Matrix
 
 ```
                     LOW EFFORT                          HIGH EFFORT
               ┌─────────────────────────────────┬─────────────────────────────────┐
               │                                 │                                 │
-              │  ★ QUICK WINS                   │  ⚡ MAJOR PROJECTS              │
+              │  ★ QUICK WINS (Do Now)          │  ⚡ STRATEGIC (Plan)            │
               │                                 │                                 │
-   HIGH      │  • Self-correction loops        │  • Visual workflow editor       │
-   IMPACT    │  • Verify/retry in phases       │  • Multi-agent orchestration    │
-              │  • Context summarization        │  • Learning from outcomes       │
-              │  • Uncertainty signals          │  • State persistence system     │
-              │  • Dynamic phase skipping       │                                 │
+   HIGH      │  • Self-correction loops        │  • Visual progress dashboard    │
+   IMPACT    │  • Constitution/standards spec  │  • Multi-agent orchestration    │
+              │  • Scope guard pattern          │  • Learning from outcomes       │
+              │  • Context checkpoints          │                                 │
+              │  • Abort conditions             │                                 │
               │                                 │                                 │
               ├─────────────────────────────────┼─────────────────────────────────┤
               │                                 │                                 │
-              │  ✓ FILL-INS                     │  ✗ AVOID                        │
+              │  ✓ BACKLOG                      │  ✗ AVOID (Scope Creep)         │
               │                                 │                                 │
-   LOW       │  • More mermaid diagrams        │  • Custom DSL for workflows     │
-   IMPACT    │  • Additional examples          │  • Workflow marketplace         │
-              │  • CLI tooling                  │  • Cloud execution platform     │
+   LOW       │  • More agent support           │  • Custom DSL                   │
+   IMPACT    │  • CLI tooling                  │  • Workflow marketplace         │
               │  • Schema validation            │  • Natural language creation    │
-              │                                 │                                 │
+              │                                 │  • Cloud platform               │
               └─────────────────────────────────┴─────────────────────────────────┘
 ```
 
 ---
 
-## Feature Priority Matrix (Detailed)
+## Revised Priority List
 
-| Feature | Impact (1-5) | Effort (1-5) | Score | Priority |
-|---------|--------------|--------------|-------|----------|
-| Self-correction verify/retry | 5 | 2 | **10** | 🔴 P0 |
-| Context summarization guidance | 5 | 2 | **10** | 🔴 P0 |
-| Dynamic phase skipping | 4 | 2 | **8** | 🔴 P0 |
-| Uncertainty/confidence signals | 4 | 2 | **8** | 🔴 P0 |
-| Abort conditions | 4 | 1 | **8** | 🔴 P0 |
-| MCP client guidance | 4 | 2 | **8** | 🟡 P1 |
-| Tool capability matching | 3 | 3 | **6** | 🟡 P1 |
-| State persistence spec | 4 | 4 | **4** | 🟡 P1 |
-| Visual workflow editor | 4 | 5 | **3.2** | 🟢 P2 |
-| Multi-agent coordination | 5 | 5 | **4** | 🟢 P2 |
-| Learning from outcomes | 4 | 5 | **3.2** | 🟢 P2 |
-| Workflow analytics | 2 | 4 | **2** | ⚪ Defer |
-| Custom DSL | 2 | 5 | **1.6** | ⚪ Defer |
-| NL workflow creation | 3 | 5 | **2.4** | ⚪ Defer |
+### P0 - Critical (Do Now)
 
-*Score = Impact × (6 - Effort) / 5*
+| # | Feature | Effort | Market Driver |
+|---|---------|--------|---------------|
+| 1 | **Constitution spec** | ~4h | Spec Kit has it, we don't |
+| 2 | **Self-correction loops** | ~4h | Industry standard now |
+| 3 | **Scope guard pattern** | ~2h | Vibe Check proves value |
+| 4 | **Context checkpoints** | ~2h | APM's core innovation |
+| 5 | **Abort conditions** | ~1h | Safety standard |
 
----
+**Total: ~13 hours**
 
-## Recommended "Must Haves" for Lia
+### P1 - Important (Near term)
 
-### Immediate (Add to existing specs)
+| # | Feature | Effort | Rationale |
+|---|---------|--------|-----------|
+| 6 | Dynamic phase skipping | ~4h | Flexibility |
+| 7 | Confidence signals | ~2h | Uncertainty handling |
+| 8 | Tool capability matching | ~4h | Spec Kit influence |
 
-1. **Self-Correction Loop Pattern**
-   ```markdown
-   ### Verification Checkpoint
-   Before proceeding:
-   - [ ] Verify output meets requirements
-   - [ ] Check for errors/warnings
-   - [ ] Validate assumptions made
-   
-   If verification fails (max 3 attempts):
-   1. Document failure in notepad
-   2. Analyse root cause
-   3. Retry with corrected approach
-   4. If still failing, escalate to user
-   ```
+### P2 - Differentiation (Future)
 
-2. **Context Management Guidance**
-   ```markdown
-   ### Context Checkpoint (every 2-3 phases)
-   Summarize progress for context efficiency:
-   - Completed: {bullet points}
-   - Current: {active work}
-   - Remaining: {upcoming phases}
-   - Key decisions: {list}
-   ```
-
-3. **Abort Conditions**
-   ```markdown
-   ### When to Stop and Escalate
-   - Circular dependency detected
-   - 3+ failed correction attempts
-   - Scope significantly exceeds estimate
-   - Security/safety concern identified
-   - Missing critical information after 2 asks
-   ```
-
-4. **Confidence Signals**
-   ```markdown
-   ### Confidence Assessment
-   Rate your confidence in this phase output:
-   - 🟢 High: Standard pattern, well understood
-   - 🟡 Medium: Some assumptions made
-   - 🔴 Low: Significant uncertainty, needs review
-   
-   If Low: Document uncertainties and request review.
-   ```
-
-### Near-term (New patterns)
-
-5. **Dynamic Phase Selection**
-   ```toml
-   [phases.detailed_design]
-   skip_conditions = [
-     "task_type == 'bug_fix'",
-     "scope == 'minor'",
-     "existing_design_provided"
-   ]
-   ```
-
-6. **Tool Capability Declaration**
-   ```toml
-   [workflow.capabilities]
-   requires = ["file_read", "file_write"]
-   optional = ["web_search", "code_execution"]
-   fallback_if_missing = "ask_user"
-   ```
+| # | Feature | Effort | Rationale |
+|---|---------|--------|-----------|
+| 9 | Progress tracking | High | Spec Kitty has real-time |
+| 10 | Multi-agent support | High | Market is moving here |
 
 ---
 
-## Competitive Positioning
+## Strategic Recommendations
 
-### Where Lia Specs Wins
+### 1. Position Against Spec Kit
 
-| Advantage | Why It Matters |
+| Spec Kit | Lia Specs |
+|----------|-----------|
+| Autonomous execution | **Guided learning** |
+| Closed ecosystem | **Tool agnostic** |
+| Implementation focus | **Understanding focus** |
+| Black box | **Transparent process** |
+
+**Positioning**: "Lia teaches you to fish. Spec Kit fishes for you."
+
+### 2. Adopt Proven Patterns
+
+From **Spec Kit**:
+- Constitution concept (project standards)
+- Clear phase naming (specify → plan → tasks → implement)
+
+From **Vibe Check MCP**:
+- Scope guard / simplicity check
+- "Is this the minimal viable approach?"
+
+From **APM**:
+- Context handoff structure (already added)
+- Smooth session transitions
+
+From **OpenAgents**:
+- Plan-approve-execute flow
+- Built-in validation steps
+
+### 3. Leverage Our Advantages
+
+| Advantage | How to Amplify |
 |-----------|----------------|
-| **Declarative, transparent** | Users understand what's happening |
-| **Tool-agnostic** | Works with any AI assistant |
-| **Comprehensive coverage** | 17 specialized workflows |
-| **Educational value** | Teaches systematic approaches |
-| **Zero infrastructure** | Just markdown/TOML files |
+| **Transparency** | Document decision rationale in phases |
+| **Tool agnostic** | Test with more AI assistants |
+| **Educational** | Add "why" explanations to each phase |
+| **MCP support** | Build more MCP integrations |
 
-### Where Lia Specs Needs Work
+---
 
-| Gap | Risk if Not Addressed |
-|-----|----------------------|
-| No self-correction | Appears less sophisticated than Devin/Aider |
-| Static phases | Less flexible than Cursor agents |
-| No progress state | Can't resume interrupted work reliably |
-| Context management | Long workflows exhaust context |
+## Must-Have Patterns (Updated)
+
+### 1. Constitution Pattern (NEW)
+```toml
+# constitution.toml or project-standards.toml
+[project]
+name = "My Project"
+
+[standards.code]
+style = "Follow existing patterns"
+testing = "All new code must have tests"
+documentation = "Public APIs must be documented"
+
+[standards.process]
+review_required = true
+security_check = "Before any external integration"
+
+[standards.quality]
+complexity_limit = "Functions under 50 lines"
+dependency_policy = "Prefer stdlib, justify external deps"
+```
+
+### 2. Scope Guard Pattern (NEW)
+```markdown
+### Scope Check (Before Implementation)
+
+**Is this the simplest solution?**
+- [ ] No unnecessary abstractions
+- [ ] No premature optimization  
+- [ ] No speculative features
+- [ ] Could a junior developer understand this?
+
+**Scope Assessment**: 🟢 Minimal | 🟡 Reasonable | 🔴 Over-engineered
+
+If 🔴: Simplify before proceeding. Document what was removed.
+```
+
+### 3. Self-Correction Pattern (Validated)
+```markdown
+### Verification Checkpoint
+
+Before proceeding:
+- [ ] Output meets requirements
+- [ ] No errors introduced
+- [ ] Scope check passed
+
+**If verification fails** (max 3 attempts):
+1. Document failure
+2. Simplify approach
+3. Retry
+4. Escalate after 3 failures
+```
 
 ---
 
 ## Conclusion
 
-**The market has moved toward agentic, self-correcting workflows.** Lia Specs' structured approach is valuable but needs updates:
+The market has matured significantly with GitHub Spec Kit setting the standard. Our differentiation should focus on:
 
-### Top 5 Priority Actions
+1. **Transparency** - We show the work, others hide it
+2. **Education** - Learning-focused, not just execution
+3. **Flexibility** - Tool agnostic, not locked to one AI
+4. **MCP-native** - Built for the emerging standard
 
-1. **Add self-correction patterns** to all specs (P0, Low effort)
-2. **Add context summarization** checkpoints (P0, Low effort)
-3. **Add abort conditions** and escalation guidance (P0, Very low effort)
-4. **Add confidence signals** for uncertainty handling (P0, Low effort)
-5. **Add dynamic phase skipping** capability (P0, Medium effort)
-
-These five changes would bring Lia Specs to parity with market expectations while preserving our advantages in transparency and comprehensiveness.
+**Immediate actions**:
+1. Add constitution spec (~4h)
+2. Add scope guard pattern (~2h)  
+3. Add self-correction to all specs (~4h)
+4. Position against Spec Kit in docs
 
 ---
 
 ## Appendix: Research Sources
 
-*Analysis based on:*
-- Public documentation of Cursor, Claude, GitHub Copilot Workspace
-- Open source repos: Aider, OpenHands, SWE-agent, LangGraph, CrewAI
-- MCP specification and ecosystem
-- Industry analysis and user feedback patterns
-- AI coding assistant benchmarks (SWE-bench, etc.)
+**Web research conducted via GitHub API**:
+- github/spec-kit (59k stars) - https://github.com/github/spec-kit
+- ruvnet/claude-flow (11k stars) - https://github.com/ruvnet/claude-flow
+- Priivacy-ai/spec-kitty (282 stars) - https://github.com/Priivacy-ai/spec-kitty
+- sdi2200262/agentic-project-management (1.6k stars)
+- PV-Bhat/vibe-check-mcp-server (440 stars)
+- darrenhinde/OpenAgents (572 stars)
 
 ---
 
-*Research compiled: January 2026*
-*Next review: Quarterly or on major market shift*
+*Research updated: January 2026 with live web data*

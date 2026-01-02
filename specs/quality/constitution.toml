@@ -1,0 +1,261 @@
+# Constitution Spec - Project Standards Definition
+# Inspired by GitHub Spec Kit's constitution pattern
+# Purpose: Define project-wide standards that govern all development
+
+[metadata]
+name = "constitution"
+version = "1.0.0"
+category = "quality"
+description = "Define project standards, principles, and quality gates"
+triggers = ["constitution", "standards", "principles", "setup-project", "project-standards"]
+estimated_time = "15-30 minutes"
+requires_codebase = false
+output_artifact = "0-notepad.md, PROJECT_STANDARDS.md or similar"
+works_well_with = ["spec", "dev", "review"]
+
+[prompt]
+content = '''
+# CONSTITUTION: Define Project Standards
+
+## YOUR ROLE
+You are establishing the governing principles and development standards for this project. Your goal is to create clear, actionable guidelines that will ensure consistency, quality, and maintainability across all future development.
+
+---
+
+## IMPORTANT EXECUTION INSTRUCTIONS
+
+**CRITICAL**: Execute each phase IN ORDER. Complete ALL items within a phase before proceeding.
+
+- Work through phases sequentially (1 → 2 → 3 → 4 → 5)
+- Use 0-notepad.md to track progress and decisions
+- Output the final constitution document when complete
+
+---
+
+## WORKFLOW DIAGRAM
+
+```
+[Phase 1: Understand] → [Phase 2: Define] → [Phase 3: Quality] → [Phase 4: Process] → [Phase 5: Document]
+     │                       │                    │                    │                    │
+     ▼                       ▼                    ▼                    ▼                    ▼
+ Assess current          Define code         Set quality          Define workflow       Create final
+ state & goals           standards           gates                 rules                constitution
+```
+
+---
+
+## NOTEPAD TEMPLATE
+
+Create or update `0-notepad.md` with this structure:
+
+```markdown
+# Constitution Development Notepad
+
+## Current Phase
+[Phase number and name]
+
+## Project Overview
+- **Name**: [Project name]
+- **Type**: [web-app|library|cli|api|mobile|other]
+- **Language(s)**: [Primary languages]
+- **Framework(s)**: [Key frameworks]
+- **Team size**: [Solo|Small|Medium|Large]
+
+## Existing Standards
+[Document any existing standards, linting configs, etc.]
+
+## Decisions Made
+- [Decision 1]
+- [Decision 2]
+
+## Standards Defined
+- [ ] Code style
+- [ ] Testing requirements
+- [ ] Documentation rules
+- [ ] Quality gates
+- [ ] Process rules
+
+## Questions for User
+[Any clarifications needed]
+```
+
+---
+
+## PHASE 1: UNDERSTAND CONTEXT
+**Objective**: Assess the project's current state and goals
+
+### Tasks
+1. **Analyse the project**:
+   - [ ] Identify project type and primary technologies
+   - [ ] Check for existing configuration (linting, formatting, CI)
+   - [ ] Review any existing README or contributing guides
+   - [ ] Note team size and collaboration patterns
+
+2. **Identify stakeholders**:
+   - [ ] Who will contribute to this project?
+   - [ ] What skill levels should the standards accommodate?
+   - [ ] Are there external compliance requirements?
+
+3. **Understand goals**:
+   - [ ] What is the project's primary objective?
+   - [ ] What quality level is required? (MVP vs production)
+   - [ ] What are the key non-functional requirements?
+
+### Output
+Document findings in notepad under "Project Overview" section.
+
+---
+
+## PHASE 2: DEFINE CODE STANDARDS
+**Objective**: Establish consistent coding practices
+
+### Tasks
+1. **Style standards**:
+   - [ ] Code formatting (manual rules or tool reference)
+   - [ ] Naming conventions (files, functions, variables, classes)
+   - [ ] File organisation and structure
+   - [ ] Import/dependency ordering
+
+2. **Quality standards**:
+   - [ ] Maximum function/method length
+   - [ ] Maximum file length
+   - [ ] Complexity limits (if applicable)
+   - [ ] Required error handling patterns
+
+3. **Language-specific**:
+   - [ ] Type usage (TypeScript strictness, Python type hints, etc.)
+   - [ ] Preferred patterns and idioms
+   - [ ] Anti-patterns to avoid
+
+### Scope Check 🔍
+Before finalising:
+- [ ] Standards are achievable, not aspirational
+- [ ] Rules are clear and unambiguous
+- [ ] Nothing contradicts existing tooling config
+
+### Output
+Draft "Code Standards" section of constitution.
+
+---
+
+## PHASE 3: SET QUALITY GATES
+**Objective**: Define what "done" means for this project
+
+### Tasks
+1. **Testing requirements**:
+   - [ ] Minimum test coverage (if any)
+   - [ ] Required test types (unit, integration, e2e)
+   - [ ] When tests are required vs optional
+
+2. **Documentation requirements**:
+   - [ ] Public API documentation rules
+   - [ ] README requirements
+   - [ ] Inline comment expectations
+   - [ ] Changelog maintenance
+
+3. **Review requirements**:
+   - [ ] Code review policy
+   - [ ] Approval requirements
+   - [ ] Self-review checklist
+
+### Output
+Draft "Quality Gates" section of constitution.
+
+---
+
+## PHASE 4: DEFINE PROCESS RULES
+**Objective**: Establish workflow and collaboration standards
+
+### Tasks
+1. **Branching & commits**:
+   - [ ] Branch naming convention
+   - [ ] Commit message format
+   - [ ] PR/MR size guidelines
+
+2. **Dependency management**:
+   - [ ] Policy for adding new dependencies
+   - [ ] Version pinning strategy
+   - [ ] Security update handling
+
+3. **AI collaboration** (if applicable):
+   - [ ] When to use AI assistance
+   - [ ] Review requirements for AI-generated code
+   - [ ] Attribution or documentation needs
+
+### Output
+Draft "Process Rules" section of constitution.
+
+---
+
+## PHASE 5: DOCUMENT CONSTITUTION
+**Objective**: Create the final constitution document
+
+### Tasks
+1. **Compile the constitution**:
+   - [ ] Combine all drafted sections
+   - [ ] Ensure consistency and no contradictions
+   - [ ] Add version and last-updated date
+
+2. **Format for accessibility**:
+   - [ ] Use clear headings and structure
+   - [ ] Include quick-reference summaries
+   - [ ] Link to any referenced tools/configs
+
+3. **Suggest placement**:
+   - [ ] Recommend file location (e.g., `PROJECT_STANDARDS.md`, `CONSTITUTION.md`)
+   - [ ] Suggest how to onboard new contributors
+
+### Final Scope Check 🔍
+- [ ] Constitution is concise (not a novel)
+- [ ] Every rule is actionable
+- [ ] No "nice to have" aspirational rules
+- [ ] Could be followed by a new team member
+
+### Deliverable Format
+
+```markdown
+# [Project Name] Constitution
+**Version**: 1.0 | **Last Updated**: [Date]
+
+## Quick Reference
+| Area | Key Rule |
+|------|----------|
+| Style | [One-liner] |
+| Testing | [One-liner] |
+| Docs | [One-liner] |
+| Process | [One-liner] |
+
+## Code Standards
+[Detailed standards from Phase 2]
+
+## Quality Gates
+[Requirements from Phase 3]
+
+## Process Rules
+[Workflow rules from Phase 4]
+
+## Enforcement
+[How these standards are enforced - linting, CI, review]
+
+---
+*This constitution governs all development on [Project Name].*
+```
+
+---
+
+## ABORT CONDITIONS
+
+Stop and consult the user if:
+- 🔴 Project has complex existing standards that conflict
+- 🔴 Requirements are ambiguous after clarification
+- 🔴 Scope exceeds what can be documented clearly
+
+---
+
+## COMPLETION
+
+When finished:
+1. Present the draft constitution for review
+2. Suggest any tooling changes to enforce standards
+3. Recommend how to introduce the constitution to existing contributors
+'''
