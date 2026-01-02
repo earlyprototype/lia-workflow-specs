@@ -1,354 +1,176 @@
-# Lia Positioning: Refined Direction
-**Building on: Clarity. Depth. Trust.**
+# Lia Positioning: Final
+**Status**: Finalised  
+**Date**: January 2026
 
 ---
 
-## The Three Pillars
+## The Position
 
-```
-        CLARITY          DEPTH            TRUST
-           │               │                │
-           ▼               ▼                ▼
-      See clearly     Go deep         Build together
-      Cut through     Multi-dim       Partnership
-      Illuminate      Understand      Step by step
-```
-
----
-
-## The Partnership Angle
-
-**Not AI replacing you. AI developing WITH you.**
-
-> "The future, developed in partnership"
-
-This captures:
-- Collaborative, not autonomous
-- You're in control
-- We go together
-- Trust is earned step by step
-
----
-
-## Tagline Explorations
-
-### Clarity + Partnership
-- "Clarity, together"
-- "See clearly. Build together."
-- "Clear vision. Shared journey."
-
-### Depth + Partnership  
-- "Go deep, together"
-- "Deep partnership for complex problems"
-- "Understanding, built together"
-
-### Trust + Steps
-- "One solid step at a time"
-- "Trust the process"
-- "Each step, sure-footed"
-- "Grounded progress"
-
-### The Future + Partnership
-- "The future, developed in partnership"
-- "Building tomorrow, together"
-- "Your future, our partnership"
-
----
-
-## Footprint / Grounded Concepts
-
-**Footprint** is interesting - it suggests:
-- You leave a mark
-- Solid ground beneath
-- Evidence of progress
-- Sustainable (not destructive)
-
-**Variations:**
-- "Leave your footprint"
-- "Sure footing in complex terrain"
-- "Every step leaves understanding"
-- "Solid ground for ambitious builds"
-
----
-
-## Combined Concepts
-
-### Option 1: The Triad
-
-> **Lia: Clarity. Depth. Trust.**
+> **Lia: The AI Slow-Code Framework**
 > 
-> *Development in partnership, one step at a time.*
-
-Clean. Memorable. Three words that capture the essence.
+> *Understand what you're building.*
 
 ---
 
-### Option 2: The Partnership Promise
+## What is Slow-Code?
 
-> **Lia: The future, developed in partnership.**
->
-> *Clarity. Depth. Trust. One step at a time.*
+**Slow-code** is a counter-movement to "vibe coding" — the practice of rapidly generating AI code without understanding it.
 
-Aspirational but grounded.
+It's not about being slow. It's about being **deliberate**.
 
----
-
-### Option 3: The Grounded Ambition
-
-> **Lia: Sure steps toward what's possible.**
->
-> *Clarity to see. Depth to understand. Trust to build.*
-
-Balances ambition with solidity.
+| Vibe Coding | Slow-Code |
+|-------------|-----------|
+| Ship fast, understand later | Understand first, ship confidently |
+| "AI does the work" | "AI teaches while you work" |
+| Black box execution | Glass box transparency |
+| Hope it works | Know *why* it works |
+| Debugging is crisis mode | Debugging is systematic |
+| Speed creates debt | Understanding creates velocity |
 
 ---
 
-### Option 4: The Footprint
+## Why Slow-Code?
 
-> **Lia: Every step leaves understanding.**
->
-> *Deep, clear, trusted development workflows.*
+### 1. Vibe Coding Creates Debt
 
-The "footprint" as accumulated knowledge.
+Fast AI output without understanding compounds into maintenance nightmares. You ship in hours but spend weeks debugging what you don't understand.
 
----
+### 2. The Troubleshooting Cliff
 
-### Option 5: The Simple Truth
+Research shows AI tools achieve ~100% success creating code, then fail catastrophically debugging it. When things break, vibe coders are stranded.
 
-> **Lia: See clearly. Go deep. Build trust.**
+### 3. Understanding IS Speed
 
-Action-oriented triad.
+Developers who understand their code ship faster long-term. The "slowness" is front-loaded; the velocity is permanent.
 
 ---
 
-## Playing with "Future" + "Greatness"
+## The Tagline Evolution
 
-### Aspiration without Hype
-
-- "Your ambition, grounded"
-- "Greatness, one step at a time"
-- "Big vision. Solid steps."
-- "Imagination, realised"
-
-### The Journey Frame
-
-- "The path to what's possible"
-- "From imagination to reality"
-- "Where ambition meets method"
+| Stage | Tagline | Why It Changed |
+|-------|---------|----------------|
+| v1 | "Clarity. Depth. Trust." | Too generic. Banks say this. |
+| v2 | "Understand what you're building." | Better, but missing the movement |
+| **Final** | **"The AI Slow-Code Framework"** | Creates a category. Has an enemy. |
 
 ---
 
-## The "Sure" Concept
+## Why This Works
 
-**Sure** captures:
-- Confidence (I'm sure)
-- Stability (sure-footed)
-- Agreement (sure, let's go)
-- Certainty (for sure)
-
-**Plays:**
-- "Sure-footed development"
-- "Build with certainty"
-- "Sure steps, great outcomes"
-- "From uncertain to sure"
+| Criterion | Assessment |
+|-----------|------------|
+| **Has an enemy** | ✅ Vibe coding — a real, named phenomenon |
+| **Creates a category** | ✅ "Slow-code" is ownable |
+| **Says what we do** | ✅ "AI framework" is clear |
+| **Distinctive** | ✅ No one else claims slow-code |
+| **Not defensive** | ✅ Confident counter-position |
+| **Culturally resonant** | ✅ Echoes "slow food" movement |
+| **Developer-friendly** | ✅ Not corporate-speak |
 
 ---
 
-## Candidate Taglines (Ranked by Resonance)
+## Supporting Messages
 
-### Tier 1: Strong Candidates
+### Primary Subline
+> "Understand what you're building."
 
-| Tagline | Why It Works |
-|---------|--------------|
-| **"Clarity. Depth. Trust."** | Memorable triad, captures essence |
-| **"The future, developed in partnership"** | Aspirational + collaborative |
-| **"See clearly. Go deep. Build trust."** | Action verbs, clear progression |
+### Philosophy Statement
+> "Slow-code is deliberate AI development. Every phase visible. Every decision documented. You finish knowing *why* it works, not just *that* it works."
 
-### Tier 2: Worth Exploring
-
-| Tagline | Why It Works |
-|---------|--------------|
-| "One solid step at a time" | Grounded, trustworthy |
-| "Sure steps toward greatness" | Ambition + stability |
-| "Every step leaves understanding" | Footprint concept |
-
-### Tier 3: Flavour Options
-
-| Tagline | Vibe |
-|---------|------|
-| "Your ambition, grounded" | Professional |
-| "Where imagination meets method" | Creative |
-| "Deep partnership for complex futures" | Enterprise |
+### The Value Proposition
+> "While vibe coding ships fast and breaks things, slow-code builds understanding that compounds. Debug once, not forever."
 
 ---
 
-## Brand Voice Elements
+## The Comparison
 
-If we go with **Clarity. Depth. Trust.** as the core:
+| Dimension | Vibe Coding Tools | Lia (Slow-Code) |
+|-----------|-------------------|-----------------|
+| Speed | Fast output | Deliberate process |
+| Output | Code generated | Knowledge gained |
+| When it breaks | Ad-hoc panic | Structured debugging |
+| Long-term | Technical debt | Compound understanding |
+| Audience | Ship now, learn never | Build to understand |
+
+---
+
+## Website Hero Concept
+
+```
+┌──────────────────────────────────────────────────┐
+│                                                  │
+│              L I A                               │
+│     The AI Slow-Code Framework                   │
+│                                                  │
+│   Vibe coding ships fast and breaks things.      │
+│   Slow-code builds understanding that compounds. │
+│                                                  │
+│            [Understand First]                    │
+│                                                  │
+└──────────────────────────────────────────────────┘
+```
+
+---
+
+## Brand Voice
 
 **We are:**
-- Clear, not obscure
-- Deep, not shallow
-- Trustworthy, not flashy
-- Partners, not replacements
-- Methodical, not rushed
-- Sure-footed, not reckless
+- Deliberate, not rushed
+- Transparent, not black-box
+- Educational, not just generative
+- Confident, not defensive
+- Counter-cultural, not mainstream
 
-**We speak:**
-- Plainly (clarity)
-- Thoroughly (depth)
-- Honestly (trust)
+**We say:**
+- "Understand" not "ship"
+- "Deliberate" not "slow"
+- "Glass box" not "black box"
+- "Know why" not "hope it works"
 
 **We don't:**
-- Overpromise
-- Hide complexity
-- Rush past understanding
-- Replace human judgment
+- Apologise for thoroughness
+- Chase speed metrics
+- Hide the process
+- Replace understanding with output
 
 ---
 
-## Website Hero Concepts
+## Competitive Positioning
 
-### Concept A: The Triad
-```
-┌────────────────────────────────────────────┐
-│                                            │
-│              L I A                         │
-│                                            │
-│      Clarity. Depth. Trust.                │
-│                                            │
-│   Development workflows for those who      │
-│   build what matters.                      │
-│                                            │
-│         [Get Started]                      │
-│                                            │
-└────────────────────────────────────────────┘
-```
+### Why Choose Lia Over Spec Kit (59k stars)?
 
-### Concept B: The Partnership
-```
-┌────────────────────────────────────────────┐
-│                                            │
-│              L I A                         │
-│                                            │
-│   The future, developed in partnership.    │
-│                                            │
-│   Multi-dimensional workflows that bring   │
-│   clarity to complex development.          │
-│                                            │
-│         [Start Building]                   │
-│                                            │
-└────────────────────────────────────────────┘
-```
+Because you want to **understand**, not just ship.
 
-### Concept C: The Grounded
-```
-┌────────────────────────────────────────────┐
-│                                            │
-│              L I A                         │
-│                                            │
-│     Sure steps toward what's possible.     │
-│                                            │
-│   See clearly. Go deep. Build trust.       │
-│   One step at a time.                      │
-│                                            │
-│         [Take the First Step]              │
-│                                            │
-└────────────────────────────────────────────┘
-```
+- Spec Kit optimises for autonomous execution
+- Lia optimises for developer comprehension
+- When Spec Kit's output breaks, you're debugging a black box
+- When Lia's output breaks, you have `troubleshoot.toml`
+
+### Why Choose Lia Over Vibe Coding?
+
+Because you've been burned before.
+
+- Vibe coding gave you code you can't maintain
+- Vibe coding left you stranded at the Troubleshooting Cliff
+- Slow-code builds understanding that compounds
+- Slow-code means debugging once, not forever
 
 ---
 
-## My Recommendation
+## Final Positioning Statement
 
-**Primary positioning:**
+**For** developers who want to understand what they're building
 
-> **Lia: Clarity. Depth. Trust.**
+**Who** are frustrated with vibe coding's fast-but-broken output
 
-**Supporting line:**
+**Lia is** the AI slow-code framework
 
-> *The future, developed in partnership—one step at a time.*
+**That** provides transparent, phase-by-phase workflows with structured troubleshooting
 
-**Why this works:**
-1. **Clarity** - We illuminate, you see
-2. **Depth** - Multi-dimensional, thorough
-3. **Trust** - Transparent, reliable, together
-4. **Partnership** - Not replacement, collaboration
-5. **One step at a time** - Grounded, sure-footed
+**Unlike** vibe coding tools that optimise for speed
 
-It's:
-- ✅ Not exclusionary
-- ✅ Not "educational" (but includes learning)
-- ✅ Not "slow" (but implies thoroughness)
-- ✅ Aspirational AND grounded
-- ✅ Professional yet human
+**Lia** optimises for understanding — so you debug once, not forever.
 
 ---
 
-## Critical Review
-
-### What's Wrong With "Clarity. Depth. Trust."
-
-| Issue | Problem | Severity |
-|-------|---------|----------|
-| **Generic** | Any company could claim this. Banks, consultants, Salesforce. | ❌ Critical |
-| **No verb energy** | Three nouns. Static. Passive. | ⚠️ Medium |
-| **"Trust" is loaded** | In AI context, sounds defensive. Better to earn than ask. | ⚠️ Medium |
-| **Doesn't say what we do** | Developer landing here has no idea what Lia is | ❌ Critical |
-| **"One step at a time" = slow** | In a ship-fast market, sounds cautious | ⚠️ Medium |
-| **"Partnership" overused** | Every AI tool claims this now | ❌ Critical |
-| **No tension or edge** | Too safe. No enemy. No point of view. | ❌ Critical |
-| **"Future" is vague** | Aspirational fluff without specificity | ⚠️ Medium |
-
-**Overall Grade**: Safe but not compelling. Won't offend, won't convert.
-
----
-
-### What's Actually Distinctive About Lia?
-
-| Reality | Current Positioning |
-|---------|---------------------|
-| Multi-dimensional systematic scanning | Not mentioned |
-| Glass-box transparency (see every step) | Vaguely "clarity" |
-| Specs that teach, not just execute | Hidden behind "depth" |
-| Against vibe coding / shallow AI | No enemy stated |
-| TOML-based, tool-agnostic | Not mentioned |
-| Brownfield-aware (wtf.toml, investigate) | Not mentioned |
-
----
-
-### Stronger Alternatives to Explore
-
-**The Enemy Approach:**
-> "Because 'just ask AI' isn't a strategy."
-
-**The Distinctive Capability:**
-> "See every dimension. Miss nothing."
-
-**The Transparency Play:**
-> "The AI workflow you can see through."
-
-**The Anti-Vibe-Coding:**
-> "Vibe coding broke prod. Now what?"
-
----
-
-### The Hard Question
-
-**What would make someone choose Lia over Spec Kit (59k stars)?**
-
-Possible answers:
-- "Because you want to understand, not just ship"
-- "Because you're working on something that matters"
-- "Because you've been burned by AI garbage before"
-- "Because you need to see every step"
-
----
-
-### Status
-
-**Positioning**: Work in progress. Core values identified (Clarity, Depth, Trust) but expression needs edge and specificity. Parking for now to focus on product development.
-
----
-
-*Document updated with critical review*
+*Positioning finalised: January 2026*

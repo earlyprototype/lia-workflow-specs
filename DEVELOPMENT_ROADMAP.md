@@ -1,5 +1,5 @@
 # Lia Development Roadmap
-**Version**: 2.0  
+**Version**: 2.1  
 **Last Updated**: January 2026  
 **Status**: Active
 
@@ -7,12 +7,15 @@
 
 ## Vision Alignment
 
-This roadmap implements the strategic vision: **"Understand what you're building."**
+> **Lia: The AI Slow-Code Framework**
+> *Understand what you're building.*
+
+This roadmap implements the **slow-code** philosophy: deliberate AI development that prioritises understanding over speed.
 
 Every item is evaluated against three questions:
-1. Does it help developers understand?
-2. Does it maintain simplicity?
-3. Does it leverage our competitive advantages?
+1. Does it help developers **understand**?
+2. Does it maintain **simplicity**?
+3. Does it support **deliberate, transparent** development?
 
 ---
 

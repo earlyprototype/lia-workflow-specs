@@ -1,7 +1,17 @@
 # Lia Strategic Vision
-**Version**: 2.0  
+**Version**: 2.1  
 **Date**: January 2026  
 **Status**: Active
+
+---
+
+## The Positioning
+
+> **Lia: The AI Slow-Code Framework**
+> 
+> *Understand what you're building.*
+
+**Slow-code** is deliberate AI development that prioritises understanding over speed. A counter-movement to "vibe coding" — the practice of rapidly generating AI code without comprehension.
 
 ---
 
@@ -11,7 +21,7 @@ The AI-assisted development market is racing towards **autonomy**. Spec Kit (59k
 
 But our research reveals a critical flaw: **The Troubleshooting Cliff**.
 
-Spec_Engine achieved 100% success during creation, then systemic failure during debugging. Speed creates technical debt that compounds. Most tools optimise for the easy part (creation) and abandon developers at the hard part (maintenance).
+Speed creates technical debt that compounds. Most tools optimise for the easy part (creation) and abandon developers at the hard part (maintenance). "Vibe coding" ships fast but breaks faster.
 
 ---
 
@@ -42,25 +52,38 @@ While everyone else races to make AI faster, we help developers **understand**.
 
 ### Tagline
 
-> **Lia: Understand what you're building.**
+> **Lia: The AI Slow-Code Framework**
 
 ### Supporting Statement
 
-> Transparent, phase-by-phase workflows that help you learn, not just execute.
+> Understand what you're building.
+
+### The Slow-Code Manifesto
+
+**Slow-code** is not about being slow. It's about being deliberate.
+
+| Vibe Coding | Slow-Code |
+|-------------|-----------|
+| Ship fast, understand later | Understand first, ship confidently |
+| "AI does the work" | "AI teaches while you work" |
+| Black box execution | Glass box transparency |
+| Hope it works | Know why it works |
+| Debugging is crisis mode | Debugging is systematic |
+| Speed creates debt | Understanding creates velocity |
 
 ### What We're NOT
 
-- ❌ "AI that does the work for you"
+- ❌ "Vibe coding" — Fast AI output without comprehension
 - ❌ "Autonomous execution engine"
 - ❌ "Move fast and break things"
 - ❌ "Black box code generation"
 
 ### What We ARE
 
-- ✅ "AI that teaches you to work"
-- ✅ "Guided comprehension framework"
-- ✅ "Understand deeply, build confidently"
+- ✅ **Slow-code** — Deliberate AI development
+- ✅ "AI that teaches you while you work"
 - ✅ "Glass box development"
+- ✅ "Understand deeply, build confidently"
 
 ---
 
