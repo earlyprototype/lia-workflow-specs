@@ -1,8 +1,11 @@
 """
-Workflow triggers and chaining logic.
+Workflow composition suggestions.
 
-Provides functionality for workflow composition based on trigger definitions
+Provides OPTIONAL guidance for workflow sequences based on definitions
 from specs/_common/workflow-triggers.toml.
+
+IMPORTANT: Every spec is fully independent. These are suggestions only,
+not dependencies. See docs/workflow-composition.md for full explanation.
 """
 
 from dataclasses import dataclass, field
@@ -17,13 +20,18 @@ except ImportError:
 
 @dataclass
 class WorkflowTrigger:
-    """Defines trigger relationships for a workflow."""
+    """
+    Defines composition hints for a workflow.
+    
+    All fields are SUGGESTIONS, not requirements. Every workflow
+    can run independently with just a task description.
+    """
     
     name: str
-    on_complete: list[str] = field(default_factory=list)
-    can_chain_from: list[str] = field(default_factory=list)
-    provides: list[str] = field(default_factory=list)
-    requires: list[str] = field(default_factory=list)
+    on_complete: list[str] = field(default_factory=list)  # Suggested next steps
+    can_chain_from: list[str] = field(default_factory=list)  # Often follows these
+    typical_outputs: list[str] = field(default_factory=list)  # Common artefacts
+    works_well_with: list[str] = field(default_factory=list)  # Helpful context (NOT required)
 
 
 @dataclass
@@ -88,71 +96,90 @@ class TriggerManager:
                         name=name,
                         on_complete=trigger_info.get("on_complete", []),
                         can_chain_from=trigger_info.get("can_chain_from", []),
-                        provides=trigger_info.get("provides", []),
-                        requires=trigger_info.get("requires", []),
+                        # Support both old and new field names
+                        typical_outputs=trigger_info.get("typical_outputs", trigger_info.get("provides", [])),
+                        works_well_with=trigger_info.get("works_well_with", trigger_info.get("requires", [])),
                     )
         except Exception as e:
             print(f"Warning: Failed to load triggers: {e}")
     
-    def get_next_workflows(self, current: str) -> list[str]:
+    def get_suggested_next(self, current: str) -> list[str]:
         """
-        Get recommended next workflows after completing the current one.
+        Get suggested workflows to consider after the current one.
+        
+        Note: These are suggestions only, not requirements.
         
         Args:
             current: Name of the current/completed workflow.
             
         Returns:
-            List of recommended follow-up workflow names.
+            List of suggested follow-up workflow names.
         """
         trigger = self.triggers.get(current)
         if trigger:
             return trigger.on_complete
         return []
     
-    def get_previous_workflows(self, target: str) -> list[str]:
+    # Alias for backwards compatibility
+    get_next_workflows = get_suggested_next
+    
+    def get_common_predecessors(self, target: str) -> list[str]:
         """
-        Get workflows that can lead into the target workflow.
+        Get workflows that commonly precede this one.
+        
+        Note: Not prerequisites - any workflow can run standalone.
         
         Args:
             target: Name of the target workflow.
             
         Returns:
-            List of workflow names that can chain into the target.
+            List of workflows that often lead to this one.
         """
         trigger = self.triggers.get(target)
         if trigger:
             return trigger.can_chain_from
         return []
     
-    def get_workflow_outputs(self, workflow: str) -> list[str]:
+    # Alias for backwards compatibility
+    get_previous_workflows = get_common_predecessors
+    
+    def get_typical_outputs(self, workflow: str) -> list[str]:
         """
-        Get the outputs/artifacts a workflow provides.
+        Get artefacts this workflow typically produces.
         
         Args:
             workflow: Name of the workflow.
             
         Returns:
-            List of output types the workflow produces.
+            List of typical output types.
         """
         trigger = self.triggers.get(workflow)
         if trigger:
-            return trigger.provides
+            return trigger.typical_outputs
         return []
     
-    def get_workflow_inputs(self, workflow: str) -> list[str]:
+    # Alias for backwards compatibility
+    get_workflow_outputs = get_typical_outputs
+    
+    def get_helpful_context(self, workflow: str) -> list[str]:
         """
-        Get the inputs/requirements a workflow needs.
+        Get context that helps this workflow (but is NOT required).
+        
+        Note: Workflow works fine without these - they're just helpful.
         
         Args:
             workflow: Name of the workflow.
             
         Returns:
-            List of input types the workflow requires.
+            List of helpful context types.
         """
         trigger = self.triggers.get(workflow)
         if trigger:
-            return trigger.requires
+            return trigger.works_well_with
         return []
+    
+    # Alias for backwards compatibility  
+    get_workflow_inputs = get_helpful_context
     
     def find_chain_for_task(self, task_keywords: list[str]) -> Optional[WorkflowChain]:
         """
