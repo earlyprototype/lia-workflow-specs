@@ -243,10 +243,10 @@ Create or enhance `security.toml` based on CodeGuard patterns:
 - Dependency security
 
 **Acceptance Criteria**:
-- [ ] 5-phase security workflow
-- [ ] OWASP Top 10 checklist
-- [ ] Integration with `dev.toml` and `review.toml`
-- [ ] Proof artifact for security sign-off
+- [x] 8-phase security workflow (exceeds target)
+- [x] OWASP Top 10 checklist (embedded in Phase 4)
+- [x] Integration with `dev.toml` and `review.toml` (workflow chain documented)
+- [x] Proof artifact for security sign-off (template in Phase 6)
 
 ---
 
@@ -261,9 +261,9 @@ Enhance troubleshooting specs visibility:
 - Cross-reference from `dev.toml`
 
 **Acceptance Criteria**:
-- [ ] Troubleshooting featured in README (top 3 use cases)
-- [ ] Quick-start guide for troubleshooting workflow
-- [ ] At least 2 example troubleshooting scenarios
+- [x] Troubleshooting featured in README (top 3 use cases)
+- [x] Quick-start guide for troubleshooting workflow (`docs/troubleshooting-quickstart.md`)
+- [x] At least 2 example troubleshooting scenarios (4 patterns in quickstart)
 
 ---
 
@@ -287,9 +287,9 @@ Add optional pre-flight validation (lighter than Spec_Engine's 10-step):
 ```
 
 **Acceptance Criteria**:
-- [ ] 5-item validation checklist (not 10)
-- [ ] Optional, not mandatory
-- [ ] Documented in `base-workflow.toml`
+- [x] 5-item validation checklist (not 10) - in `base-workflow.toml`
+- [x] Optional, not mandatory - skip with "proceed without validation"
+- [x] Documented in `base-workflow.toml` and `docs/workflow-guide.md`
 
 ---
 
@@ -399,9 +399,9 @@ Create/enhance spec validator:
 - [x] Documentation updated
 
 ### Phase 2 Complete When:
-- [ ] `security.toml` enhanced
-- [ ] Troubleshooting prominently positioned
-- [ ] Pre-flight validation available
+- [x] `security.toml` enhanced (OWASP checklist + proof artifact)
+- [x] Troubleshooting prominently positioned (quick-start guide)
+- [x] Pre-flight validation available (documented with examples)
 
 ### Phase 3 Complete When:
 - [ ] README reflects new positioning

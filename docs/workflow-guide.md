@@ -9,7 +9,8 @@
 5. [Approval Gates](#approval-gates)
 6. [Artifact System](#artifact-system)
 7. [Knowledge Capture](#knowledge-capture)
-8. [Advanced Patterns](#advanced-patterns)
+8. [Pre-Flight Validation](#pre-flight-validation)
+9. [Advanced Patterns](#advanced-patterns)
 
 ---
 
@@ -514,6 +515,118 @@ Phase 2: Design considerations and tradeoffs
 Phase 3: Implementation notes and challenges
 Phase N: Accumulated knowledge across workflow
 ```
+
+---
+
+## Pre-Flight Validation
+
+Before starting complex workflows, use the optional pre-flight checklist to ensure you're ready.
+
+### The Pre-Flight Check
+
+```markdown
+### Pre-Flight Check
+- [ ] Objective clearly stated
+- [ ] Required context available (codebase, docs, dependencies)
+- [ ] Output location confirmed (.lia/{workflow}/{task}/)
+- [ ] Error propagation strategy selected
+- [ ] Time estimate acknowledged
+
+**Ready to proceed**: Yes / No (specify blocker)
+```
+
+### When to Use Pre-Flight
+
+**Use pre-flight for:**
+- Production deployments
+- Security-sensitive changes
+- Large-scale refactoring
+- Complex multi-phase projects
+- Team handoffs
+
+**Skip pre-flight for:**
+- Quick bug fixes
+- Simple feature additions
+- Exploratory work
+- Time-critical issues
+
+### Error Propagation Strategies
+
+Select one of three strategies at workflow start:
+
+| Strategy | When to Use | Behaviour |
+|----------|-------------|-----------|
+| `halt_on_critical` | Production, security | Stop immediately on critical failure |
+| `continue_and_log` | Research, prototyping | Log failure, continue to next step |
+| `collaborative_review` | Complex decisions (default) | Pause and ask user what to do |
+
+**Example selection:**
+
+```markdown
+### Error Propagation Strategy
+**Selected**: collaborative_review
+
+Rationale: This is a new feature with uncertain requirements.
+Will pause and consult user if any phase fails.
+```
+
+### Pre-Flight Examples
+
+**Example 1: Production Deployment**
+
+```markdown
+### Pre-Flight Check
+- [x] Objective clearly stated: Deploy v2.3 auth changes to production
+- [x] Required context available: All tests passing, staging verified
+- [x] Output location confirmed: .lia/dev/auth-v23-deploy/
+- [x] Error propagation strategy: halt_on_critical
+- [x] Time estimate acknowledged: ~2 hours with rollback buffer
+
+**Ready to proceed**: Yes
+```
+
+**Example 2: Research Task**
+
+```markdown
+### Pre-Flight Check
+- [x] Objective clearly stated: Evaluate 5 database options for new service
+- [x] Required context available: Requirements doc, scale estimates
+- [x] Output location confirmed: .lia/research/database-evaluation/
+- [x] Error propagation strategy: continue_and_log
+- [x] Time estimate acknowledged: ~4 hours for initial scan
+
+**Ready to proceed**: Yes
+```
+
+**Example 3: Blocked Start**
+
+```markdown
+### Pre-Flight Check
+- [x] Objective clearly stated: Implement payment processing
+- [ ] Required context available: MISSING - PCI compliance requirements
+- [x] Output location confirmed: .lia/spec/payment-processing/
+- [ ] Error propagation strategy: Not selected - depends on compliance
+- [x] Time estimate acknowledged: Unknown until compliance clarified
+
+**Ready to proceed**: No
+**Blocker**: Need PCI compliance requirements from security team
+```
+
+### Skipping Pre-Flight
+
+To skip pre-flight validation, explicitly state:
+
+```
+"Proceed without validation"
+```
+
+or
+
+```
+"Skip pre-flight, this is a quick fix"
+```
+
+The workflow will then start directly at Phase 1.
 
 ---
 

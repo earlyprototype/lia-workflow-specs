@@ -109,15 +109,72 @@ Analyze the security architecture and existing security controls to identify gap
 ### 4. Vulnerability Assessment and Testing
 Conduct comprehensive vulnerability assessment and security testing to identify specific security issues.
 
+**OWASP Top 10 Checklist** (2021):
+```
+[ ] A01: Broken Access Control
+    - Verify authorization for all sensitive operations
+    - Check for IDOR vulnerabilities
+    - Validate CORS configuration
+    
+[ ] A02: Cryptographic Failures
+    - Check for weak encryption algorithms
+    - Verify TLS configuration
+    - Audit password storage (bcrypt, argon2)
+    
+[ ] A03: Injection
+    - SQL injection testing
+    - Command injection testing
+    - XSS (reflected, stored, DOM-based)
+    - Template injection
+    
+[ ] A04: Insecure Design
+    - Review security architecture patterns
+    - Check for defense-in-depth
+    - Validate secure defaults
+    
+[ ] A05: Security Misconfiguration
+    - Default credentials check
+    - Unnecessary features disabled
+    - Error handling (no stack traces)
+    - Security headers present
+    
+[ ] A06: Vulnerable Components
+    - Dependency vulnerability scan
+    - Outdated libraries check
+    - Known CVE verification
+    
+[ ] A07: Authentication Failures
+    - Brute force protection
+    - Session management security
+    - MFA implementation (if required)
+    
+[ ] A08: Data Integrity Failures
+    - Deserialization security
+    - CI/CD pipeline integrity
+    - Update mechanism security
+    
+[ ] A09: Logging & Monitoring Failures
+    - Security event logging
+    - Log injection prevention
+    - Alerting for security events
+    
+[ ] A10: SSRF (Server-Side Request Forgery)
+    - URL validation
+    - Internal network access controls
+    - Cloud metadata endpoint protection
+```
+
 **Constraints:**
 - The model MUST create a '.lia/security/{task_name}/4-vulnerabilities.md' file if it doesn't already exist
+- The model MUST use the OWASP Top 10 checklist above as a baseline assessment framework
 - The model MUST assess and document:
-  - Code-level security vulnerabilities
+  - Code-level security vulnerabilities (with OWASP category mapping)
   - Configuration security issues
   - Infrastructure security weaknesses
   - Application security testing results
   - Penetration testing findings
   - Security scan and tool results
+  - Dependency vulnerability analysis
 - The model MUST ask the user to review and approve the vulnerability assessment before proceeding
 - The model MUST iterate on the vulnerability assessment based on user feedback until the user explicitly approves it
 
@@ -152,6 +209,52 @@ Validate the implemented security controls and verify that vulnerabilities have 
 - The model MUST ensure security improvements meet the defined requirements before proceeding
 - The model MUST ask the user to review and approve the validation results before proceeding
 - The model MUST iterate on the validation based on user feedback until the user explicitly approves it
+- The model MUST create a security proof artifact before sign-off (see below)
+
+**Security Proof Artifact** (create in `.lia/security/{task_name}/security-proof.md`):
+```markdown
+# Security Proof Artifact: {task_name}
+**Created**: {timestamp}
+**Assessor**: {who conducted}
+**Status**: Ready for sign-off
+
+## OWASP Top 10 Verification
+| Category | Status | Evidence |
+|----------|--------|----------|
+| A01: Broken Access Control | PASS/FAIL/N/A | {link to test} |
+| A02: Cryptographic Failures | PASS/FAIL/N/A | {link to test} |
+| A03: Injection | PASS/FAIL/N/A | {link to test} |
+| A04: Insecure Design | PASS/FAIL/N/A | {link to test} |
+| A05: Security Misconfiguration | PASS/FAIL/N/A | {link to test} |
+| A06: Vulnerable Components | PASS/FAIL/N/A | {link to scan} |
+| A07: Authentication Failures | PASS/FAIL/N/A | {link to test} |
+| A08: Data Integrity Failures | PASS/FAIL/N/A | {link to test} |
+| A09: Logging & Monitoring | PASS/FAIL/N/A | {link to test} |
+| A10: SSRF | PASS/FAIL/N/A | {link to test} |
+
+## Vulnerability Remediation Status
+- [x] All CRITICAL vulnerabilities addressed
+- [x] All HIGH vulnerabilities addressed
+- [ ] MEDIUM vulnerabilities: {count remaining}
+- [ ] LOW vulnerabilities: {count remaining}
+
+## Security Control Verification
+- [ ] Authentication mechanisms tested
+- [ ] Authorization controls verified
+- [ ] Input validation confirmed
+- [ ] Encryption verified (at rest + in transit)
+- [ ] Security logging operational
+
+## Sign-Off Checklist
+- [ ] No hardcoded secrets in codebase
+- [ ] Dependency scan clean (or exceptions documented)
+- [ ] Security testing completed
+- [ ] Documentation updated
+- [ ] Stakeholder approval obtained
+
+## Reviewer Notes
+{Any context for human review}
+```
 
 ### 7. Security Monitoring and Continuous Assessment
 Establish ongoing security monitoring and continuous assessment to ensure sustained security posture.
@@ -256,6 +359,21 @@ For example, the user may want to know what the next security assessment step is
 - You MUST follow systematic security assessment methodologies and best practices
 - You MUST ensure thorough security analysis and risk assessment
 - You MUST validate all security controls through proper testing and verification
+
+## Integration with Other Workflows
+
+**From dev.toml**: When implementing security-sensitive features, run security.toml assessment before marking complete.
+
+**From review.toml**: Code reviews for security-critical changes should reference security.toml findings.
+
+**To troubleshoot.toml**: If security testing reveals mysterious behaviour, escalate to troubleshoot.toml or investigate.toml.
+
+**Workflow Chain (recommended)**:
+```
+spec.toml → dev.toml → security.toml → review.toml → test.toml
+              ↑                           |
+              └─── remediation loop ──────┘
+```
 
 ## Agent Self-Development
 Throughout this security assessment process, continuously develop your capabilities:
