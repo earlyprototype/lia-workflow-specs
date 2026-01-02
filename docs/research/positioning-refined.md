@@ -285,4 +285,70 @@ It's:
 
 ---
 
-*Thoughts? What resonates?*
+## Critical Review
+
+### What's Wrong With "Clarity. Depth. Trust."
+
+| Issue | Problem | Severity |
+|-------|---------|----------|
+| **Generic** | Any company could claim this. Banks, consultants, Salesforce. | ❌ Critical |
+| **No verb energy** | Three nouns. Static. Passive. | ⚠️ Medium |
+| **"Trust" is loaded** | In AI context, sounds defensive. Better to earn than ask. | ⚠️ Medium |
+| **Doesn't say what we do** | Developer landing here has no idea what Lia is | ❌ Critical |
+| **"One step at a time" = slow** | In a ship-fast market, sounds cautious | ⚠️ Medium |
+| **"Partnership" overused** | Every AI tool claims this now | ❌ Critical |
+| **No tension or edge** | Too safe. No enemy. No point of view. | ❌ Critical |
+| **"Future" is vague** | Aspirational fluff without specificity | ⚠️ Medium |
+
+**Overall Grade**: Safe but not compelling. Won't offend, won't convert.
+
+---
+
+### What's Actually Distinctive About Lia?
+
+| Reality | Current Positioning |
+|---------|---------------------|
+| Multi-dimensional systematic scanning | Not mentioned |
+| Glass-box transparency (see every step) | Vaguely "clarity" |
+| Specs that teach, not just execute | Hidden behind "depth" |
+| Against vibe coding / shallow AI | No enemy stated |
+| TOML-based, tool-agnostic | Not mentioned |
+| Brownfield-aware (wtf.toml, investigate) | Not mentioned |
+
+---
+
+### Stronger Alternatives to Explore
+
+**The Enemy Approach:**
+> "Because 'just ask AI' isn't a strategy."
+
+**The Distinctive Capability:**
+> "See every dimension. Miss nothing."
+
+**The Transparency Play:**
+> "The AI workflow you can see through."
+
+**The Anti-Vibe-Coding:**
+> "Vibe coding broke prod. Now what?"
+
+---
+
+### The Hard Question
+
+**What would make someone choose Lia over Spec Kit (59k stars)?**
+
+Possible answers:
+- "Because you want to understand, not just ship"
+- "Because you're working on something that matters"
+- "Because you've been burned by AI garbage before"
+- "Because you need to see every step"
+
+---
+
+### Status
+
+**Positioning**: Work in progress. Core values identified (Clarity, Depth, Trust) but expression needs edge and specificity. Parking for now to focus on product development.
+
+---
+
+*Document updated with critical review*

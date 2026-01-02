@@ -52,6 +52,9 @@ Rules:
 - **Silent Mode**: Complete all workflow steps autonomously using best practices and reasonable defaults
 
 ### 1. Task Analysis and Planning
+
+**Context Marker**: Start your response with `LIA-DEV-1️⃣` to confirm context is loaded.
+
 First, analyze the development request and create a comprehensive plan for implementation.
 
 **Constraints:**
@@ -69,6 +72,9 @@ First, analyze the development request and create a comprehensive plan for imple
 - **Silent Mode**: The model MUST make reasonable assumptions if plan details are unclear and record all assumptions in the 0-notepad.md file
 
 ### 2. Environment and Setup
+
+**Context Marker**: Start your response with `LIA-DEV-2️⃣` to confirm context is loaded.
+
 Ensure the development environment is properly configured and all dependencies are available.
 
 **Constraints:**
@@ -85,6 +91,14 @@ Ensure the development environment is properly configured and all dependencies a
 - **Silent Mode**: The model MUST proceed with reasonable setup assumptions and record any assumptions in the 0-notepad.md file
 
 ### 3. Implementation
+
+**Context Marker**: Start your response with `LIA-DEV-3️⃣` to confirm context is loaded.
+
+**Scope Check**: Before implementing, verify:
+- [ ] This is the simplest solution that meets requirements
+- [ ] No unnecessary abstractions
+- [ ] No speculative features
+
 Systematically implement the feature, fix the bug, or create the testing framework following best practices.
 
 **Constraints:**
@@ -103,6 +117,9 @@ Systematically implement the feature, fix the bug, or create the testing framewo
 - **Silent Mode**: The model MUST proceed with implementation decisions and record any assumptions in the 0-notepad.md file
 
 ### 4. Testing and Quality Assurance
+
+**Context Marker**: Start your response with `LIA-DEV-4️⃣` to confirm context is loaded.
+
 Implement comprehensive testing to ensure the solution works correctly and meets requirements.
 
 **Constraints:**
@@ -122,6 +139,9 @@ Implement comprehensive testing to ensure the solution works correctly and meets
 - **Silent Mode**: The model MUST proceed with testing decisions and record any assumptions in the 0-notepad.md file
 
 ### 5. Documentation and Handover
+
+**Context Marker**: Start your response with `LIA-DEV-5️⃣` to confirm context is loaded.
+
 Create comprehensive documentation for future developers and users.
 
 **Constraints:**
@@ -141,6 +161,9 @@ Create comprehensive documentation for future developers and users.
 - The model SHOULD reference notepad additions when they provide valuable context
 
 ### 6. Deployment and Validation
+
+**Context Marker**: Start your response with `LIA-DEV-6️⃣` to confirm context is loaded.
+
 Deploy the solution and validate it works in the target environment.
 
 **Constraints:**
@@ -156,15 +179,63 @@ Deploy the solution and validate it works in the target environment.
 - **Collaboration Mode**: The model MUST iterate on the deployment based on user feedback until the user explicitly approves it
 - **Silent Mode**: The model MUST proceed with deployment decisions and record any assumptions in the 0-notepad.md file
 
+### 7. Proof Artifact (Before Commit)
+
+**Context Marker**: Start your response with `LIA-DEV-7️⃣` to confirm context is loaded.
+
+Before committing changes, create a proof artifact documenting evidence of completion.
+
+**Constraints:**
+- The model MUST create a '.lia/dev/{task_name}/proof-artifact.md' file with:
+
+```markdown
+# Proof Artifact: {task_name}
+**Created**: {timestamp}
+**Status**: Ready for commit
+
+## Acceptance Criteria Verification
+- [ ] Criterion 1: {evidence - test output, screenshot, or verification}
+- [ ] Criterion 2: {evidence}
+- [ ] Criterion 3: {evidence}
+
+## Tests Passing
+\`\`\`
+{test output or CI status}
+\`\`\`
+
+## No Regressions
+- [ ] Existing tests still pass
+- [ ] No new warnings introduced
+- [ ] Performance not degraded (if applicable)
+
+## Security Checklist
+- [ ] No hardcoded secrets or credentials
+- [ ] Input validation present (if applicable)
+- [ ] Auth/authz checked (if applicable)
+
+## Scope Verification
+- [ ] Implementation matches original requirements
+- [ ] No scope creep beyond approved plan
+- [ ] No speculative features added
+
+## Reviewer Notes
+{Any context for human review}
+```
+
+- The model MUST verify all checkboxes before proceeding to commit
+- If any verification fails, the model MUST document the issue and return to the relevant phase
+
 ## Workflow Diagram
 ```mermaid
 graph TD
-    A[Start: Development Request] --> B[Task Analysis & Planning]
-    B --> C[Environment & Setup]
-    C --> D[Implementation]
-    D --> E[Testing & QA]
-    E --> F[Documentation]
-    F --> G[Deployment & Validation]
+    A[Start: Development Request] --> B[1. Task Analysis & Planning]
+    B --> C[2. Environment & Setup]
+    C --> D[3. Implementation]
+    D --> E[4. Testing & QA]
+    E --> F[5. Documentation]
+    F --> G[6. Deployment & Validation]
+    G --> H[7. Proof Artifact]
+    H --> I[Commit]
     
     B --> [*] : Update
     C --> [*] : Update
