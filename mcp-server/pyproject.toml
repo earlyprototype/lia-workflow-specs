@@ -40,3 +40,9 @@ lia-mcp-server = "lia_workflow_mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/lia_workflow_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/lia_workflow_mcp"]
+
+[tool.hatch.build]
+sources = ["src"]

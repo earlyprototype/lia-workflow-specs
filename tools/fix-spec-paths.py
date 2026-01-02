@@ -14,9 +14,6 @@ from pathlib import Path
 def fix_windows_paths(content: str) -> str:
     """Replace hardcoded Windows paths with portable alternatives."""
     
-    # Pattern to match Windows paths like C:\Users\...\docs\
-    windows_path_pattern = r'C:\\Users\\[^\\]+\\Desktop\\AI\\POC\\Development\\v0\.7\\docs\\'
-    
     # Replacement patterns
     replacements = [
         # Main docs folder

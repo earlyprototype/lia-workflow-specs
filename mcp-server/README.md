@@ -35,13 +35,7 @@ The server provides tools for working with specs:
 
 ## Installation
 
-### Using pip
-
-```bash
-pip install lia-workflow-specs-mcp
-```
-
-### From source
+### From source (recommended)
 
 ```bash
 cd mcp-server
@@ -64,30 +58,18 @@ Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json`
 {
   "mcpServers": {
     "lia-workflow-specs": {
-      "command": "lia-mcp-server",
-      "env": {
-        "LIA_SPECS_DIR": "/path/to/your/specs"
-      }
-    }
-  }
-}
-```
-
-### Using with Python
-
-```json
-{
-  "mcpServers": {
-    "lia-workflow-specs": {
-      "command": "python",
+      "command": "python3",
       "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "LIA_SPECS_DIR": "/path/to/your/specs"
+        "LIA_SPECS_DIR": "${HOME}/.lia/specs"
       }
     }
   }
 }
 ```
+
+> **Alternative:** If installed via pip, you can use the console script directly:
+> `"command": "lia-mcp-server"` (without args)
 
 ### Using with Cursor
 
@@ -97,9 +79,10 @@ Add to your Cursor MCP settings:
 {
   "mcpServers": {
     "lia-workflow-specs": {
-      "command": "lia-mcp-server",
+      "command": "python3",
+      "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "LIA_SPECS_DIR": "/path/to/your/specs"
+        "LIA_SPECS_DIR": "${workspaceFolder}/specs"
       }
     }
   }

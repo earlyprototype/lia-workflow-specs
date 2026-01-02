@@ -271,7 +271,7 @@ Follow these instructions for user requests related to feature archaeology tasks
 ## Executing Instructions
 - Before executing any archaeological tasks, ALWAYS ensure you have read:
   - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
-  - Development context from ${WORKSPACE}/docs/ or ./docs/development/Blueprint-1/Phase-1/New-Implementations/
+  - Development context from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/wtf/{task_name}/*.md files for the current task
   - Historical chat logs from .chats/ directory for development context
 - Look at the task details and current progress

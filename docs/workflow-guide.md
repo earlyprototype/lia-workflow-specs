@@ -343,6 +343,34 @@ Approval gates ensure:
 
 ---
 
+## Path Variables
+
+### Understanding ${WORKSPACE}
+
+Workflow specs reference documentation using portable path patterns:
+
+```
+${WORKSPACE}/docs/ or ./docs/
+```
+
+**What ${WORKSPACE} means:**
+- `${WORKSPACE}` - The root directory of your project/workspace
+- `./docs/` - Relative path fallback for local execution
+
+**When to use each:**
+| Context | Path to Use |
+|---------|-------------|
+| Global installation | `${WORKSPACE}/docs/` resolves to your workspace root |
+| Local/project install | `./docs/` resolves relative to current directory |
+| MCP server | Set via `LIA_SPECS_DIR` environment variable |
+
+**Common Referenced Paths:**
+- `${WORKSPACE}/docs/` - Main documentation folder
+- `${WORKSPACE}/docs/development/blueprint-1/phase-1/new-implementations/` - New feature docs
+- `${WORKSPACE}/docs/development/blueprint-1/phase-1/proposals-for-review/` - Proposals awaiting review
+
+---
+
 ## Artifact System
 
 ### Artifact Structure

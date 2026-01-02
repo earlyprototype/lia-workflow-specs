@@ -143,11 +143,33 @@ class TestGenerateQuickReference:
     """Tests for quick reference generation."""
     
     def test_generate_with_specs(self):
-        # This test would need the spec_collection to be populated
-        # For now, we test the function exists and returns a string
+        """Test quick reference generation with controlled test data."""
         from lia_workflow_mcp.server import spec_collection
+        from lia_workflow_mcp.models import WorkflowSpec, SpecCategory
+        from pathlib import Path
         
-        result = generate_quick_reference()
-        assert isinstance(result, str)
-        assert "# Lia Workflow Specs Quick Reference" in result
-        assert "## Overview" in result
+        # Store original specs
+        original_specs = spec_collection.specs
+        
+        try:
+            # Populate with controlled test data
+            spec_collection.specs = [
+                WorkflowSpec(
+                    name="test-dev",
+                    filename="dev.toml",
+                    filepath=Path("/tmp/dev.toml"),
+                    category=SpecCategory.DEVELOPMENT,
+                    description="Test development workflow",
+                    prompt="Prompt",
+                    tags=["development"],
+                ),
+            ]
+            
+            result = generate_quick_reference()
+            assert isinstance(result, str)
+            assert "# Lia Workflow Specs Quick Reference" in result
+            assert "## Overview" in result
+            assert "test-dev" in result
+        finally:
+            # Restore original specs
+            spec_collection.specs = original_specs

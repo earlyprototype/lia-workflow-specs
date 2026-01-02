@@ -217,7 +217,7 @@ Follow these instructions for user requests related to troubleshooting tasks. Th
 ## Executing Instructions
 - Before executing any troubleshooting tasks, ALWAYS ensure you have read:
   - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
-  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/Blueprint-1/Phase-1/New-Implementations/
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/troubleshoot/{task_name}/*.md files for the current task
 - Look at the task details and current progress
 - If the requested task has sub-tasks, always start with the sub tasks
