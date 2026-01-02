@@ -1,10 +1,8 @@
-# Getting Started with Lia: The AI Slow-Code Framework
+# Getting Started with Lia
 
-> **Understand what you're building.**
+> New to slow-code? See [What is Slow-Code?](README.md#-what-is-slow-code) in our README.
 
-Welcome to **slow-code** — deliberate AI development that prioritises understanding over speed. While "vibe coding" ships fast and breaks things, slow-code ensures you finish knowing *why* your code works, not just *that* it works.
-
-This guide will help you start using Lia's workflow specs to transform your AI assistant from a code generator into a teaching partner.
+This guide will help you start using Lia's workflow specs in 5 minutes.
 
 ---
 
