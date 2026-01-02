@@ -8,7 +8,6 @@ from specs/_common/workflow-triggers.toml.
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
-import os
 
 try:
     import tomli

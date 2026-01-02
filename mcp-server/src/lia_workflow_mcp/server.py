@@ -190,7 +190,7 @@ async def read_resource(uri: str) -> ResourceContents:
     parts = path.split("/")
     
     if len(parts) >= 2:
-        category = parts[0]
+        _category = parts[0]  # Extracted but used implicitly via spec lookup
         spec_name = parts[1]
         is_metadata = len(parts) == 3 and parts[2] == "metadata"
         
@@ -923,7 +923,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> Sequence[TextConten
         for chain in chains:
             output.append(f"## {chain.name.replace('_', ' ').title()}")
             output.append(f"{chain.description}")
-            output.append(f"")
+            output.append("")
             output.append(f"**Sequence**: {' → '.join(chain.sequence)}")
             output.append("")
         
@@ -1256,7 +1256,7 @@ def suggest_workflow_sequence(task_description: str) -> str:
     
     # Build output
     output = [
-        f"# Suggested Workflow Sequences",
+        "# Suggested Workflow Sequences",
         f"**Task**: {task_description}",
         "",
     ]

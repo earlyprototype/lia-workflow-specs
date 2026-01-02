@@ -109,7 +109,8 @@ jobs:
       
       - name: Validate all specs
         run: |
-          python tools/spec-validator.py specs/
+          # Validate workflow specs (excluding _common which contains config/template files)
+          python tools/spec-validator.py specs/development specs/quality specs/problem-solving specs/research specs/knowledge specs/strategy
 
   integration:
     name: Integration Test
