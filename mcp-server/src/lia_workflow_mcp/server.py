@@ -2,6 +2,29 @@
 MCP Server for Lia Workflow Specs.
 
 Provides resources and tools for remote agent access to workflow specifications.
+This server enables AI agents to discover, read, validate, and execute
+systematic development workflows through the Model Context Protocol (MCP).
+
+Features:
+    - 37+ resources for accessing spec content and metadata
+    - 11+ tools for searching, recommending, and validating specs
+    - 20+ prompt templates for starting workflow sessions
+    - Workflow chaining based on trigger definitions
+
+Example:
+    Configure in Claude Desktop:
+    
+    ```json
+    {
+      "mcpServers": {
+        "lia-workflow-specs": {
+          "command": "python3",
+          "args": ["-m", "lia_workflow_mcp.server"],
+          "env": {"LIA_SPECS_DIR": "/path/to/specs"}
+        }
+      }
+    }
+    ```
 """
 
 import asyncio
@@ -25,13 +48,15 @@ from mcp.types import (
 )
 
 from .models import SpecCollection, SpecCategory, WorkflowSpec
+from .triggers import TriggerManager
 
 
 # Initialise MCP server
 server = Server("lia-workflow-specs")
 
-# Global spec collection
+# Global spec collection and trigger manager
 spec_collection = SpecCollection()
+trigger_manager = TriggerManager()
 
 
 def get_specs_directory() -> Path:
@@ -55,9 +80,16 @@ def get_specs_directory() -> Path:
 
 
 def initialise_specs():
-    """Initialise the spec collection."""
+    """
+    Initialise the spec collection and trigger manager.
+    
+    Loads all workflow specs from the specs directory and configures
+    the trigger manager for workflow chaining recommendations.
+    """
+    global trigger_manager
     specs_dir = get_specs_directory()
     spec_collection.load_from_directory(specs_dir)
+    trigger_manager = TriggerManager(specs_dir)
 
 
 # ============================================================================
@@ -645,6 +677,32 @@ async def list_tools() -> list[Tool]:
                 "required": ["task_description"],
             },
         ),
+        Tool(
+            name="get_workflow_chain",
+            description="Get the recommended workflow chain starting from a specific workflow, based on trigger definitions.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "start_workflow": {
+                        "type": "string",
+                        "description": "Name of the starting workflow",
+                    },
+                    "end_workflow": {
+                        "type": "string",
+                        "description": "Optional target end workflow",
+                    },
+                },
+                "required": ["start_workflow"],
+            },
+        ),
+        Tool(
+            name="list_workflow_chains",
+            description="List all predefined workflow chains for common development patterns.",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+            },
+        ),
     ]
 
 
@@ -813,6 +871,63 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> Sequence[TextConten
         task_desc = arguments.get("task_description", "")
         sequence = suggest_workflow_sequence(task_desc)
         return [TextContent(type="text", text=sequence)]
+    
+    elif name == "get_workflow_chain":
+        start = arguments.get("start_workflow", "")
+        end = arguments.get("end_workflow")
+        
+        chain = trigger_manager.build_custom_chain(start, end)
+        if not chain or chain == [start]:
+            # Fallback to next workflows
+            next_wfs = trigger_manager.get_next_workflows(start)
+            if next_wfs:
+                chain = [start] + next_wfs[:2]
+        
+        output = [
+            f"# Workflow Chain from {start}",
+            "",
+            f"**Sequence**: {' → '.join(chain)}",
+            "",
+            "## Chain Details",
+            "",
+        ]
+        
+        for wf in chain:
+            outputs = trigger_manager.get_workflow_outputs(wf)
+            inputs = trigger_manager.get_workflow_inputs(wf)
+            output.append(f"### {wf}")
+            if inputs:
+                output.append(f"- **Requires**: {', '.join(inputs)}")
+            if outputs:
+                output.append(f"- **Provides**: {', '.join(outputs)}")
+            output.append("")
+        
+        return [TextContent(type="text", text="\n".join(output))]
+    
+    elif name == "list_workflow_chains":
+        chains = trigger_manager.get_all_chains()
+        
+        if not chains:
+            return [TextContent(
+                type="text",
+                text="No predefined chains found. Ensure specs/_common/workflow-triggers.toml exists.",
+            )]
+        
+        output = [
+            "# Predefined Workflow Chains",
+            "",
+            "These are common workflow sequences for typical development patterns:",
+            "",
+        ]
+        
+        for chain in chains:
+            output.append(f"## {chain.name.replace('_', ' ').title()}")
+            output.append(f"{chain.description}")
+            output.append(f"")
+            output.append(f"**Sequence**: {' → '.join(chain.sequence)}")
+            output.append("")
+        
+        return [TextContent(type="text", text="\n".join(output))]
     
     else:
         return [TextContent(

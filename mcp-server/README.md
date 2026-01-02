@@ -30,6 +30,8 @@ The server provides tools for working with specs:
 | `validate_spec` | Validate a spec file |
 | `get_spec_prompt` | Get the full prompt text for a spec |
 | `compare_specs` | Compare two specs |
+| `get_workflow_chain` | Get chained workflow sequence |
+| `list_workflow_chains` | List predefined workflow chains |
 
 ## Installation
 
@@ -190,6 +192,41 @@ Once configured, you can use prompts directly:
 > "Use the start-spec prompt for: Create a REST API for user management"
 
 The MCP client will automatically fill in the prompt template and start the workflow.
+
+---
+
+## Workflow Chaining
+
+The server supports workflow chaining based on trigger definitions in `specs/_common/workflow-triggers.toml`.
+
+### Predefined Chains
+
+| Chain | Sequence |
+|-------|----------|
+| Development | research → spec → dev → test |
+| Quality | review → security → optimize |
+| Problem Solving | troubleshoot → investigate → dev |
+| API Development | spec → integrate → test → docs |
+| Security Audit | review → security → dev → test |
+
+### Using Chains
+
+```python
+# Get a workflow chain starting from 'spec'
+result = await call_tool("get_workflow_chain", {"start_workflow": "spec"})
+# Returns: spec → dev → test → review → ...
+
+# List all predefined chains
+result = await call_tool("list_workflow_chains", {})
+```
+
+### Trigger Definitions
+
+Each workflow defines:
+- `on_complete`: Recommended follow-up workflows
+- `can_chain_from`: Workflows that can precede this one
+- `provides`: Outputs/artifacts produced
+- `requires`: Inputs/artifacts needed
 
 ---
 
