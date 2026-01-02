@@ -290,6 +290,42 @@ Guides systematic feature archaeology workflows for analysing mysterious or poor
 
 ---
 
+### 17. recon.toml
+**Purpose:** Strategic Landscape Reconnaissance
+
+Guides systematic landscape reconnaissance for discovering, analysing, and synthesising intelligence about technology ecosystems, competitive spaces, and market landscapes before making strategic decisions.
+
+**Key Capabilities:**
+- Multi-dimensional search taxonomy creation
+- Systematic scanning across 8-12 dimensions
+- Tiered discovery classification (Dominant → Major → Growing → Emerging)
+- Deep dive analysis on category leaders
+- Pattern extraction across projects
+- Gap and opportunity analysis
+- Competitive positioning assessment
+- Strategic recommendations with priority actions
+
+**When to Use:** When entering a new technology space, evaluating competitive landscapes, making build-vs-buy decisions, or needing comprehensive ecosystem understanding before strategic planning.
+
+---
+
+### 18. constitution.toml
+**Purpose:** Project Standards and Governance Definition
+
+Guides systematic definition of project-wide standards, principles, and quality gates that govern all development activities. Inspired by the industry-standard "constitution" pattern.
+
+**Key Capabilities:**
+- Project context and stakeholder analysis
+- Code standards definition (style, quality, patterns)
+- Quality gate establishment (testing, documentation, review)
+- Process rule definition (branching, commits, dependencies)
+- AI collaboration guidelines
+- Governance and enforcement mechanisms
+
+**When to Use:** When starting a new project, establishing team standards, onboarding AI assistants, or formalising development governance.
+
+---
+
 ## Common Workflow Characteristics
 
 ### Operating Modes
