@@ -95,22 +95,22 @@ checkpoint_interval = "per_phase"
 #
 # ---
 #
-# ## 🧠 Key Insights & Discoveries
+# ## KEY INSIGHTS & DISCOVERIES
 # <!-- Unexpected findings, patterns, or "aha moments" -->
 #
-# ## 🔧 Technical Notes & Implementation Details  
+# ## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 # <!-- Technical considerations, constraints, implementation details -->
 #
-# ## 💡 Ideas & Future Enhancements
+# ## IDEAS & FUTURE ENHANCEMENTS
 # <!-- Ideas, improvements, enhancement opportunities -->
 #
-# ## 🔗 Cross-System Connections
+# ## CROSS-SYSTEM CONNECTIONS
 # <!-- Links to other components, related work, architectural insights -->
 #
-# ## 📝 User Notes
+# ## USER NOTES
 # <!-- Space for user to add their own observations -->
 #
-# ## 🤖 LLM Observations
+# ## LLM OBSERVATIONS
 # <!-- AI-generated insights about patterns and strategies -->
 #
 # ---
@@ -174,7 +174,7 @@ checkpoint_interval = "per_phase"
 # Before implementing any solution, apply the scope check:
 #
 # ```markdown
-# ### Scope Check 🔍
+# ### Scope Check
 # Before proceeding with implementation:
 # - [ ] This is the simplest solution that meets requirements
 # - [ ] No unnecessary abstractions or indirection
@@ -182,9 +182,9 @@ checkpoint_interval = "per_phase"
 # - [ ] No speculative features ("might need later")
 # - [ ] A developer new to the project could understand this
 #
-# **Complexity Assessment**: 🟢 Minimal | 🟡 Reasonable | 🔴 Over-engineered
+# **Complexity Assessment**: [GREEN] Minimal | [YELLOW] Reasonable | [RED] Over-engineered
 #
-# **If 🔴 Over-engineered**:
+# **If [RED] Over-engineered**:
 # 1. Document what could be simplified
 # 2. Simplify before proceeding
 # 3. Record removed complexity in notepad
@@ -224,13 +224,13 @@ checkpoint_interval = "per_phase"
 #
 # ```markdown
 # ### Confidence Assessment
-# **Decision confidence**: 🟢 High | 🟡 Medium | 🔴 Low
+# **Decision confidence**: [HIGH] | [MEDIUM] | [LOW]
 #
-# 🟢 **High**: Clear requirements, proven pattern, minimal uncertainty
-# 🟡 **Medium**: Some assumptions made, edge cases possible, may need revision
-# 🔴 **Low**: Significant uncertainty, multiple valid approaches, user review needed
+# [HIGH]: Clear requirements, proven pattern, minimal uncertainty
+# [MEDIUM]: Some assumptions made, edge cases possible, may need revision
+# [LOW]: Significant uncertainty, multiple valid approaches, user review needed
 #
-# **If 🔴 Low**: Pause and list uncertainties for user review before proceeding.
+# **If [LOW]**: Pause and list uncertainties for user review before proceeding.
 # ```
 
 # =============================================================================
@@ -238,13 +238,13 @@ checkpoint_interval = "per_phase"
 # =============================================================================
 #
 # Immediately stop and consult the user if:
-# - 🔴 Circular logic or infinite loop detected
-# - 🔴 3+ consecutive failed correction attempts  
-# - 🔴 Scope has grown >50% beyond original estimate
-# - 🔴 Security or data safety concern identified
-# - 🔴 Missing critical information after 2 clarification attempts
-# - 🔴 Conflicting requirements that cannot be resolved
-# - 🔴 Task requires capabilities not available
+# - [ABORT] Circular logic or infinite loop detected
+# - [ABORT] 3+ consecutive failed correction attempts  
+# - [ABORT] Scope has grown >50% beyond original estimate
+# - [ABORT] Security or data safety concern identified
+# - [ABORT] Missing critical information after 2 clarification attempts
+# - [ABORT] Conflicting requirements that cannot be resolved
+# - [ABORT] Task requires capabilities not available
 
 # =============================================================================
 # CHECKPOINT MARKERS
@@ -275,17 +275,17 @@ checkpoint_interval = "per_phase"
 # Use markers at the start of phase responses to detect context rot:
 #
 # ```markdown
-# LIA-P{N}️⃣ Starting Phase {N}: {Phase Name}...
+# LIA-{WORKFLOW}-{N} Starting Phase {N}: {Phase Name}...
 # ```
 #
 # If the marker disappears from responses, context has been lost.
 # Reload the spec or summarise current state to restore context.
 #
 # Markers by workflow:
-# - DEV: LIA-DEV️⃣
-# - SPEC: LIA-SPEC️⃣
-# - TEST: LIA-TEST️⃣
-# - REVIEW: LIA-REVIEW️⃣
+# - DEV: LIA-DEV-{N}
+# - SPEC: LIA-SPEC-{N}
+# - TEST: LIA-TEST-{N}
+# - REVIEW: LIA-REVIEW-{N}
 # - (etc.)
 
 # =============================================================================
@@ -340,13 +340,13 @@ checkpoint_interval = "per_phase"
 #
 # Valid backups are ALTERNATIVE REASONING PATHS, not retries:
 #
-# ✅ Valid backup examples:
+# VALID backup examples:
 # - "If documentation incomplete, inspect source code directly"
 # - "If unit tests insufficient, try integration testing approach"
 # - "If automated analysis fails, apply manual heuristics"
 # - "If primary API unavailable, use alternative data source"
 #
-# ❌ Invalid backup examples:
+# INVALID backup examples:
 # - "Try again" (NOT a valid backup)
 # - "Retry with same approach" (NOT a valid backup)
 # - "Run the same command again" (NOT a valid backup)
@@ -445,7 +445,7 @@ checkpoint_interval = "per_phase"
 # ### Criticality Assessment
 # - Total steps: {N}
 # - Critical steps: {M} ({percentage}%)
-# - Balance: 🟢 Appropriate | 🟡 Review needed | 🔴 Rebalance required
+# - Balance: [GREEN] Appropriate | [YELLOW] Review needed | [RED] Rebalance required
 #
 # **Critical step rationale**:
 # - Step X: Critical because {reason}
@@ -490,7 +490,7 @@ checkpoint_interval = "per_phase"
 # Before starting workflow execution (optional but recommended):
 #
 # ```markdown
-# ### Pre-Flight Check ✈️
+# ### Pre-Flight Check
 # - [ ] Objective clearly stated
 # - [ ] Required context available (codebase, docs, dependencies)
 # - [ ] Output location confirmed (.lia/{workflow}/{task}/)

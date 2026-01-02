@@ -102,6 +102,7 @@ Analyze the collected information to identify the underlying cause of the issue.
   - Final root cause determination with supporting evidence
 - The model MUST ask the user to review and approve the root cause analysis before proceeding
 - The model MUST iterate on the analysis based on user feedback until the user explicitly approves it
+- **Alternative Reasoning**: If analysis approach fails, try a genuinely different approach (e.g., if log analysis fails, try code inspection; if static analysis fails, try runtime debugging). See `base-workflow.toml` for ALTERNATIVE REASONING BACKUPS pattern.
 
 ### 4. Solution Development and Planning
 Develop a comprehensive solution plan to resolve the identified root cause. Demonstrate your strategic thinking and planning capabilities by creating robust, well-thought-out solutions.
@@ -135,6 +136,7 @@ Implement the solution and thoroughly test to ensure the issue is resolved. Show
 - The model MUST ensure the solution resolves the original issue before proceeding
 - The model MUST ask the user to review and approve the implementation before proceeding
 - The model MUST iterate on the implementation based on user feedback until the user explicitly approves it
+- **Verification Before Status**: Before claiming "Fixed", verify with evidence. "I wrote the fix" does not equal "It's fixed". See `base-workflow.toml` for full verification checklist.
 
 ### 6. Verification and Monitoring
 Verify the solution is working correctly and establish monitoring to prevent recurrence. Demonstrate your thoroughness and forward-thinking approach by ensuring long-term success and prevention.
@@ -260,22 +262,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected troubleshooting findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Problem symptoms, diagnostic findings, technical considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Prevention ideas, system improvements, troubleshooting enhancements -->
 
-## 🔗 Cross-System Connections
+## CROSS-SYSTEM CONNECTIONS
 <!-- Links to other system components, related issues, architectural insights -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own troubleshooting observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about problem patterns and resolution strategies -->
 
 ---

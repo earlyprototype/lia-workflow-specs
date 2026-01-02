@@ -121,7 +121,7 @@ Create `0-notepad.md` with this structure:
    - [ ] What are the obvious market leaders?
    - [ ] What adjacent spaces might be relevant?
 
-### Scope Check 🔍
+### Scope Check
 - [ ] Target is specific enough to be actionable
 - [ ] Boundaries are clear but not artificially narrow
 - [ ] Objectives tie to real decisions
@@ -326,9 +326,9 @@ Deep analysis of 15-25 key projects with pattern extraction.
 
 ### Confidence Assessment
 Rate confidence in findings:
-- 🟢 **High**: Multiple sources confirm, clear data
-- 🟡 **Medium**: Strong signals but gaps remain
-- 🔴 **Low**: Preliminary, needs validation
+- [HIGH]: Multiple sources confirm, clear data
+- [MEDIUM]: Strong signals but gaps remain
+- [LOW]: Preliminary, needs validation
 
 ### Output
 `landscape-analysis.md` - Full findings
@@ -344,7 +344,7 @@ Rate confidence in findings:
 # Landscape Analysis: [Target Space]
 **Reconnaissance Date**: [Date]
 **Analyst**: [Who/What conducted]
-**Confidence**: 🟢/🟡/🔴
+**Confidence**: [HIGH/MEDIUM/LOW]
 
 ## Executive Summary
 [3-5 bullet points of key findings]
@@ -443,10 +443,10 @@ Rate confidence in findings:
 ## ABORT CONDITIONS
 
 Stop and consult the user if:
-- 🔴 Search APIs rate-limited before adequate coverage
-- 🔴 Landscape is so large it requires scope narrowing
-- 🔴 Critical information is paywalled/inaccessible
-- 🔴 Findings significantly contradict stated assumptions
+- [ABORT] Search APIs rate-limited before adequate coverage
+- [ABORT] Landscape is so large it requires scope narrowing
+- [ABORT] Critical information is paywalled/inaccessible
+- [ABORT] Findings significantly contradict stated assumptions
 
 ---
 

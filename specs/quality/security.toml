@@ -279,22 +279,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected security findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Security vulnerabilities, hardening techniques, technical considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Security improvements, hardening opportunities, enhancement suggestions -->
 
-## 🔗 Cross-System Connections
+## CROSS-SYSTEM CONNECTIONS
 <!-- Links to other system components, related security concerns, architectural insights -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own security observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about security patterns and hardening strategies -->
 
 ---

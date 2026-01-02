@@ -127,7 +127,7 @@ Document findings in notepad under "Project Overview" section.
    - [ ] Preferred patterns and idioms
    - [ ] Anti-patterns to avoid
 
-### Scope Check 🔍
+### Scope Check
 Before finalising:
 - [ ] Standards are achievable, not aspirational
 - [ ] Rules are clear and unambiguous
@@ -205,7 +205,7 @@ Draft "Process Rules" section of constitution.
    - [ ] Recommend file location (e.g., `PROJECT_STANDARDS.md`, `CONSTITUTION.md`)
    - [ ] Suggest how to onboard new contributors
 
-### Final Scope Check 🔍
+### Final Scope Check
 - [ ] Constitution is concise (not a novel)
 - [ ] Every rule is actionable
 - [ ] No "nice to have" aspirational rules
@@ -246,9 +246,9 @@ Draft "Process Rules" section of constitution.
 ## ABORT CONDITIONS
 
 Stop and consult the user if:
-- 🔴 Project has complex existing standards that conflict
-- 🔴 Requirements are ambiguous after clarification
-- 🔴 Scope exceeds what can be documented clearly
+- [ABORT] Project has complex existing standards that conflict
+- [ABORT] Requirements are ambiguous after clarification
+- [ABORT] Scope exceeds what can be documented clearly
 
 ---
 

@@ -65,7 +65,7 @@ Rules:
 
 ### 1. Requirement Gathering
 
-**Context Marker**: Start your response with `LIA-SPEC-1️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-SPEC-1` to confirm context is loaded.
 
 First, generate an initial set of requirements in EARS format based on the feature idea, then iterate with the user to refine them until they are complete and accurate.
 
@@ -127,7 +127,7 @@ This section should have EARS requirements
 
 ### 2. Create Feature Design Document
 
-**Context Marker**: Start your response with `LIA-SPEC-2️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-SPEC-2` to confirm context is loaded.
 
 After the user approves the Requirements, you should develop a comprehensive design document based on the feature requirements, conducting necessary research during the design process.
 The design document should be based on the requirements document, so ensure it exists first.
@@ -166,7 +166,7 @@ The design document should be based on the requirements document, so ensure it e
 
 ### 3. Create Task List
 
-**Context Marker**: Start your response with `LIA-SPEC-3️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-SPEC-3` to confirm context is loaded.
 
 **Scope Check**: Before creating tasks, verify:
 - [ ] Tasks are independently testable where possible
@@ -407,22 +407,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected specification findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Technical requirements, specification constraints, implementation considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Specification improvements, requirement enhancements, design opportunities -->
 
-## 🔗 Cross-Specification Connections
+## CROSS-SPECIFICATION CONNECTIONS
 <!-- Links to other specifications, related requirements, architectural insights -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own specification observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about specification patterns and development strategies -->
 
 ---

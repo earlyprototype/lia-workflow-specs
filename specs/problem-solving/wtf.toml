@@ -315,22 +315,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected archaeological findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Technical debt, architectural insights, implementation considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Integration ideas, improvement opportunities, enhancement possibilities -->
 
-## 🔗 Cross-System Connections
+## CROSS-SYSTEM CONNECTIONS
 <!-- Links to other system components, related features, architectural decisions -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own archaeological observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about feature evolution and integration strategies -->
 
 ---

@@ -40,7 +40,7 @@ Rules:
 
 ### 1. Task Analysis and Planning
 
-**Context Marker**: Start your response with `LIA-DEV-1️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-1` to confirm context is loaded.
 
 First, analyze the development request and create a comprehensive plan for implementation.
 
@@ -60,7 +60,7 @@ First, analyze the development request and create a comprehensive plan for imple
 
 ### 2. Environment and Setup
 
-**Context Marker**: Start your response with `LIA-DEV-2️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-2` to confirm context is loaded.
 
 Ensure the development environment is properly configured and all dependencies are available.
 
@@ -79,7 +79,7 @@ Ensure the development environment is properly configured and all dependencies a
 
 ### 3. Implementation
 
-**Context Marker**: Start your response with `LIA-DEV-3️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-3` to confirm context is loaded.
 
 **Scope Check**: Before implementing, verify:
 - [ ] This is the simplest solution that meets requirements
@@ -102,10 +102,12 @@ Systematically implement the feature, fix the bug, or create the testing framewo
 - **Collaboration Mode**: The model MUST ask the user to review and approve the implementation before proceeding
 - **Collaboration Mode**: The model MUST iterate on the implementation based on user feedback until the user explicitly approves it
 - **Silent Mode**: The model MUST proceed with implementation decisions and record any assumptions in the 0-notepad.md file
+- **Troubleshooting Escalation**: If implementation fails after 3 attempts, STOP and switch to `troubleshoot.toml` (see `base-workflow.toml` for full escalation protocol)
+- **Alternative Reasoning**: If an approach fails, try a genuinely different approach, not a retry (see `base-workflow.toml` ALTERNATIVE REASONING BACKUPS)
 
 ### 4. Testing and Quality Assurance
 
-**Context Marker**: Start your response with `LIA-DEV-4️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-4` to confirm context is loaded.
 
 Implement comprehensive testing to ensure the solution works correctly and meets requirements.
 
@@ -127,7 +129,7 @@ Implement comprehensive testing to ensure the solution works correctly and meets
 
 ### 5. Documentation and Handover
 
-**Context Marker**: Start your response with `LIA-DEV-5️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-5` to confirm context is loaded.
 
 Create comprehensive documentation for future developers and users.
 
@@ -149,7 +151,7 @@ Create comprehensive documentation for future developers and users.
 
 ### 6. Deployment and Validation
 
-**Context Marker**: Start your response with `LIA-DEV-6️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-6` to confirm context is loaded.
 
 Deploy the solution and validate it works in the target environment.
 
@@ -168,7 +170,7 @@ Deploy the solution and validate it works in the target environment.
 
 ### 7. Proof Artifact (Before Commit)
 
-**Context Marker**: Start your response with `LIA-DEV-7️⃣` to confirm context is loaded.
+**Context Marker**: Start your response with `LIA-DEV-7` to confirm context is loaded.
 
 Before committing changes, create a proof artifact documenting evidence of completion.
 
@@ -291,22 +293,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected development findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Code issues, technical debt, implementation considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Feature ideas, development improvements, optimization opportunities -->
 
-## 🔗 Cross-Component Connections
+## CROSS-COMPONENT CONNECTIONS
 <!-- Links to other code components, related development tasks -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own development observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about code patterns and development decisions -->
 
 ---

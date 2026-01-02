@@ -283,22 +283,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected integration findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- API constraints, integration challenges, technical considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Integration improvements, API enhancements, connectivity opportunities -->
 
-## 🔗 Cross-System Connections
+## CROSS-SYSTEM CONNECTIONS
 <!-- Links to other systems, related integrations, architectural decisions -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own integration observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about integration patterns and API design -->
 
 ---

@@ -87,9 +87,9 @@ Add to `base-workflow.toml`:
 ```
 
 **Acceptance Criteria**:
-- [ ] Pattern documented in `base-workflow.toml`
-- [ ] Referenced in `dev.toml` and `troubleshoot.toml`
-- [ ] Example added to documentation
+- [x] Pattern documented in `base-workflow.toml`
+- [x] Referenced in `dev.toml` and `troubleshoot.toml`
+- [x] Example added to documentation
 
 ---
 
@@ -119,9 +119,9 @@ Add to `base-workflow.toml`:
 ```
 
 **Acceptance Criteria**:
-- [ ] Three strategies documented in `base-workflow.toml`
-- [ ] Strategy selection prompt in workflow start
-- [ ] Integration with abort conditions
+- [x] Three strategies documented in `base-workflow.toml`
+- [x] Strategy selection prompt in workflow start
+- [x] Integration with abort conditions
 
 ---
 
@@ -154,9 +154,9 @@ Add to `base-workflow.toml`:
 ```
 
 **Acceptance Criteria**:
-- [ ] Verification checkpoint template in `base-workflow.toml`
-- [ ] Integration with proof artifacts in `dev.toml`
-- [ ] Referenced in `troubleshoot.toml`
+- [x] Verification checkpoint template in `base-workflow.toml`
+- [x] Integration with proof artifacts in `dev.toml`
+- [x] Referenced in `troubleshoot.toml`
 
 ---
 
@@ -182,9 +182,9 @@ Add to `base-workflow.toml` and `spec.toml`:
 ```
 
 **Acceptance Criteria**:
-- [ ] Guidance documented in `base-workflow.toml`
-- [ ] Referenced in `spec.toml` task breakdown phase
-- [ ] Example criticality assessment added
+- [x] Guidance documented in `base-workflow.toml`
+- [x] Referenced in `spec.toml` task breakdown phase
+- [x] Example criticality assessment added
 
 ---
 
@@ -213,9 +213,9 @@ Add to `dev.toml` and `base-workflow.toml`:
 ```
 
 **Acceptance Criteria**:
-- [ ] Escalation path documented in `base-workflow.toml`
-- [ ] Integration point in `dev.toml` Phase 4
-- [ ] Cross-reference to troubleshooting specs
+- [x] Escalation path documented in `base-workflow.toml`
+- [x] Integration point in `dev.toml` Phase 3 (Implementation)
+- [x] Cross-reference to troubleshooting specs
 
 ---
 
@@ -393,10 +393,10 @@ Create/enhance spec validator:
 ## Success Criteria
 
 ### Phase 1 Complete When:
-- [ ] All 5 Spec_Engine patterns integrated
-- [ ] `base-workflow.toml` updated
-- [ ] `dev.toml` includes troubleshooting escalation
-- [ ] Documentation updated
+- [x] All 5 Spec_Engine patterns integrated
+- [x] `base-workflow.toml` updated
+- [x] `dev.toml` includes troubleshooting escalation
+- [x] Documentation updated
 
 ### Phase 2 Complete When:
 - [ ] `security.toml` enhanced

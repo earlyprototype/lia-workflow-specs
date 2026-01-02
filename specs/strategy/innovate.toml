@@ -470,22 +470,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected innovation opportunities, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Technical constraints, implementation considerations, architectural insights -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Creative ideas, innovation opportunities, enhancement possibilities -->
 
-## 🔗 Cross-Component Connections
+## CROSS-COMPONENT CONNECTIONS
 <!-- Links to other system components, synergy opportunities -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own innovation observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about innovation patterns and creative opportunities -->
 
 ---

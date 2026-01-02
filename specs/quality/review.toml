@@ -290,22 +290,22 @@ When creating the 0-notepad.md file, use this template:
 
 ---
 
-## 🧠 Key Insights & Discoveries
+## KEY INSIGHTS & DISCOVERIES
 <!-- Unexpected code findings, patterns, or "aha moments" -->
 
-## 🔧 Technical Notes & Implementation Details  
+## TECHNICAL NOTES & IMPLEMENTATION DETAILS  
 <!-- Code quality issues, architectural insights, technical considerations -->
 
-## 💡 Ideas & Future Enhancements
+## IDEAS & FUTURE ENHANCEMENTS
 <!-- Improvement opportunities, refactoring ideas, enhancement suggestions -->
 
-## 🔗 Cross-Code Connections
+## CROSS-CODE CONNECTIONS
 <!-- Links to other code components, related patterns, architectural insights -->
 
-## 📝 User Notes
+## USER NOTES
 <!-- Space for user to add their own review observations -->
 
-## 🤖 LLM Observations
+## LLM OBSERVATIONS
 <!-- AI-generated insights about code patterns and quality improvements -->
 
 ---
