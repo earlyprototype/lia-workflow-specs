@@ -1,12 +1,14 @@
-# Lia Commands Overview
+# Lia: The AI Slow-Code Framework
 
 > **Understand what you're building.**
 
-This document provides a comprehensive overview of all 18 workflow specs in Lia. Each spec is designed to help you **understand** what you're building, not just execute faster.
+This document provides a comprehensive overview of all 18 workflow specs in Lia — the **slow-code** framework for deliberate AI development.
+
+**What is Slow-Code?** A counter-movement to "vibe coding." While vibe coding ships fast and breaks things, slow-code prioritises understanding over speed. You finish knowing *why* it works, not just *that* it works.
 
 **Core Philosophy**: Transparent, phase-by-phase workflows that leave you more knowledgeable than before.
 
-**Competitive Advantage**: Our troubleshooting ecosystem (`troubleshoot`, `wtf`, `investigate`) solves what other tools can't — the "Troubleshooting Cliff" where AI succeeds at creation but fails at debugging.
+**Competitive Advantage**: Our troubleshooting ecosystem (`troubleshoot`, `wtf`, `investigate`) solves the "Troubleshooting Cliff" — where AI succeeds at creation but fails at debugging.
 
 ---
 

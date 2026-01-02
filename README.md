@@ -1,8 +1,8 @@
-# Lia Workflow Specs
+# Lia: The AI Slow-Code Framework
 
 > **Understand what you're building.**
 
-Transparent, phase-by-phase workflows that help you learn, not just execute. While other tools race towards autonomous AI execution, Lia helps developers **comprehend** what they're creating.
+While "vibe coding" ships fast and breaks things, **slow-code** is deliberate AI development that prioritises understanding over speed. Every phase visible. Every decision documented. You finish knowing *why* it works, not just *that* it works.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Specs](https://img.shields.io/badge/specs-18-green.svg)](#workflow-specifications)
@@ -10,26 +10,30 @@ Transparent, phase-by-phase workflows that help you learn, not just execute. Whi
 
 ---
 
-## 🎯 What Is Lia?
+## 🎯 What Is Slow-Code?
 
-Lia is **the educational SDD framework that prioritises understanding over execution**.
+**Slow-code** is a counter-movement to "vibe coding" — the practice of rapidly generating AI code without understanding it.
 
-In a market racing towards autonomous AI ("AI does the work"), Lia helps developers **understand what they're building**. Every workflow is transparent, phase-by-phase, and designed to leave you more knowledgeable than before.
+| Vibe Coding | Slow-Code |
+|-------------|-----------|
+| "AI does the work for you" | "AI teaches you while you work" |
+| Ship fast, fix later | Understand first, ship confidently |
+| Black box execution | Glass box transparency |
+| Hope it works | Know why it works |
+| Debugging is pain | Debugging is structured |
 
-### Core Philosophy
+### Why Slow-Code?
 
-| Others Say | Lia Says |
-|------------|----------|
-| "AI does the work for you" | "AI teaches you to work" |
-| "Move fast" | "Understand deeply" |
-| "Black box execution" | "Glass box transparency" |
-| "Ship faster" | "Build confidently" |
+1. **Vibe coding creates debt** — Fast AI output without understanding compounds into maintenance nightmares
+2. **The Troubleshooting Cliff** — AI tools achieve ~100% success creating code, then fail catastrophically debugging it
+3. **Understanding is speed** — Developers who understand their code ship faster long-term
 
 ### What Makes Lia Different
 
+- **🐢 Slow-Code Philosophy** — Deliberate, phase-by-phase development
 - **🔍 Transparency** — Every phase visible, every decision documented
-- **📚 Educational DNA** — Learning specs (`learn.toml`, `research.toml`, `paper.toml`)
 - **🔧 Troubleshooting First** — Structured debugging when others leave you stranded
+- **📚 Educational DNA** — Learning specs (`learn.toml`, `research.toml`, `paper.toml`)
 - **🛠️ Tool Agnostic** — TOML works in Cursor, Claude, Windsurf, anywhere
 - **📦 Simplicity** — Single files, no complex multi-file sync
 

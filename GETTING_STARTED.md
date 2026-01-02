@@ -1,6 +1,10 @@
-# Getting Started with Lia Workflow Specs
+# Getting Started with Lia: The AI Slow-Code Framework
 
-Welcome! This guide will help you start using workflow specs to transform your AI assistant into a systematic collaborator.
+> **Understand what you're building.**
+
+Welcome to **slow-code** — deliberate AI development that prioritises understanding over speed. While "vibe coding" ships fast and breaks things, slow-code ensures you finish knowing *why* your code works, not just *that* it works.
+
+This guide will help you start using Lia's workflow specs to transform your AI assistant from a code generator into a teaching partner.
 
 ---
 
