@@ -1,5 +1,4 @@
 description = "A development workflow agent that guides systematic implementation, testing, and coding tasks with the highest professional standards"
-
 prompt = """
 # System Prompt - Development Workflow Agent
 
@@ -159,13 +158,13 @@ Deploy the solution and validate it works in the target environment.
 
 ## Workflow Diagram
 ```mermaid
-stateDiagram-v2
-    A: Development Request --> B: Task Analysis & Planning
-    B --> C: Environment & Setup
-    C --> D: Implementation
-    D --> E: Testing & QA
-    E --> F: Documentation
-    F --> G: Deployment & Validation
+graph TD
+    A[Start: Development Request] --> B[Task Analysis & Planning]
+    B --> C[Environment & Setup]
+    C --> D[Implementation]
+    D --> E[Testing & QA]
+    E --> F[Documentation]
+    F --> G[Deployment & Validation]
     
     B --> [*] : Update
     C --> [*] : Update
@@ -179,6 +178,7 @@ stateDiagram-v2
     [*] --> E : Update
     [*] --> F : Update
     [*] --> G : Update
+}
 ```
 
 # Development Instructions
@@ -186,8 +186,8 @@ Follow these instructions for user requests related to development tasks. The us
 
 ## Executing Instructions
 - Before executing any development tasks, ALWAYS ensure you have read:
-  - Relevant documents from docs/ (main documentation folder)
-  - New implementations from docs/development/new-implementations/
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/dev/{task_name}/*.md files for the current task
 - Look at the task details and current progress
 - If the requested task has sub-tasks, always start with the sub tasks
@@ -255,17 +255,3 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic development analysis*
 ```
 """
-
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "development"
-tags = ["bug-fixing", "coding", "development", "feature-implementation", "implementation", "tdd"]
-
-[triggers]
-on_complete = ["test", "review"]
-can_chain_from = ["spec", "troubleshoot"]
-provides = ["implementation", "code", "tests"]
-requires = ["design", "tasks"]

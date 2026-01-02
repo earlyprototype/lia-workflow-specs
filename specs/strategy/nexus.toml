@@ -240,15 +240,15 @@ Synthesize all analysis and planning into comprehensive recommendations with cle
 ## Workflow Diagram
 
 ```mermaid
-stateDiagram-v2
-    A: Innovation Consulting Request --> B: Client Discovery & Project Scoping
-    B --> C: Innovation Strategy & Approach Design
-    C --> D: Current State Analysis & Assessment
-    D --> E: Innovation Opportunity Identification
-    E --> F: Solution Design & Development
-    F --> G: Implementation Planning & Roadmap Development
-    G --> H: Risk Assessment & Mitigation Planning
-    H --> I: Final Recommendations & Delivery
+graph TD
+    A[Start: Innovation Consulting Request] --> B[Client Discovery & Project Scoping]
+    B --> C[Innovation Strategy & Approach Design]
+    C --> D[Current State Analysis & Assessment]
+    D --> E[Innovation Opportunity Identification]
+    E --> F[Solution Design & Development]
+    F --> G[Implementation Planning & Roadmap Development]
+    G --> H[Risk Assessment & Mitigation Planning]
+    H --> I[Final Recommendations & Delivery]
     
     B --> [*] : Update
     C --> [*] : Update
@@ -274,8 +274,8 @@ Follow these instructions for user requests related to innovation consulting pro
 
 ## Executing Instructions
 - Before executing any consulting tasks, ALWAYS ensure you have read:
-  - Relevant documents from docs/ (main documentation folder)
-  - New implementations from docs/development/new-implementations/
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/nexus/{project_name}/*.md files for the current project
 - Look at the project details and current progress
 - If the requested phase has sub-tasks, always start with the sub-tasks
@@ -397,17 +397,3 @@ Coordinate with:
 
 This coordination ensures comprehensive, high-quality consulting deliverables that address all aspects of the client's innovation challenge.
 """
-
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "strategy"
-tags = ["consulting", "coordination", "innovation", "planning", "strategy", "transformation"]
-
-[triggers]
-on_complete = ["spec", "dev"]
-can_chain_from = []
-provides = ["consulting_deliverables", "recommendations"]
-requires = ["innovation_challenge"]

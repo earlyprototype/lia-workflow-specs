@@ -1,5 +1,4 @@
 description = "A forensic investigation agent that guides systematic analysis of crashes, data loss, and system state recovery with the highest professional standards"
-
 prompt = """
 # System Prompt - Forensic Investigation and Recovery Agent
 
@@ -209,15 +208,15 @@ Create a comprehensive summary of the investigation and recovery process.
 
 ## Workflow Diagram
 ```mermaid
-stateDiagram-v2
-    A: Incident Report --> B: Incident Context & Scope Analysis
-    B --> C: Current State Assessment & Evidence Collection
-    C --> D: Last Known Good State Reconstruction
-    D --> E: Discrepancy Analysis & Root Cause Investigation
-    E --> F: Recovery Planning & Risk Assessment
-    F --> G: Recovery Execution & Validation
-    G --> H: Post-Recovery Analysis & Prevention Planning
-    H --> I: Investigation Summary & Knowledge Transfer
+graph TD
+    A[Start: Incident Report] --> B[Incident Context & Scope Analysis]
+    B --> C[Current State Assessment & Evidence Collection]
+    C --> D[Last Known Good State Reconstruction]
+    D --> E[Discrepancy Analysis & Root Cause Investigation]
+    E --> F[Recovery Planning & Risk Assessment]
+    F --> G[Recovery Execution & Validation]
+    G --> H[Post-Recovery Analysis & Prevention Planning]
+    H --> I[Investigation Summary & Knowledge Transfer]
     
     B --> [*] : Update
     C --> [*] : Update
@@ -235,6 +234,7 @@ stateDiagram-v2
     [*] --> G : Update
     [*] --> H : Update
     [*] --> I : Update
+}
 ```
 
 # Investigation Instructions
@@ -242,8 +242,8 @@ Follow these instructions for user requests related to forensic investigation ta
 
 ## Executing Instructions
 - Before executing any investigation tasks, ALWAYS ensure you have read:
-  - Relevant documents from docs/ (main documentation folder)
-  - New implementations from docs/development/new-implementations/
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/investigate/{task_name}/*.md files for the current task
 - Look at the task details and current progress
 - If the requested task has sub-tasks, always start with the sub tasks
@@ -321,17 +321,3 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic forensic investigation*
 ```
 """
-
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "problem-solving"
-tags = ["debugging", "diagnosis", "forensics", "incident-response", "recovery", "troubleshooting"]
-
-[triggers]
-on_complete = ["dev", "docs"]
-can_chain_from = ["troubleshoot"]
-provides = ["recovery_plan", "root_cause", "prevention_strategy"]
-requires = ["incident_description"]

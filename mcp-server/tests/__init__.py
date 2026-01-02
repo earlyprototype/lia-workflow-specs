@@ -1,1 +1,1 @@
-"""Tests for workflow specs MCP server."""
+# Tests for Lia Workflow Specs MCP Server

@@ -1,61 +1,45 @@
-# Workflow Specs MCP Server
+# Lia Workflow Specs MCP Server
 
-MCP (Model Context Protocol) server that provides remote agent access to **Lia Workflow Specifications** for systematic AI-powered development workflows.
-
-## Overview
-
-This MCP server enables AI agents and tools to connect remotely to the Lia Workflow Specs repository, providing:
-
-- **Resources**: Browse and read workflow specifications
-- **Tools**: Search, validate, and get metadata about specs
-- **Prompts**: Execute workflows with pre-built prompt templates
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server that provides remote agent access to Lia Workflow Specifications. This enables AI agents to discover, read, and utilise systematic development workflows.
 
 ## Features
 
 ### Resources
 
+The server exposes workflow specs as MCP resources:
+
 | Resource URI | Description |
-|-------------|-------------|
-| `specs://catalogue` | Complete catalogue of all specs organised by category |
-| `specs://category/{name}` | All specs in a specific category |
-| `specs://spec/{category}/{name}` | Individual spec content |
+|--------------|-------------|
+| `specs://index` | Complete index of all workflow specs |
+| `specs://categories` | List of categories and their specs |
+| `specs://summary` | Quick reference guide for all workflows |
+| `specs://{category}/{name}` | Full prompt for a specific spec |
+| `specs://{category}/{name}/metadata` | Metadata and structure for a spec |
 
 ### Tools
 
+The server provides tools for working with specs:
+
 | Tool | Description |
 |------|-------------|
-| `list_specs` | List all available specs with optional category filter |
-| `get_spec` | Get full content of a specific spec |
-| `get_spec_prompt` | Get only the prompt instructions from a spec |
-| `validate_spec` | Validate a spec for correctness and completeness |
 | `search_specs` | Search specs by keyword |
-| `get_spec_metadata` | Get structured metadata (phases, constraints, etc.) |
-| `get_categories` | List all available categories |
-| `compare_specs` | Compare two specs side-by-side |
-| `suggest_workflow` | Get workflow suggestions based on task description |
-
-### Prompts
-
-Execute any workflow spec with:
-- `execute_dev` - Development workflow
-- `execute_spec` - Specification workflow  
-- `execute_review` - Code review workflow
-- `execute_test` - Testing workflow
-- ... and more for all 16 specs
+| `recommend_workflow` | Get workflow recommendations based on task description |
+| `get_spec_details` | Get detailed information about a spec |
+| `list_specs_by_category` | List all specs in a category |
+| `get_workflow_phases` | Get phases for a workflow |
+| `validate_spec` | Validate a spec file |
+| `get_spec_prompt` | Get the full prompt text for a spec |
+| `compare_specs` | Compare two specs |
+| `get_workflow_chain` | Get chained workflow sequence |
+| `list_workflow_chains` | List predefined workflow chains |
 
 ## Installation
 
-### From Source
+### From source (recommended)
 
 ```bash
 cd mcp-server
 pip install -e .
-```
-
-### Using pip (when published)
-
-```bash
-pip install workflow-specs-mcp
 ```
 
 ## Configuration
@@ -64,35 +48,41 @@ pip install workflow-specs-mcp
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `WORKFLOW_SPECS_DIR` | Path to the specs directory | `../specs` |
+| `LIA_SPECS_DIR` | Path to specs directory | Auto-detected |
 
 ### Claude Desktop Configuration
 
-Add to your Claude Desktop config (`claude_desktop_config.json`):
+Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json` on Linux, `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS):
 
 ```json
 {
   "mcpServers": {
-    "workflow-specs": {
-      "command": "workflow-specs-mcp",
+    "lia-workflow-specs": {
+      "command": "python3",
+      "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "WORKFLOW_SPECS_DIR": "/path/to/lia-workflow-specs/specs"
+        "LIA_SPECS_DIR": "${HOME}/.lia/specs"
       }
     }
   }
 }
 ```
 
-### Using with uvx
+> **Alternative:** If installed via pip, you can use the console script directly:
+> `"command": "lia-mcp-server"` (without args)
+
+### Using with Cursor
+
+Add to your Cursor MCP settings:
 
 ```json
 {
   "mcpServers": {
-    "workflow-specs": {
-      "command": "uvx",
-      "args": ["workflow-specs-mcp"],
+    "lia-workflow-specs": {
+      "command": "python3",
+      "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "WORKFLOW_SPECS_DIR": "/path/to/specs"
+        "LIA_SPECS_DIR": "${workspaceFolder}/specs"
       }
     }
   }
@@ -101,76 +91,170 @@ Add to your Claude Desktop config (`claude_desktop_config.json`):
 
 ## Usage Examples
 
-### Listing Available Specs
+### Discovering Workflows
 
-```python
-# Using the list_specs tool
-result = await client.call_tool("list_specs", {})
-# Returns all specs organised by category
+An agent can ask: "What workflow should I use to implement a new feature?"
 
-# Filter by category
-result = await client.call_tool("list_specs", {"category": "development"})
+The `recommend_workflow` tool will suggest:
+1. `spec` - For requirements and design
+2. `dev` - For implementation
+
+### Reading a Workflow
+
+An agent can read the full workflow spec:
+
+```
+Resource: specs://development/spec
 ```
 
-### Getting a Spec
-
-```python
-# Get full spec content
-result = await client.call_tool("get_spec", {"name": "dev", "category": "development"})
-
-# Get just the prompt
-result = await client.call_tool("get_spec_prompt", {"name": "spec"})
-```
+This returns the complete prompt that defines the workflow phases, constraints, and execution instructions.
 
 ### Searching Specs
 
 ```python
-# Search by keyword
-result = await client.call_tool("search_specs", {"query": "testing"})
+# Tool call: search_specs
+{"query": "security"}
 
-# Search within a category
-result = await client.call_tool("search_specs", {
-    "query": "security",
-    "category": "quality"
-})
+# Returns specs matching "security":
+# - security.toml (Security Assessment & Hardening)
+# - review.toml (includes security review phase)
 ```
 
 ### Validating Specs
 
 ```python
-result = await client.call_tool("validate_spec", {"name": "dev"})
-# Returns: {is_valid, errors, warnings, info}
+# Tool call: validate_spec
+{"spec_name": "dev"}
+
+# Returns validation results:
+# ✓ Found required sections
+# ✓ Contains Mermaid diagram
+# ✓ Has 6 defined phases
+# Status: ✅ VALID
 ```
 
-### Getting Workflow Suggestions
+## Spec Categories
+
+| Category | Description | Specs |
+|----------|-------------|-------|
+| **development** | Implementation and testing | dev, spec, test |
+| **quality** | Code quality and security | review, security, architecture, optimize |
+| **problem-solving** | Debugging and investigation | troubleshoot, investigate, wtf |
+| **research** | Learning and analysis | research, learn, paper |
+| **knowledge** | Documentation | docs |
+| **strategy** | Innovation and integration | innovate, integrate, nexus |
+
+## Prompts
+
+The server provides ready-to-use prompt templates for starting workflows:
+
+### Workflow Starters
+
+Each workflow has a `start-{name}` prompt:
 
 ```python
-result = await client.call_tool("suggest_workflow", {
-    "task_description": "I need to review the code quality of my API"
+# Example: Start a dev workflow
+prompt = get_prompt("start-dev", {
+    "task": "Implement user authentication",
+    "mode": "collaboration"  # or "silent"
 })
-# Returns: suggestions for review.toml, security.toml, etc.
 ```
 
-### Executing a Workflow
+### Helper Prompts
+
+| Prompt | Description | Arguments |
+|--------|-------------|-----------|
+| `choose-workflow` | Help choose the right workflow | `task` |
+| `workflow-sequence` | Plan a sequence for complex projects | `project` |
+| `resume-workflow` | Resume an interrupted workflow | `workflow`, `task_name` |
+
+### Using Prompts with Claude
+
+Once configured, you can use prompts directly:
+
+> "Use the start-spec prompt for: Create a REST API for user management"
+
+The MCP client will automatically fill in the prompt template and start the workflow.
+
+---
+
+## Workflow Chaining
+
+The server supports workflow chaining based on trigger definitions in `specs/_common/workflow-triggers.toml`.
+
+### Predefined Chains
+
+| Chain | Sequence |
+|-------|----------|
+| Development | research → spec → dev → test |
+| Quality | review → security → optimize |
+| Problem Solving | troubleshoot → investigate → dev |
+| API Development | spec → integrate → test → docs |
+| Security Audit | review → security → dev → test |
+
+### Using Chains
 
 ```python
-# Get a workflow execution prompt
-prompt = await client.get_prompt("execute_spec", {
-    "task": "Design a user authentication system",
-    "mode": "collaboration"
-})
+# Get a workflow chain starting from 'spec'
+result = await call_tool("get_workflow_chain", {"start_workflow": "spec"})
+# Returns: spec → dev → test → review → ...
+
+# List all predefined chains
+result = await call_tool("list_workflow_chains", {})
 ```
 
-## Available Categories
+### Trigger Definitions
 
-| Category | Specs | Purpose |
-|----------|-------|---------|
-| `development` | dev, spec, test | Implementation and testing |
-| `quality` | review, architecture, security, optimize | Code quality and architecture |
-| `problem-solving` | troubleshoot, investigate, wtf | Debugging and forensics |
-| `research` | research, learn, paper | Learning and research |
-| `knowledge` | docs | Documentation |
-| `strategy` | innovate, integrate, nexus | Innovation and strategy |
+Each workflow defines:
+- `on_complete`: Recommended follow-up workflows
+- `can_chain_from`: Workflows that can precede this one
+- `provides`: Outputs/artifacts produced
+- `requires`: Inputs/artifacts needed
+
+---
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    MCP Client (AI Agent)                     │
+│                  (Claude, Cursor, etc.)                      │
+└─────────────────────────┬───────────────────────────────────┘
+                          │ MCP Protocol (stdio)
+┌─────────────────────────▼───────────────────────────────────┐
+│                    MCP Server                                │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │              Resource Handlers                       │    │
+│  │  • specs://index       → Index all specs            │    │
+│  │  • specs://categories  → List categories            │    │
+│  │  • specs://{cat}/{name}→ Read spec prompt           │    │
+│  └─────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │                Tool Handlers                         │    │
+│  │  • search_specs       → Keyword search              │    │
+│  │  • recommend_workflow → Task-based recommendation   │    │
+│  │  • validate_spec      → Spec validation             │    │
+│  │  • compare_specs      → Spec comparison             │    │
+│  └─────────────────────────────────────────────────────┘    │
+│  ┌─────────────────────────────────────────────────────┐    │
+│  │              Spec Collection                         │    │
+│  │  • Loads .toml files from specs directory           │    │
+│  │  • Parses phases and constraints                    │    │
+│  │  • Provides search and filtering                    │    │
+│  └─────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                   Specs Directory                            │
+│  specs/                                                      │
+│  ├── development/  (dev.toml, spec.toml, test.toml)         │
+│  ├── quality/      (review.toml, security.toml, ...)        │
+│  ├── problem-solving/ (troubleshoot.toml, investigate.toml) │
+│  ├── research/     (research.toml, learn.toml, paper.toml)  │
+│  ├── knowledge/    (docs.toml)                              │
+│  └── strategy/     (innovate.toml, integrate.toml, nexus)   │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ## Development
 
@@ -181,69 +265,63 @@ pip install -e ".[dev]"
 pytest
 ```
 
-### Code Formatting
+### Running the Server Directly
 
 ```bash
-ruff check .
-ruff format .
+# Set specs directory
+export LIA_SPECS_DIR=/path/to/specs
+
+# Run server
+python -m lia_workflow_mcp.server
 ```
 
-### Building
+### Adding New Tools
 
-```bash
-pip install build
-python -m build
-```
-
-## API Reference
-
-### SpecMetadata
+Extend `server.py` to add new tools:
 
 ```python
-@dataclass
-class SpecMetadata:
-    name: str              # Spec name (e.g., "dev")
-    path: str              # Relative path to spec file
-    category: str          # Category (e.g., "development")
-    description: str       # Spec description
-    phases: list[str]      # List of workflow phases
-    constraints: dict      # Count of MUST/SHOULD/MAY constraints
-    has_mermaid_diagram: bool
-    has_notepad_template: bool
-    modes: list[str]       # ["collaboration", "silent"]
-    output_directory: str  # e.g., ".lia/dev/"
+@server.list_tools()
+async def list_tools() -> list[Tool]:
+    return [
+        # ... existing tools
+        Tool(
+            name="my_new_tool",
+            description="Description of what it does",
+            inputSchema={...},
+        ),
+    ]
+
+@server.call_tool()
+async def call_tool(name: str, arguments: dict) -> Sequence[TextContent]:
+    if name == "my_new_tool":
+        # Implementation
+        pass
 ```
 
-### ValidationResult
+## Troubleshooting
+
+### Server Not Finding Specs
+
+Ensure `LIA_SPECS_DIR` points to the correct directory containing `.toml` spec files.
+
+### Connection Issues
+
+1. Check the server is running: `lia-mcp-server`
+2. Verify the MCP client configuration
+3. Check stderr for server logs
+
+### Invalid Spec Errors
+
+Use the `validate_spec` tool to check spec formatting:
 
 ```python
-@dataclass
-class ValidationResult:
-    is_valid: bool
-    errors: list[str]      # Critical issues
-    warnings: list[str]    # Recommended improvements
-    info: list[str]        # Informational messages
+{"name": "validate_spec", "arguments": {"spec_name": "your-spec"}}
 ```
 
-## Architecture
+## Licence
 
-```
-mcp-server/
-├── pyproject.toml           # Package configuration
-├── README.md                # This file
-└── src/
-    └── workflow_specs_mcp/
-        ├── __init__.py      # Package init
-        ├── server.py        # MCP server implementation
-        └── spec_loader.py   # Spec loading utilities
-```
+MIT Licence - see [LICENSE](../LICENSE) for details.
 
-## License
+## Contributing
 
-MIT License - see the main repository LICENSE file.
-
-## Related
-
-- [Lia Workflow Specs](../) - Main workflow specs repository
-- [MCP Protocol](https://modelcontextprotocol.io/) - Model Context Protocol documentation
-- [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) - Python SDK for MCP
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for contribution guidelines.

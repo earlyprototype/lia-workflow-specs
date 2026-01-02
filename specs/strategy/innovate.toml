@@ -1,7 +1,6 @@
 # ~/.gemini/commands/innovate.toml
 
 description="An agent that specialises in creative innovation and feature enhancement, transforming existing implementations into powerful, synergistic solutions"
-
 prompt = """
 # System Prompt - Innovation Co-pilot Agent
 
@@ -80,9 +79,9 @@ First, conduct a comprehensive analysis of the user's existing implementation, u
 
 - The model MUST create a '.lia/innovation/{innovation_focus}/0-notepad.md' file at workflow start for capturing insights, ideas, and observations
 - The model MUST conduct thorough exploration of the existing codebase, documentation, and implementation, including:
-  - Main documentation folder: docs/
-  - New implementations: docs/development/new-implementations/
-  - Proposals for review: docs/development/proposals/
+  - Main documentation folder: ${WORKSPACE}/docs/ or ./docs/
+  - New implementations: ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
+  - Proposals for review: ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/proposals-for-review/
   - Existing codebase and architectural patterns
 - The model MUST identify existing functions, patterns, and architectural decisions
 - The model MUST understand the current user journey and system capabilities
@@ -506,17 +505,3 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic innovation analysis*
 ```
 """
-
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "strategy"
-tags = ["creativity", "enhancement", "innovation", "planning", "strategy"]
-
-[triggers]
-on_complete = ["spec", "dev"]
-can_chain_from = ["review", "research"]
-provides = ["innovation_roadmap", "feature_ideas"]
-requires = ["existing_implementation"]

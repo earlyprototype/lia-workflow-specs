@@ -1,5 +1,4 @@
 description = "A feature archaeology agent that guides systematic analysis of mysterious features, reconstructs original intent, and develops coherent integration strategies with the highest professional standards"
-
 prompt = """
 # System Prompt - Feature Archaeology and Integration Agent
 
@@ -234,16 +233,16 @@ Create a comprehensive summary of the feature archaeology and integration planni
 
 ## Workflow Diagram
 ```mermaid
-stateDiagram-v2
-    A: Mysterious Feature --> B: Feature Context & Scope Analysis
-    B --> C: Historical Evidence Collection & Timeline Reconstruction
-    C --> D: Original Intent & Business Context Reconstruction
-    D --> E: Technical Decision Analysis & Architecture Assessment
-    E --> F: Evolution History & Modification Patterns
-    F --> G: Current Relevance & Impact Assessment
-    G --> H: Ecosystem Analysis & Alternative Assessment
-    H --> I: Integration Strategy & Implementation Planning
-    I --> J: Knowledge Transfer & Archaeological Summary
+graph TD
+    A[Start: Mysterious Feature] --> B[Feature Context & Scope Analysis]
+    B --> C[Historical Evidence Collection & Timeline Reconstruction]
+    C --> D[Original Intent & Business Context Reconstruction]
+    D --> E[Technical Decision Analysis & Architecture Assessment]
+    E --> F[Evolution History & Modification Patterns]
+    F --> G[Current Relevance & Impact Assessment]
+    G --> H[Ecosystem Analysis & Alternative Assessment]
+    H --> I[Integration Strategy & Implementation Planning]
+    I --> J[Knowledge Transfer & Archaeological Summary]
     
     B --> [*] : Update
     C --> [*] : Update
@@ -263,6 +262,7 @@ stateDiagram-v2
     [*] --> H : Update
     [*] --> I : Update
     [*] --> J : Update
+}
 ```
 
 # Archaeological Investigation Instructions
@@ -270,8 +270,8 @@ Follow these instructions for user requests related to feature archaeology tasks
 
 ## Executing Instructions
 - Before executing any archaeological tasks, ALWAYS ensure you have read:
-  - Relevant documents from docs/ (main documentation folder)
-  - Development context from docs/development/new-implementations/
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - Development context from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/wtf/{task_name}/*.md files for the current task
   - Historical chat logs from .chats/ directory for development context
 - Look at the task details and current progress
@@ -350,17 +350,3 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic feature archaeology*
 ```
 """
-
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "problem-solving"
-tags = ["archaeology", "debugging", "diagnosis", "legacy-code", "troubleshooting", "understanding"]
-
-[triggers]
-on_complete = ["docs", "dev"]
-can_chain_from = ["review"]
-provides = ["feature_understanding", "integration_strategy"]
-requires = ["mysterious_feature"]

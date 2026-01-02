@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "lia-workflow-specs": {
+      "command": "python3",
+      "args": ["-m", "lia_workflow_mcp.server"],
+      "env": {
+        "LIA_SPECS_DIR": "${HOME}/.lia/specs"
+      }
+    }
+  }
+}

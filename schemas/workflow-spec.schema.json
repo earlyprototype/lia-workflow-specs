@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lia-workflows.org/schemas/workflow-spec/v1.json",
+  "title": "Lia Workflow Specification",
+  "description": "Schema for validating Lia workflow specification files",
+  "type": "object",
+  "required": ["description", "prompt"],
+  "properties": {
+    "description": {
+      "type": "string",
+      "minLength": 20,
+      "description": "Brief description of the workflow's purpose"
+    },
+    "prompt": {
+      "type": "string",
+      "minLength": 100,
+      "description": "The full prompt content defining the workflow"
+    },
+    "meta": {
+      "type": "object",
+      "description": "Metadata about the workflow spec",
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version of the spec"
+        },
+        "schema": {
+          "type": "string",
+          "const": "lia-workflow-spec/v1",
+          "description": "Schema identifier"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Workflow name in kebab-case"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["development", "quality", "problem-solving", "research", "knowledge", "strategy"],
+          "description": "Workflow category"
+        },
+        "tags": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Tags for categorisation and search"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author or maintainer"
+        },
+        "min_lia_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Minimum Lia version required"
+        },
+        "changelog": {
+          "type": "string",
+          "description": "Brief changelog entry"
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration options",
+      "properties": {
+        "output_dir": {
+          "type": "string",
+          "description": "Output directory pattern"
+        },
+        "requires_tools": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Required tools"
+        },
+        "resumable": {
+          "type": "boolean",
+          "description": "Whether workflow supports resumption"
+        },
+        "checkpoint_interval": {
+          "type": "string",
+          "enum": ["per_phase", "per_task", "manual"],
+          "description": "How often to create checkpoints"
+        }
+      }
+    },
+    "relationships": {
+      "type": "object",
+      "description": "Relationships with other specs",
+      "properties": {
+        "follows": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Specs that typically precede this one"
+        },
+        "precedes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Specs that typically follow this one"
+        },
+        "related": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Related specs"
+        },
+        "extends": {
+          "type": "string",
+          "description": "Base spec this extends"
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "description": "Workflow phases",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Phase name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Phase description"
+          },
+          "output": {
+            "type": "string",
+            "description": "Output file for this phase"
+          },
+          "approval_required": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether user approval is required"
+          },
+          "constraints": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "MUST/SHOULD/MAY constraints"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "constraint": {
+      "type": "string",
+      "pattern": "^(MUST|SHOULD|MAY|MUST NOT|SHOULD NOT)\\s+.+",
+      "description": "RFC-style constraint"
+    }
+  }
+}

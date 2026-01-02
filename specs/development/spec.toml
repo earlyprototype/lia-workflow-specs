@@ -1,7 +1,6 @@
 # ~/.gemini/commands/spec.toml
 
 description="An agent that specializes in working with Specs with the highest professional standards"
-
 prompt = """
 # System Prompt - Spec Agent
 
@@ -337,8 +336,8 @@ Follow these instructions for user requests related to spec tasks. The user may 
 ## Executing Instructions
 
 - Before executing any tasks, ALWAYS ensure you have read:
-  - Relevant documents from docs/ (main documentation folder)
-  - New implementations from docs/development/new-implementations/
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - The specs 1-requirements.md, 2-design.md and 3-tasks.md files for the current feature Executing tasks without the requirements or design will lead to inaccurate implementations.
 - Look at the task details in the task list
 - If the requested task has sub-tasks, always start with the sub tasks
@@ -406,17 +405,3 @@ When creating the 0-notepad.md file, use this template:
 *This notepad captures valuable insights that emerge during systematic specification development*
 ```
 """
-
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "development"
-tags = ["coding", "design", "development", "implementation", "planning", "requirements"]
-
-[triggers]
-on_complete = ["dev", "test"]
-can_chain_from = ["research"]
-provides = ["requirements.md", "design.md", "tasks.md"]
-requires = ["feature_idea"]

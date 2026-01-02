@@ -1,128 +1,147 @@
-# Workflow Triggers and Composition Schema
-# Defines how workflows can chain and compose with each other
+# Workflow Composition Schema
+# Defines OPTIONAL suggestions for how workflows can complement each other
+#
+# IMPORTANT: Every spec is fully independent. These are suggestions, not dependencies.
+# See docs/workflow-composition.md for full explanation.
 
 [triggers.schema]
 description = """
-Workflow triggers define how specs can chain together:
+Workflow composition hints (all optional, no hard dependencies):
 
-- `on_complete`: Suggestions for follow-up workflows
-- `can_chain_from`: Workflows that can lead into this one
-- `provides`: Outputs this workflow produces
-- `requires`: Inputs this workflow expects
+- `on_complete`: Suggestions for what you might do next (not required)
+- `can_chain_from`: Workflows this naturally follows (not mandatory)
+- `typical_outputs`: Artefacts this workflow commonly produces
+- `works_well_with`: Context that helps (NOT prerequisites - spec works without these)
+
+Every spec can run standalone with just a task description.
 """
 
-# Example trigger definitions for common workflow chains
+# Common workflow chains
 
-[triggers.development_chain]
+[chains.development]
 description = "Feature development chain: research → spec → dev → test"
-chain = ["research", "spec", "dev", "test"]
+sequence = ["research", "spec", "dev", "test"]
 
-[triggers.quality_chain]
+[chains.quality]
 description = "Quality assurance chain: review → security → optimize"
-chain = ["review", "security", "optimize"]
+sequence = ["review", "security", "optimize"]
 
-[triggers.problem_solving_chain]
+[chains.problem_solving]
 description = "Problem solving chain: troubleshoot → investigate → dev"
-chain = ["troubleshoot", "investigate", "dev"]
+sequence = ["troubleshoot", "investigate", "dev"]
 
-[triggers.learning_chain]
+[chains.learning]
 description = "Learning chain: research → learn → dev"
-chain = ["research", "learn", "dev"]
+sequence = ["research", "learn", "dev"]
+
+[chains.api_development]
+description = "API development chain: spec → integrate → test → docs"
+sequence = ["spec", "integrate", "test", "docs"]
+
+[chains.security_audit]
+description = "Security audit chain: review → security → dev → test"
+sequence = ["review", "security", "dev", "test"]
 
 # Per-spec trigger definitions
 
 [triggers.spec]
 on_complete = ["dev", "test"]
 can_chain_from = ["research"]
-provides = ["requirements.md", "design.md", "tasks.md"]
-requires = ["feature_idea"]
+typical_outputs = ["requirements.md", "design.md", "tasks.md"]
+works_well_with = ["feature_idea"]  # Optional context, not a requirement
 
 [triggers.dev]
 on_complete = ["test", "review"]
 can_chain_from = ["spec", "troubleshoot"]
-provides = ["implementation", "code"]
-requires = ["design", "tasks"]
+typical_outputs = ["implementation", "code"]
+works_well_with = ["design", "tasks"]  # Helpful context, works fine without
 
 [triggers.test]
 on_complete = ["review", "deploy"]
 can_chain_from = ["dev"]
-provides = ["test_suite", "coverage_report"]
-requires = ["implementation"]
+typical_outputs = ["test_suite", "coverage_report"]
+works_well_with = ["implementation"]  # Can also test existing code
 
 [triggers.review]
 on_complete = ["optimize", "security", "dev"]
 can_chain_from = ["dev", "test"]
-provides = ["review_report", "recommendations"]
-requires = ["code_to_review"]
+typical_outputs = ["review_report", "recommendations"]
+works_well_with = ["code_to_review"]  # Just point at any code
 
 [triggers.research]
 on_complete = ["spec", "learn"]
 can_chain_from = []
-provides = ["research_findings", "recommendations"]
-requires = ["research_topic"]
+typical_outputs = ["research_findings", "recommendations"]
+works_well_with = ["research_topic"]  # Just describe what to research
 
 [triggers.troubleshoot]
 on_complete = ["dev", "investigate"]
 can_chain_from = ["review"]
-provides = ["diagnosis", "solution"]
-requires = ["problem_description"]
+typical_outputs = ["diagnosis", "solution"]
+works_well_with = ["problem_description"]  # Just describe the problem
 
 [triggers.investigate]
 on_complete = ["dev", "docs"]
 can_chain_from = ["troubleshoot"]
-provides = ["recovery_plan", "root_cause"]
-requires = ["incident_description"]
+typical_outputs = ["recovery_plan", "root_cause"]
+works_well_with = ["incident_description"]  # Just describe the incident
 
 [triggers.learn]
 on_complete = ["dev", "spec"]
 can_chain_from = ["research"]
-provides = ["competency_assessment", "learning_portfolio"]
-requires = ["learning_goal"]
+typical_outputs = ["competency_assessment", "learning_portfolio"]
+works_well_with = ["learning_goal"]  # Just describe what to learn
+
+[triggers.paper]
+on_complete = ["research", "docs"]
+can_chain_from = ["research"]
+typical_outputs = ["paper_analysis", "knowledge_integration"]
+works_well_with = ["paper_to_analyse"]  # Provide paper URL or content
 
 [triggers.innovate]
 on_complete = ["spec", "dev"]
 can_chain_from = ["review", "research"]
-provides = ["innovation_roadmap", "feature_ideas"]
-requires = ["existing_implementation"]
+typical_outputs = ["innovation_roadmap", "feature_ideas"]
+works_well_with = ["existing_implementation"]  # Or start fresh
 
 [triggers.architecture]
 on_complete = ["spec", "dev", "security"]
 can_chain_from = ["research", "review"]
-provides = ["architecture_design", "adr"]
-requires = ["system_requirements"]
+typical_outputs = ["architecture_design", "adr"]
+works_well_with = ["system_requirements"]  # Or describe system goals
 
 [triggers.security]
 on_complete = ["dev", "review"]
 can_chain_from = ["review", "architecture"]
-provides = ["security_assessment", "remediation_plan"]
-requires = ["code_or_architecture"]
+typical_outputs = ["security_assessment", "remediation_plan"]
+works_well_with = ["code_or_architecture"]  # Point at what to assess
 
 [triggers.optimize]
 on_complete = ["test", "review"]
 can_chain_from = ["review", "test"]
-provides = ["optimization_report", "improvements"]
-requires = ["performance_baseline"]
+typical_outputs = ["optimization_report", "improvements"]
+works_well_with = ["performance_baseline"]  # Or profile during workflow
 
 [triggers.docs]
 on_complete = []
 can_chain_from = ["dev", "investigate"]
-provides = ["documentation"]
-requires = ["content_to_document"]
+typical_outputs = ["documentation"]
+works_well_with = ["content_to_document"]  # Point at what to document
 
 [triggers.integrate]
 on_complete = ["test", "docs"]
 can_chain_from = ["spec", "architecture"]
-provides = ["integration_implementation", "api_docs"]
-requires = ["integration_requirements"]
+typical_outputs = ["integration_implementation", "api_docs"]
+works_well_with = ["integration_requirements"]  # Or describe integration
 
 [triggers.nexus]
 on_complete = ["spec", "dev"]
 can_chain_from = []
-provides = ["consulting_deliverables", "recommendations"]
-requires = ["innovation_challenge"]
+typical_outputs = ["consulting_deliverables", "recommendations"]
+works_well_with = ["innovation_challenge"]  # Describe the challenge
 
 [triggers.wtf]
 on_complete = ["docs", "dev"]
 can_chain_from = ["review"]
-provides = ["feature_understanding", "integration_strategy"]
-requires = ["mysterious_feature"]
+typical_outputs = ["feature_understanding", "integration_strategy"]
+works_well_with = ["mysterious_feature"]  # Point at confusing code

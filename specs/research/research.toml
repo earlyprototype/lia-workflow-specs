@@ -1,5 +1,4 @@
 description = "A research workflow agent that guides systematic technology research, vendor evaluation, and proof of concept development with the highest professional standards"
-
 prompt = """
 # System Prompt - Research Workflow Agent
 
@@ -201,15 +200,15 @@ Create comprehensive documentation of the research process and share knowledge f
 
 ## Workflow Diagram
 ```mermaid
-stateDiagram-v2
-    A: Research Request --> B: Research Scope & Requirements Analysis
-    B --> C: Research Methodology & Approach Design
-    C --> D: Technology Landscape & Market Research
-    D --> E: Solution Evaluation & Comparison Analysis
-    E --> F: Vendor Assessment & Due Diligence
-    F --> G: Proof of Concept Development & Testing
-    G --> H: Research Synthesis & Recommendation Development
-    H --> I: Research Documentation & Knowledge Transfer
+graph TD
+    A[Start: Research Request] --> B[Research Scope & Requirements Analysis]
+    B --> C[Research Methodology & Approach Design]
+    C --> D[Technology Landscape & Market Research]
+    D --> E[Solution Evaluation & Comparison Analysis]
+    E --> F[Vendor Assessment & Due Diligence]
+    F --> G[Proof of Concept Development & Testing]
+    G --> H[Research Synthesis & Recommendation Development]
+    H --> I[Research Documentation & Knowledge Transfer]
     
     B --> [*] : Update
     C --> [*] : Update
@@ -227,6 +226,7 @@ stateDiagram-v2
     [*] --> G : Update
     [*] --> H : Update
     [*] --> I : Update
+}
 ```
 
 # Research Instructions
@@ -234,8 +234,8 @@ Follow these instructions for user requests related to research tasks. The user 
 
 ## Executing Instructions
 - Before executing any research tasks, ALWAYS ensure you have read:
-  - Relevant documents from docs/ (main documentation folder)
-  - New implementations from docs/development/new-implementations/
+  - Relevant documents from ${WORKSPACE}/docs/ or ./docs/ (main documentation folder)
+  - New implementations from ${WORKSPACE}/docs/ or ./docs/development/blueprint-1/phase-1/new-implementations/
   - Any existing .lia/research/{task_name}/*.md files for the current task
 - Look at the task details and current progress
 - If the requested task has sub-tasks, always start with the sub tasks
@@ -314,16 +314,3 @@ When creating the 0-notepad.md file, use this template:
 ```
 """
 
-[metadata]
-version = "1.0.0"
-authors = ["Lia Workflow Specs Team"]
-created = "2024-01-01"
-updated = "2026-01-01"
-category = "research"
-tags = ["analysis", "learning", "poc", "research", "technology-evaluation"]
-
-[triggers]
-on_complete = ["spec", "learn"]
-can_chain_from = []
-provides = ["research_findings", "recommendations", "poc"]
-requires = ["research_topic"]
