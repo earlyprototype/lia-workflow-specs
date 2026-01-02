@@ -1,60 +1,79 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220">
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#e94560;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#f39c12;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#00d9ff;stop-opacity:1" />
-    </linearGradient>
+    <!-- CRT scanline effect -->
+    <pattern id="scanlines" patternUnits="userSpaceOnUse" width="4" height="4">
+      <rect width="4" height="2" fill="rgba(0,0,0,0.1)"/>
+    </pattern>
+    <!-- Retro glow -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
   
-  <!-- Background -->
-  <rect width="800" height="200" rx="12" fill="url(#bgGrad)"/>
+  <!-- Terminal background -->
+  <rect width="800" height="220" fill="#0a0a0a"/>
+  <rect width="800" height="220" fill="url(#scanlines)"/>
   
-  <!-- Decorative elements - slow/deliberate dots -->
-  <circle cx="50" cy="100" r="4" fill="#e94560" opacity="0.6"/>
-  <circle cx="80" cy="100" r="4" fill="#f39c12" opacity="0.6"/>
-  <circle cx="110" cy="100" r="4" fill="#00d9ff" opacity="0.6"/>
+  <!-- Border - retro terminal style -->
+  <rect x="8" y="8" width="784" height="204" fill="none" stroke="#33ff33" stroke-width="2" opacity="0.3"/>
+  <rect x="12" y="12" width="776" height="196" fill="none" stroke="#33ff33" stroke-width="1" opacity="0.2"/>
   
-  <!-- Turtle icon (slow-code symbol) -->
-  <g transform="translate(160, 70)">
-    <!-- Shell -->
-    <ellipse cx="30" cy="35" rx="28" ry="20" fill="#2d4a3e" stroke="#4a7c59" stroke-width="2"/>
-    <path d="M10,35 Q30,15 50,35" fill="none" stroke="#4a7c59" stroke-width="2"/>
-    <path d="M15,35 Q30,20 45,35" fill="none" stroke="#4a7c59" stroke-width="1.5"/>
-    <path d="M20,35 Q30,25 40,35" fill="none" stroke="#4a7c59" stroke-width="1"/>
-    <!-- Head -->
-    <ellipse cx="62" cy="38" rx="10" ry="8" fill="#5a8a6a"/>
-    <circle cx="66" cy="36" r="2" fill="#1a1a2e"/>
-    <!-- Legs -->
-    <ellipse cx="12" cy="48" rx="8" ry="5" fill="#5a8a6a"/>
-    <ellipse cx="48" cy="48" rx="8" ry="5" fill="#5a8a6a"/>
-    <ellipse cx="15" cy="22" rx="6" ry="4" fill="#5a8a6a"/>
-    <ellipse cx="45" cy="22" rx="6" ry="4" fill="#5a8a6a"/>
-  </g>
+  <!-- ASCII Turtle - pixel style -->
+  <text x="40" y="55" font-family="'Courier New', monospace" font-size="14" fill="#33ff33" opacity="0.9" filter="url(#glow)">
+    <tspan x="40" dy="0">    ___-------___</tspan>
+    <tspan x="40" dy="16">  _-~~             ~~-_</tspan>
+    <tspan x="40" dy="16"> _-~                   /~-_</tspan>
+    <tspan x="40" dy="16">/~      L   I   A        /~\</tspan>
+    <tspan x="40" dy="16">//                        //\</tspan>
+    <tspan x="40" dy="16">///~`     |       |    '~\//\</tspan>
+    <tspan x="40" dy="16">./  _--_  |  . .  | _--_   \.</tspan>
+    <tspan x="40" dy="16">/_-~    ~-_|  \_/  |_-~    ~-_\</tspan>
+    <tspan x="40" dy="16">~-_       '-_____-'       _-~</tspan>
+    <tspan x="40" dy="16">   ~--_____-==-_____--~</tspan>
+  </text>
   
-  <!-- Main text -->
-  <text x="260" y="95" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="700" fill="url(#textGrad)">Lia</text>
+  <!-- Main title - big pixel font style -->
+  <text x="320" y="70" font-family="'Courier New', monospace" font-size="48" font-weight="bold" fill="#00ffff" filter="url(#glow)">
+    SLOW-CODE
+  </text>
   
-  <!-- Subtitle -->
-  <text x="260" y="135" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="22" fill="#8892a8" font-weight="400">The AI Slow-Code Framework</text>
+  <!-- Subtitle with cursor blink effect -->
+  <text x="320" y="105" font-family="'Courier New', monospace" font-size="16" fill="#33ff33" filter="url(#glow)">
+    &gt; The AI Framework That Thinks First_
+  </text>
   
-  <!-- Tagline -->
-  <text x="260" y="165" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14" fill="#5a6a7a" font-style="italic">Understand what you're building.</text>
+  <!-- ASCII box with tagline -->
+  <text font-family="'Courier New', monospace" font-size="12" fill="#888888">
+    <tspan x="320" y="135">┌────────────────────────────────────────┐</tspan>
+    <tspan x="320" y="150">│  Understand what you're building.      │</tspan>
+    <tspan x="320" y="165">│  Vibe coding is dead. Long live slow.  │</tspan>
+    <tspan x="320" y="180">└────────────────────────────────────────┘</tspan>
+  </text>
   
-  <!-- Right side decorative code brackets -->
-  <g transform="translate(650, 60)" fill="#3a4a5a" opacity="0.4">
-    <text font-family="monospace" font-size="60">{</text>
-  </g>
-  <g transform="translate(720, 60)" fill="#3a4a5a" opacity="0.4">
-    <text font-family="monospace" font-size="60">}</text>
-  </g>
+  <!-- Stats bar - retro terminal style -->
+  <text x="40" y="200" font-family="'Courier New', monospace" font-size="11" fill="#ff6600" filter="url(#glow)">
+    [SPECS:18]
+  </text>
+  <text x="130" y="200" font-family="'Courier New', monospace" font-size="11" fill="#ff00ff" filter="url(#glow)">
+    [TRANSPARENCY:100%]
+  </text>
+  <text x="280" y="200" font-family="'Courier New', monospace" font-size="11" fill="#ffff00" filter="url(#glow)">
+    [VIBE-CODING:REJECTED]
+  </text>
+  <text x="460" y="200" font-family="'Courier New', monospace" font-size="11" fill="#00ff00" filter="url(#glow)">
+    [STATUS:DELIBERATE]
+  </text>
   
-  <!-- Slow indicator dots on right -->
-  <circle cx="690" cy="170" r="3" fill="#e94560" opacity="0.8"/>
-  <circle cx="710" cy="170" r="3" fill="#f39c12" opacity="0.8"/>
-  <circle cx="730" cy="170" r="3" fill="#00d9ff" opacity="0.8"/>
+  <!-- Blinking cursor -->
+  <rect x="633" y="92" width="10" height="18" fill="#33ff33" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0;0.8" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Corner decorations -->
+  <text x="750" y="30" font-family="'Courier New', monospace" font-size="10" fill="#444444">v2.0</text>
+  <text x="20" y="30" font-family="'Courier New', monospace" font-size="10" fill="#444444">~/lia</text>
 </svg>
