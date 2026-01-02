@@ -269,6 +269,63 @@ checkpoint_interval = "per_phase"
 # 4. Continue from the indicated next phase
 
 # =============================================================================
+# CONTEXT VERIFICATION MARKERS
+# =============================================================================
+#
+# Use markers at the start of phase responses to detect context rot:
+#
+# ```markdown
+# LIA-P{N}️⃣ Starting Phase {N}: {Phase Name}...
+# ```
+#
+# If the marker disappears from responses, context has been lost.
+# Reload the spec or summarise current state to restore context.
+#
+# Markers by workflow:
+# - DEV: LIA-DEV️⃣
+# - SPEC: LIA-SPEC️⃣
+# - TEST: LIA-TEST️⃣
+# - REVIEW: LIA-REVIEW️⃣
+# - (etc.)
+
+# =============================================================================
+# PROOF ARTIFACTS
+# =============================================================================
+#
+# Create proof artifacts BEFORE committing. Evidence-driven development:
+#
+# ```markdown
+# # Proof Artifact: {Task ID}
+# **Created**: {timestamp}
+# **Phase**: {phase_number} - {phase_name}
+#
+# ## Acceptance Criteria Met
+# - [x] Criterion 1: {evidence - test output, screenshot, or verification}
+# - [x] Criterion 2: {evidence}
+# - [ ] Criterion 3: {not yet verified - reason}
+#
+# ## Tests Passing
+# ```
+# {test output or CI status}
+# ```
+#
+# ## No Regressions
+# - [ ] Existing tests still pass
+# - [ ] No new warnings introduced
+# - [ ] Performance not degraded
+#
+# ## Security Checklist
+# - [ ] No hardcoded secrets
+# - [ ] Input validation present
+# - [ ] Auth/authz checked (if applicable)
+#
+# ## Reviewer Notes
+# {Any context for human review}
+# ```
+#
+# Store proof artifacts in: `.lia/{workflow}/{task_name}/proofs/`
+
+# =============================================================================
 # DOCUMENT LOCATIONS (Portable paths)
 # =============================================================================
 #
