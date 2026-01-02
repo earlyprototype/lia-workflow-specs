@@ -1,14 +1,10 @@
-# Lia: The AI Slow-Code Framework
+# Lia Specs Reference
 
-> **Understand what you're building.**
+> For an introduction to slow-code, see our [README](README.md).
 
-This document provides a comprehensive overview of all 18 workflow specs in Lia — the **slow-code** framework for deliberate AI development.
+Complete reference for all 18 workflow specs.
 
-**What is Slow-Code?** A counter-movement to "vibe coding." While vibe coding ships fast and breaks things, slow-code prioritises understanding over speed. You finish knowing *why* it works, not just *that* it works.
-
-**Core Philosophy**: Transparent, phase-by-phase workflows that leave you more knowledgeable than before.
-
-**Competitive Advantage**: Our troubleshooting ecosystem (`troubleshoot`, `wtf`, `investigate`) solves the "Troubleshooting Cliff" — where AI succeeds at creation but fails at debugging.
+**Quick Links**: [Problem-Solving](#-problem-solving--diagnosis--our-strength) | [Research](#-research--learning--educational-dna) | [Development](#️-development--implementation) | [Quality](#-code-quality--architecture)
 
 ---
 
