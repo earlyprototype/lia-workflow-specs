@@ -335,6 +335,176 @@ checkpoint_interval = "per_phase"
 # - Any existing .lia/{workflow}/{task_name}/*.md files for the current task
 
 # =============================================================================
+# ALTERNATIVE REASONING BACKUPS (From Spec_Engine Article VII)
+# =============================================================================
+#
+# Valid backups are ALTERNATIVE REASONING PATHS, not retries:
+#
+# ✅ Valid backup examples:
+# - "If documentation incomplete, inspect source code directly"
+# - "If unit tests insufficient, try integration testing approach"
+# - "If automated analysis fails, apply manual heuristics"
+# - "If primary API unavailable, use alternative data source"
+#
+# ❌ Invalid backup examples:
+# - "Try again" (NOT a valid backup)
+# - "Retry with same approach" (NOT a valid backup)
+# - "Run the same command again" (NOT a valid backup)
+#
+# When primary approach fails:
+# 1. Document WHY it failed (not just that it failed)
+# 2. Identify genuinely DIFFERENT approach
+# 3. Apply alternative reasoning path
+# 4. If no genuine alternatives exist, escalate to user
+#
+# The goal is to approach the problem from a different angle,
+# not to repeat the same action hoping for different results.
+
+# =============================================================================
+# ERROR PROPAGATION STRATEGIES (From Spec_Engine Article VIII)
+# =============================================================================
+#
+# At workflow start, select one of three strategies:
+#
+# ```markdown
+# ### Error Propagation Strategy
+# **Selected**: {strategy_name}
+#
+# **Options**:
+# 1. **halt_on_critical** (Production/Security)
+#    - Stop immediately on critical failure
+#    - No downstream steps execute
+#    - Use when: Deployments, security-sensitive work, data migrations
+#
+# 2. **continue_and_log** (Exploration/Research)
+#    - Log failure as warning, continue to next step
+#    - Accumulate failures for review at end
+#    - Use when: Research, prototyping, learning exercises
+#
+# 3. **collaborative_review** (Recommended Default)
+#    - Pause and request human decision at each failure
+#    - User decides: continue, retry, or abort
+#    - Use when: Complex decisions, uncertain outcomes
+# ```
+#
+# Document chosen strategy in notepad at workflow start.
+# If no strategy selected, default to collaborative_review.
+
+# =============================================================================
+# VERIFICATION BEFORE STATUS (From Spec_Engine Weakness Analysis)
+# =============================================================================
+#
+# Before marking ANY item "Fixed", "Complete", or "Done":
+#
+# ```markdown
+# ### Verification Checkpoint
+# **Claimed Status**: {Fixed/Complete/Done}
+# **Item**: {what is being marked complete}
+#
+# **Verification Evidence**:
+# - [ ] Automated tests pass (if applicable)
+# - [ ] Manual verification performed
+# - [ ] Evidence captured (screenshot, output, or test result)
+# - [ ] No new warnings or errors introduced
+# - [ ] Regression check completed
+#
+# **Evidence Location**: {Link to proof artifact or inline evidence}
+#
+# **Verification Method**: {How was this verified?}
+# ```
+#
+# CRITICAL DISTINCTION:
+# - Status based on OUTCOME, not INTENT
+# - "I wrote the fix" ≠ "It's fixed"
+# - "I tested and verified it works" = "It's fixed"
+#
+# Never claim completion without evidence.
+
+# =============================================================================
+# CRITICALITY BALANCE GUIDANCE (From Spec_Engine Article VI)
+# =============================================================================
+#
+# When marking steps as critical vs non-critical in task breakdowns:
+#
+# **Target Distribution**: 40-60% of steps should be critical
+#
+# | Range | Meaning | Risk |
+# |-------|---------|------|
+# | <20% critical | Under-critical | Failures accumulate silently; goal may be unachievable |
+# | 40-60% critical | Balanced | Appropriate escalation without workflow paralysis |
+# | >80% critical | Over-critical | Everything escalates; workflow grinds to halt |
+#
+# **Exceptions**:
+# - Production deployments: 70%+ critical may be appropriate
+# - Research/exploration: 20-30% critical may be appropriate
+# - Security-sensitive: 80%+ critical is justified
+#
+# **Requirement**: Document criticality rationale for each critical step.
+#
+# ```markdown
+# ### Criticality Assessment
+# - Total steps: {N}
+# - Critical steps: {M} ({percentage}%)
+# - Balance: 🟢 Appropriate | 🟡 Review needed | 🔴 Rebalance required
+#
+# **Critical step rationale**:
+# - Step X: Critical because {reason}
+# - Step Y: Critical because {reason}
+# ```
+
+# =============================================================================
+# TROUBLESHOOTING ESCALATION (From Spec_Engine "Troubleshooting Cliff")
+# =============================================================================
+#
+# If implementation or fix attempts fail after 3 attempts:
+#
+# 1. **STOP** ad-hoc debugging immediately
+# 2. **DOCUMENT** all prior attempts in notepad:
+#    - What was tried
+#    - Why it failed
+#    - What was learned
+# 3. **SWITCH** to structured troubleshooting:
+#    - `troubleshoot.toml` - General systematic debugging
+#    - `wtf.toml` - Mysterious behaviour / feature archaeology
+#    - `investigate.toml` - Root cause analysis / forensics
+# 4. **FOLLOW** troubleshooting phases systematically
+# 5. **RETURN** to original workflow only after resolution
+#
+# **Anti-pattern**: Circular debugging without structured approach
+#
+# ```markdown
+# ### Troubleshooting Escalation
+# **Trigger**: 3 failed attempts at {task}
+# **Prior attempts documented**: Yes/No
+# **Escalating to**: troubleshoot.toml / wtf.toml / investigate.toml
+# **Reason**: {why this troubleshooting spec fits}
+# ```
+#
+# Evidence: Spec_Engine's "Troubleshooting Cliff" showed 100% creation success
+# followed by systemic debugging failure. Structured troubleshooting prevents this.
+
+# =============================================================================
+# PRE-FLIGHT VALIDATION (Optional - From Spec_Engine Article IV, Simplified)
+# =============================================================================
+#
+# Before starting workflow execution (optional but recommended):
+#
+# ```markdown
+# ### Pre-Flight Check ✈️
+# - [ ] Objective clearly stated
+# - [ ] Required context available (codebase, docs, dependencies)
+# - [ ] Output location confirmed (.lia/{workflow}/{task}/)
+# - [ ] Error propagation strategy selected
+# - [ ] Time estimate acknowledged
+#
+# **Ready to proceed**: Yes / No (specify blocker)
+# ```
+#
+# Skip pre-flight with explicit user request: "proceed without validation"
+#
+# This is a 5-item check, not a 10-step validation. Keep it lightweight.
+
+# =============================================================================
 # AGENT MINDSET (Common qualities)
 # =============================================================================
 #

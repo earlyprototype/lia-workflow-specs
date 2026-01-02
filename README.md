@@ -1,26 +1,62 @@
 # Lia Workflow Specs
 
-> **Systematic AI-Powered Development Workflows for Professional Software Engineering**
+> **Understand what you're building.**
 
-Transform AI assistants from reactive code generators into expert collaborators with structured, phase-based workflows that ensure thorough planning, rigorous execution, and continuous learning.
+Transparent, phase-by-phase workflows that help you learn, not just execute. While other tools race towards autonomous AI execution, Lia helps developers **comprehend** what they're creating.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Specs](https://img.shields.io/badge/specs-17-green.svg)](#workflow-specifications)
+[![Specs](https://img.shields.io/badge/specs-18-green.svg)](#workflow-specifications)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 ---
 
-## 🎯 What Are Workflow Specs?
+## 🎯 What Is Lia?
 
-Workflow specs are **structured prompts** that guide AI agents through systematic, phase-based processes. Instead of ad-hoc code generation, these specs create:
+Lia is **the educational SDD framework that prioritises understanding over execution**.
 
-- **Stepwise execution** with user approval at each stage
-- **Iterative refinement** through feedback loops
-- **Persistent knowledge** captured in structured artifacts
-- **Professional standards** embedded in every workflow
-- **Learning systems** that improve over time
+In a market racing towards autonomous AI ("AI does the work"), Lia helps developers **understand what they're building**. Every workflow is transparent, phase-by-phase, and designed to leave you more knowledgeable than before.
 
-Think of them as **expert methodologies** that any AI can follow to deliver professional-grade outcomes.
+### Core Philosophy
+
+| Others Say | Lia Says |
+|------------|----------|
+| "AI does the work for you" | "AI teaches you to work" |
+| "Move fast" | "Understand deeply" |
+| "Black box execution" | "Glass box transparency" |
+| "Ship faster" | "Build confidently" |
+
+### What Makes Lia Different
+
+- **🔍 Transparency** — Every phase visible, every decision documented
+- **📚 Educational DNA** — Learning specs (`learn.toml`, `research.toml`, `paper.toml`)
+- **🔧 Troubleshooting First** — Structured debugging when others leave you stranded
+- **🛠️ Tool Agnostic** — TOML works in Cursor, Claude, Windsurf, anywhere
+- **📦 Simplicity** — Single files, no complex multi-file sync
+
+---
+
+## 🔧 Headline Feature: Troubleshooting Ecosystem
+
+Most AI tools help you **create** code. Few help you **debug** it. Lia has a complete troubleshooting ecosystem:
+
+| Spec | When to Use | What It Does |
+|------|-------------|--------------|
+| `troubleshoot.toml` | Something's broken | Systematic diagnosis and resolution |
+| `wtf.toml` | Code is mysterious | Feature archaeology — understand why code exists |
+| `investigate.toml` | Need root cause | Forensic analysis for crashes, data loss, security |
+
+**Why This Matters**: Research shows AI tools achieve near-perfect success during creation, then fail catastrophically during debugging (the "Troubleshooting Cliff"). Lia solves what others can't.
+
+```bash
+# When your code breaks and you don't know why
+lia troubleshoot "API returning 500 errors intermittently"
+
+# When you inherit mysterious legacy code
+lia wtf "What does this auth middleware actually do?"
+
+# When you need forensic root cause analysis
+lia investigate "Production database corruption incident"
+```
 
 ---
 
@@ -29,31 +65,33 @@ Think of them as **expert methodologies** that any AI can follow to deliver prof
 ### 1. Choose Your Workflow
 
 ```bash
-# Development & Implementation
-dev.toml        # Feature implementation and testing
-spec.toml       # Requirements → Design → Tasks
+# 🛠️ Development & Implementation
+dev.toml        # Feature implementation with proof artifacts
+spec.toml       # Requirements → Design → Tasks (brownfield-aware)
 test.toml       # Testing strategy and automation
 
-# Code Quality & Architecture
-review.toml     # Code review and quality assessment
+# ✅ Code Quality & Architecture
+review.toml        # Code review and quality assessment
 architecture.toml  # System architecture design
-security.toml   # Security assessment and hardening
-optimize.toml   # Performance optimization
+security.toml      # Security assessment and hardening
+optimize.toml      # Performance optimisation
+constitution.toml  # Project standards definition (run first!)
 
-# Problem Solving & Diagnosis
-troubleshoot.toml  # Problem diagnosis and resolution
-investigate.toml   # Forensic investigation (crashes, data loss)
-wtf.toml          # Feature archaeology (mysterious code)
+# 🔧 Problem Solving & Diagnosis ← OUR STRENGTH
+troubleshoot.toml  # Systematic problem diagnosis
+investigate.toml   # Forensic root cause analysis
+wtf.toml           # Feature archaeology (mysterious code)
 
-# Research & Learning
+# 📚 Research & Learning ← EDUCATIONAL DNA
 research.toml   # Technology research and evaluation
 learn.toml      # Project-based skill development
 paper.toml      # Academic paper analysis
+recon.toml      # Strategic landscape reconnaissance
 
-# Knowledge & Documentation
+# 📝 Knowledge & Documentation
 docs.toml       # Documentation and knowledge management
 
-# Strategy & Innovation
+# 🚀 Strategy & Innovation
 innovate.toml   # Creative innovation and enhancement
 nexus.toml      # Innovation consulting coordination
 integrate.toml  # Integration and API development
@@ -149,40 +187,63 @@ Agent uses MCP prompt:
 
 ---
 
-## 💡 Why Use Workflow Specs?
+## 💡 Why Lia?
 
-### Before: Ad-Hoc AI Assistance
+### The Problem with "Fast AI"
+
+Most AI coding tools optimise for **speed**. But speed without understanding creates technical debt:
+
 ```
 You: "Build me a login system"
-AI: *generates 500 lines of code*
-You: "Wait, I needed OAuth..."
-AI: *generates different 500 lines*
-You: "This doesn't match our architecture..."
+AI: *generates 500 lines of code in 30 seconds*
+You: "It's broken. Fix it."
+AI: *tries 5 different fixes, none work*
+You: "WHY is it broken?!"
+AI: *no structured approach, circular debugging*
 ```
 
-### After: Systematic Workflow
+This is the **Troubleshooting Cliff** — AI achieves near-perfect success during creation, then fails catastrophically during maintenance.
+
+### The Lia Approach: Understand First
+
 ```
 You: "Let's build a login system" (using spec.toml)
 
-AI: [Phase 1] Here are the requirements I've drafted...
+AI: LIA-SPEC-1️⃣ [Phase 1] Let me understand the requirements...
     • User story: As a user, I want to log in securely...
     • Acceptance: WHEN user submits credentials THEN system SHALL...
-    Review? [You approve or iterate]
+    • Scope Check: 🟢 Minimal complexity
+    Review? [You understand and approve]
 
-AI: [Phase 2] Here's the design considering your architecture...
-    • JWT-based authentication
-    • Integration with existing user service
-    • Security: bcrypt + rate limiting
-    Review? [You approve or iterate]
+AI: LIA-SPEC-2️⃣ [Phase 2] Here's the design with rationale...
+    • JWT-based authentication — because {reason}
+    • Integration with existing user service — here's how it fits
+    • Security: bcrypt + rate limiting — addressing these threats
+    Review? [You understand and approve]
 
-AI: [Phase 3] Implementation tasks (12 items)...
-    ☐ 1. Set up JWT middleware
-    ☐ 2. Implement password hashing
+AI: LIA-SPEC-3️⃣ [Phase 3] Implementation tasks with traceability...
+    ☐ 1. Set up JWT middleware [Req: AUTH-001]
+    ☐ 2. Implement password hashing [Req: SEC-002]
     ...
-    Review? [You approve and execute]
 ```
 
-**Result:** Aligned expectations, documented decisions, executable plan.
+**Result:** You understand every decision. When something breaks, you know why.
+
+### When It Breaks (And It Will)
+
+```
+You: "The login is failing intermittently"
+
+AI: [Using troubleshoot.toml]
+    Phase 1: Symptom documentation...
+    Phase 2: Hypothesis generation...
+    Phase 3: Systematic testing...
+    Phase 4: Root cause identified — race condition in token refresh
+    Phase 5: Verified fix with proof artifact
+```
+
+**Other tools**: Leave you stranded at the Troubleshooting Cliff.  
+**Lia**: Has a structured path down.
 
 ---
 
@@ -393,39 +454,63 @@ When creating new specs, follow these principles:
 
 ## 📊 Comparison with Other Tools
 
-| Feature | Lia Workflows | Traditional PM Tools | Basic AI Assistants |
-|---------|---------------|---------------------|---------------------|
-| **Systematic Process** | ✅ Built-in | ⚠️ Manual setup | ❌ Ad-hoc |
+### Lia vs Speed-Focused Tools
+
+| Dimension | Spec Kit / OpenSpec | Lia |
+|-----------|---------------------|-----|
+| **Philosophy** | "AI does the work" | "AI teaches you to work" |
+| **Speed** | Fast, autonomous | Deliberate, transparent |
+| **Troubleshooting** | Limited / ad-hoc | Structured ecosystem |
+| **Complexity** | Multi-file, CLI-heavy | Single TOML, simple |
+| **Learning curve** | Steep | Gentle |
+| **Best for** | Experienced devs, speed | All devs, understanding |
+
+### Feature Comparison
+
+| Feature | Lia | Speed Tools | Basic AI |
+|---------|-----|-------------|----------|
+| **Transparency** | ✅ Every step visible | ⚠️ Partial | ❌ Black box |
+| **Troubleshooting** | ✅ 3 dedicated specs | ❌ Ad-hoc | ❌ None |
 | **Phase Approval** | ✅ Enforced | ⚠️ Optional | ❌ None |
-| **Knowledge Capture** | ✅ Automatic | ⚠️ Manual | ❌ Lost |
-| **Learning System** | ✅ Adaptive | ❌ Static | ❌ None |
-| **AI-Native** | ✅ Yes | ❌ No | ✅ Yes |
-| **Professional Standards** | ✅ Embedded | ⚠️ Template-based | ❌ None |
-| **Customizable** | ✅ Open source | ⚠️ Vendor lock-in | ❌ Black box |
+| **Context Markers** | ✅ Detect context rot | ❌ None | ❌ None |
+| **Proof Artifacts** | ✅ Before commit | ⚠️ Implicit | ❌ None |
+| **Tool Agnostic** | ✅ Works anywhere | ⚠️ Vendor-specific | ✅ Yes |
+| **Educational Focus** | ✅ Core value | ❌ Not a goal | ❌ None |
+| **Simplicity** | ✅ Single files | ❌ Complex setup | ✅ Simple |
 
 ---
 
 ## 🗺️ Roadmap
 
 ### v1.0 (Current)
-- ✅ 17 core workflow specs
+- ✅ 18 core workflow specs
+- ✅ Troubleshooting ecosystem (troubleshoot, wtf, investigate)
+- ✅ Educational specs (learn, research, paper, recon)
+- ✅ Constitution and scope guards
+- ✅ Context markers and proof artifacts
 - ✅ Collaboration and Silent modes
-- ✅ Persistent knowledge capture
-- ✅ User-led intelligence (innovate, learn)
+- ✅ MCP server for remote agent access
 
-### v1.1 (Next)
+### v1.1 (In Progress)
+- [ ] Alternative reasoning backup patterns
+- [ ] Error propagation strategies
+- [ ] Enhanced security spec
 - [ ] Spec validation tooling
-- [ ] Workflow visualization
-- [ ] VS Code extension
-- [ ] Example library expansion
+- [ ] Troubleshooting quick-start guide
 
 ### v2.0 (Future)
-- [ ] Spec composition (combine workflows)
-- [ ] Analytics and metrics
-- [ ] Team collaboration features
-- [ ] Spec marketplace
-- [ ] AI fine-tuning on workflow patterns
+- [ ] Lightweight progress viewer (simple, not dashboard)
+- [ ] VSCode extension (spec browser)
+- [ ] University/bootcamp partnerships
+- [ ] Community spec library
+- [ ] Case studies and learning outcomes
 
+### Explicitly Not Planned
+- ❌ Autonomous execution mode (contradicts our positioning)
+- ❌ Multi-agent orchestration (not our differentiation)
+- ❌ Full dashboard (keep it simple)
+
+See [DEVELOPMENT_ROADMAP.md](DEVELOPMENT_ROADMAP.md) for detailed planning.
 See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ---
