@@ -168,6 +168,85 @@ checkpoint_interval = "per_phase"
 # ```
 
 # =============================================================================
+# SCOPE GUARD (Prevent Over-Engineering)
+# =============================================================================
+#
+# Before implementing any solution, apply the scope check:
+#
+# ```markdown
+# ### Scope Check 🔍
+# Before proceeding with implementation:
+# - [ ] This is the simplest solution that meets requirements
+# - [ ] No unnecessary abstractions or indirection
+# - [ ] No premature optimisation
+# - [ ] No speculative features ("might need later")
+# - [ ] A developer new to the project could understand this
+#
+# **Complexity Assessment**: 🟢 Minimal | 🟡 Reasonable | 🔴 Over-engineered
+#
+# **If 🔴 Over-engineered**:
+# 1. Document what could be simplified
+# 2. Simplify before proceeding
+# 3. Record removed complexity in notepad
+# ```
+#
+# Apply scope checks:
+# - Before starting implementation phases
+# - When adding new abstractions or patterns
+# - When solution exceeds original estimate by >50%
+
+# =============================================================================
+# SELF-CORRECTION LOOP
+# =============================================================================
+#
+# After each phase output, verify before proceeding:
+#
+# ```markdown
+# ### Verification Checkpoint
+# Before moving to next phase:
+# - [ ] Output meets stated requirements
+# - [ ] No errors or warnings introduced  
+# - [ ] Assumptions documented in notepad
+# - [ ] Scope check passed
+#
+# **If verification fails** (max 3 attempts):
+# 1. Document the failure reason
+# 2. Analyse root cause
+# 3. Adjust approach and retry
+# 4. After 3 failures → escalate to user
+# ```
+
+# =============================================================================
+# CONFIDENCE SIGNALS
+# =============================================================================
+#
+# At key decision points, indicate confidence level:
+#
+# ```markdown
+# ### Confidence Assessment
+# **Decision confidence**: 🟢 High | 🟡 Medium | 🔴 Low
+#
+# 🟢 **High**: Clear requirements, proven pattern, minimal uncertainty
+# 🟡 **Medium**: Some assumptions made, edge cases possible, may need revision
+# 🔴 **Low**: Significant uncertainty, multiple valid approaches, user review needed
+#
+# **If 🔴 Low**: Pause and list uncertainties for user review before proceeding.
+# ```
+
+# =============================================================================
+# ABORT CONDITIONS
+# =============================================================================
+#
+# Immediately stop and consult the user if:
+# - 🔴 Circular logic or infinite loop detected
+# - 🔴 3+ consecutive failed correction attempts  
+# - 🔴 Scope has grown >50% beyond original estimate
+# - 🔴 Security or data safety concern identified
+# - 🔴 Missing critical information after 2 clarification attempts
+# - 🔴 Conflicting requirements that cannot be resolved
+# - 🔴 Task requires capabilities not available
+
+# =============================================================================
 # CHECKPOINT MARKERS
 # =============================================================================
 #
