@@ -1,63 +1,89 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 180">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 160">
+  <!-- Background -->
+  <rect width="800" height="160" fill="#0d1117"/>
+  
+  <!-- Pixel grid overlay - very subtle -->
   <defs>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
+    <pattern id="pixels" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="none" stroke="#1a1f26" stroke-width="0.5"/>
+    </pattern>
   </defs>
+  <rect width="800" height="160" fill="url(#pixels)" opacity="0.3"/>
   
-  <!-- Terminal background -->
-  <rect width="800" height="180" fill="#0d1117"/>
-  
-  <!-- Subtle grid pattern -->
-  <g opacity="0.03">
-    <line x1="0" y1="20" x2="800" y2="20" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="40" x2="800" y2="40" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="60" x2="800" y2="60" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="80" x2="800" y2="80" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="100" x2="800" y2="100" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="120" x2="800" y2="120" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="140" x2="800" y2="140" stroke="#30363d" stroke-width="1"/>
-    <line x1="0" y1="160" x2="800" y2="160" stroke="#30363d" stroke-width="1"/>
+  <!-- LIA in chunky pixel blocks -->
+  <g transform="translate(50, 30)">
+    <!-- L -->
+    <rect x="0" y="0" width="12" height="60" fill="#58a6ff"/>
+    <rect x="0" y="48" width="36" height="12" fill="#58a6ff"/>
+    
+    <!-- I -->
+    <rect x="52" y="0" width="12" height="60" fill="#7ee787"/>
+    
+    <!-- A -->
+    <rect x="80" y="12" width="12" height="48" fill="#f78166"/>
+    <rect x="116" y="12" width="12" height="48" fill="#f78166"/>
+    <rect x="92" y="0" width="24" height="12" fill="#f78166"/>
+    <rect x="92" y="28" width="24" height="10" fill="#f78166"/>
   </g>
   
-  <!-- Top bar -->
-  <rect x="0" y="0" width="800" height="28" fill="#161b22"/>
-  <circle cx="20" cy="14" r="5" fill="#ff5f56"/>
-  <circle cx="40" cy="14" r="5" fill="#ffbd2e"/>
-  <circle cx="60" cy="14" r="5" fill="#27ca40"/>
-  <text x="400" y="18" font-family="SF Mono, Consolas, monospace" font-size="12" fill="#8b949e" text-anchor="middle">lia — slow-code</text>
+  <!-- Decorative pixels - floating bits -->
+  <rect x="180" y="35" width="6" height="6" fill="#58a6ff" opacity="0.6"/>
+  <rect x="190" y="50" width="4" height="4" fill="#7ee787" opacity="0.4"/>
+  <rect x="175" y="55" width="4" height="4" fill="#f78166" opacity="0.5"/>
+  <rect x="195" y="40" width="3" height="3" fill="#58a6ff" opacity="0.3"/>
   
-  <!-- Prompt line -->
-  <text x="30" y="60" font-family="SF Mono, Consolas, monospace" font-size="14" fill="#8b949e">
-    <tspan fill="#f78166">➜</tspan>
-    <tspan fill="#a5d6ff"> ~/dev</tspan>
-    <tspan fill="#8b949e"> git:(</tspan><tspan fill="#7ee787">main</tspan><tspan fill="#8b949e">)</tspan>
-  </text>
+  <!-- Terminal prompt area -->
+  <g transform="translate(240, 25)">
+    <!-- Prompt -->
+    <text font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6e7681">
+      <tspan x="0" y="14">$</tspan>
+      <tspan fill="#c9d1d9"> lia init</tspan>
+      <tspan fill="#6e7681"> --mode=</tspan><tspan fill="#a5d6ff">slow</tspan>
+    </text>
+    
+    <!-- Output lines -->
+    <text font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" font-size="11" fill="#8b949e">
+      <tspan x="0" y="38" fill="#484f58">░░</tspan>
+      <tspan fill="#6e7681"> the ai slow-code framework</tspan>
+    </text>
+    <text font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" font-size="11">
+      <tspan x="0" y="56" fill="#484f58">░░</tspan>
+      <tspan fill="#7ee787"> understand what you're building</tspan>
+    </text>
+    <text font-family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace" font-size="11">
+      <tspan x="0" y="74" fill="#484f58">░░</tspan>
+      <tspan fill="#6e7681"> vibe coding is dead.</tspan>
+      <tspan fill="#f78166"> long live slow.</tspan>
+    </text>
+  </g>
   
-  <!-- Main command -->
-  <text x="30" y="95" font-family="SF Mono, Consolas, monospace" font-size="32" font-weight="bold" fill="#58a6ff" filter="url(#glow)">
-    $ lia <tspan fill="#7ee787">--slow-code</tspan>
-  </text>
+  <!-- Right side - minimal pixel turtle -->
+  <g transform="translate(680, 50)">
+    <!-- Shell - simple hexagon-ish -->
+    <rect x="20" y="0" width="8" height="8" fill="#238636"/>
+    <rect x="12" y="8" width="8" height="8" fill="#238636"/>
+    <rect x="28" y="8" width="8" height="8" fill="#238636"/>
+    <rect x="20" y="8" width="8" height="8" fill="#2ea043"/>
+    <rect x="12" y="16" width="8" height="8" fill="#238636"/>
+    <rect x="28" y="16" width="8" height="8" fill="#238636"/>
+    <rect x="20" y="16" width="8" height="8" fill="#2ea043"/>
+    <rect x="20" y="24" width="8" height="8" fill="#238636"/>
+    <!-- Head -->
+    <rect x="40" y="12" width="8" height="8" fill="#3fb950"/>
+    <!-- Legs -->
+    <rect x="4" y="24" width="6" height="6" fill="#3fb950"/>
+    <rect x="36" y="24" width="6" height="6" fill="#3fb950"/>
+  </g>
   
-  <!-- Output box -->
-  <rect x="30" y="110" width="740" height="55" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
-  
-  <!-- Output content -->
-  <text font-family="SF Mono, Consolas, monospace" font-size="13">
-    <tspan x="45" y="132" fill="#7ee787">✓</tspan>
-    <tspan fill="#c9d1d9"> Understand what you're building</tspan>
-    <tspan x="420" y="132" fill="#8b949e">// not just shipping it</tspan>
-  </text>
-  <text font-family="SF Mono, Consolas, monospace" font-size="13">
-    <tspan x="45" y="152" fill="#7ee787">✓</tspan>
-    <tspan fill="#c9d1d9"> 18 workflow specs</tspan>
-    <tspan x="220" y="152" fill="#f78166">⚡</tspan>
-    <tspan fill="#c9d1d9"> deliberate AI development</tspan>
-    <tspan x="500" y="152" fill="#f0883e">🐢</tspan>
-    <tspan fill="#8b949e"> slow &gt; fast</tspan>
+  <!-- Bottom status bar -->
+  <rect x="0" y="140" width="800" height="20" fill="#161b22"/>
+  <text font-family="'JetBrains Mono', 'SF Mono', monospace" font-size="10" y="153">
+    <tspan x="20" fill="#7ee787">●</tspan>
+    <tspan fill="#6e7681"> 18 specs</tspan>
+    <tspan x="120" fill="#58a6ff">●</tspan>
+    <tspan fill="#6e7681"> deliberate</tspan>
+    <tspan x="230" fill="#f78166">●</tspan>
+    <tspan fill="#6e7681"> transparent</tspan>
+    <tspan x="700" fill="#484f58">v2.0</tspan>
   </text>
 </svg>
