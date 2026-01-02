@@ -1,12 +1,15 @@
-# Lia: The AI Slow-Code Framework
+<div align="center">
 
-> **Understand what you're building.**
-
-While "vibe coding" ships fast and breaks things, **slow-code** is deliberate AI development that prioritises understanding over speed. Every phase visible. Every decision documented. You finish knowing *why* it works, not just *that* it works.
+<img src="assets/lia-banner.svg" alt="Lia: The AI Slow-Code Framework" width="100%">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Specs](https://img.shields.io/badge/specs-18-green.svg)](#workflow-specifications)
+[![Specs](https://img.shields.io/badge/specs-18-green.svg)](#-what-is-slow-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Slow-Code](https://img.shields.io/badge/philosophy-slow--code-purple.svg)](#-what-is-slow-code)
+
+*While "vibe coding" ships fast and breaks things, **slow-code** is deliberate AI development that prioritises understanding over speed.*
+
+</div>
 
 ---
 
