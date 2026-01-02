@@ -1,6 +1,12 @@
 # Lia Commands Overview
 
-This document provides a comprehensive overview of all available workflow agents/commands in the Lia CLI system. Each command represents a specialised workflow agent designed to guide systematic development processes with the highest professional standards.
+> **Understand what you're building.**
+
+This document provides a comprehensive overview of all 18 workflow specs in Lia. Each spec is designed to help you **understand** what you're building, not just execute faster.
+
+**Core Philosophy**: Transparent, phase-by-phase workflows that leave you more knowledgeable than before.
+
+**Competitive Advantage**: Our troubleshooting ecosystem (`troubleshoot`, `wtf`, `investigate`) solves what other tools can't — the "Troubleshooting Cliff" where AI succeeds at creation but fails at debugging.
 
 ---
 
@@ -344,34 +350,73 @@ All workflows support two distinct modes:
 - No user approval requests during execution
 
 ### Standard Features
+
+**Core Features:**
 - **0-notepad.md:** Every workflow creates a notepad file for capturing insights, ideas, and observations
 - **Systematic Approach:** All workflows follow structured, phase-based methodologies
 - **User Approval:** Collaboration mode requires explicit user approval before proceeding between phases
 - **Professional Standards:** All workflows operate with the highest professional standards and best practices
 - **Documentation:** Comprehensive documentation is created throughout each workflow
 
+**Advanced Patterns (from Research):**
+- **Context Markers:** `LIA-DEV-1️⃣` markers detect context rot in long sessions
+- **Proof Artifacts:** Evidence created BEFORE commits, not just outputs
+- **Scope Guards:** Mandatory simplicity checks before implementation
+- **Self-Correction Loops:** Verify and retry (max 3 attempts, then escalate)
+- **Alternative Reasoning Backups:** Genuine alternatives, not simple retries
+- **Error Propagation Strategies:** `halt_on_critical`, `continue_and_log`, `collaborative_review`
+- **Troubleshooting Escalation:** After 3 failed attempts, switch to structured debugging
+- **Verification Before Status:** Prove it works before claiming "fixed"
+
 ---
 
 ## Workflow Selection Guide
 
-| When You Need To... | Use This Command |
-|---------------------|------------------|
-| Design system architecture | architecture |
-| Implement features or fix bugs | dev |
-| Create documentation | docs |
-| Enhance existing features | innovate |
-| Build APIs or integrate systems | integrate |
-| Investigate crashes or data loss | investigate |
-| Learn through project-based development | learn |
-| Coordinate innovation consulting | nexus |
-| Improve performance | optimize |
-| Research technologies | research |
-| Review code quality | review |
-| Assess security | security |
-| Create feature specifications | spec |
-| Design testing strategies | test |
-| Troubleshoot technical issues | troubleshoot |
-| Understand mysterious features | wtf |
+### 🔧 Problem Solving & Diagnosis ← OUR STRENGTH
+
+| When You Need To... | Use This Spec |
+|---------------------|---------------|
+| Debug something that's broken | `troubleshoot` |
+| Understand mysterious/legacy code | `wtf` |
+| Investigate crashes, data loss, security incidents | `investigate` |
+
+*Most AI tools help you create. Lia helps you debug. This is our competitive advantage.*
+
+### 📚 Research & Learning ← EDUCATIONAL DNA
+
+| When You Need To... | Use This Spec |
+|---------------------|---------------|
+| Learn through hands-on project work | `learn` |
+| Research technologies before deciding | `research` |
+| Analyse academic papers | `paper` |
+| Scout a competitive landscape | `recon` |
+
+### 🛠️ Development & Implementation
+
+| When You Need To... | Use This Spec |
+|---------------------|---------------|
+| Implement features or fix bugs | `dev` |
+| Create specifications from ideas | `spec` |
+| Design testing strategies | `test` |
+| Build APIs or integrate systems | `integrate` |
+
+### ✅ Code Quality & Architecture
+
+| When You Need To... | Use This Spec |
+|---------------------|---------------|
+| Define project standards (do first!) | `constitution` |
+| Design system architecture | `architecture` |
+| Review code quality | `review` |
+| Assess security | `security` |
+| Improve performance | `optimize` |
+
+### 📝 Knowledge & Strategy
+
+| When You Need To... | Use This Spec |
+|---------------------|---------------|
+| Create documentation | `docs` |
+| Enhance existing features creatively | `innovate` |
+| Coordinate complex consulting projects | `nexus` |
 
 ---
 
