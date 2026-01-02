@@ -1,0 +1,187 @@
+# Standard Notepad Template
+
+Every workflow creates a `0-notepad.md` file to capture insights during execution. This document defines the standard format.
+
+## Why Notepads?
+
+- **Capture tacit knowledge**: Things you notice that don't fit elsewhere
+- **Enable learning**: Patterns recognised across sessions
+- **Support handoffs**: Context for future sessions or other workflows
+- **Create documentation**: Side-effect of good workflow execution
+
+---
+
+## Standard 6-Section Format
+
+All workflow notepads should use this structure:
+
+```markdown
+# {Workflow Name} Notepad
+**Workflow**: {Workflow Type}  
+**Task**: {task_name}  
+**Created**: {date}
+
+---
+
+## 🧠 Key Insights & Discoveries
+<!-- Unexpected findings, patterns, or "aha moments" -->
+
+## 🔧 Technical Notes & Implementation Details  
+<!-- Technical considerations, constraints, implementation specifics -->
+
+## 💡 Ideas & Future Enhancements
+<!-- Ideas, improvements, enhancement opportunities for later -->
+
+## 🔗 Cross-System Connections
+<!-- Links to other components, related work, architectural insights -->
+
+## 📝 User Notes
+<!-- Space for user to add their own observations -->
+
+## 🤖 LLM Observations
+<!-- AI-generated insights about patterns and strategies -->
+
+---
+*This notepad captures valuable insights that emerge during systematic analysis*
+```
+
+---
+
+## Section Purposes
+
+| Section | What to Capture | Examples |
+|---------|-----------------|----------|
+| **🧠 Key Insights** | Unexpected discoveries, "aha" moments, pattern recognition | "The auth module is tightly coupled to the user model - this explains the circular import" |
+| **🔧 Technical Notes** | Implementation details, constraints, gotchas | "Rate limiting needs Redis; SQLite won't scale" |
+| **💡 Ideas & Future** | Enhancement opportunities, "nice to have" items | "Could add caching here for 10x speedup" |
+| **🔗 Cross-System** | Connections to other parts of the system | "This relates to the logging module we reviewed last week" |
+| **📝 User Notes** | Reserved for human annotations | User adds context the AI might miss |
+| **🤖 LLM Observations** | AI meta-observations about the work | "This codebase follows repository pattern consistently" |
+
+---
+
+## When to Update the Notepad
+
+Update the notepad when you encounter:
+
+1. **Surprises**: Something unexpected or counter-intuitive
+2. **Decisions**: Choices made and their rationale
+3. **Blockers**: Issues that slowed progress
+4. **Connections**: Links to other work or patterns
+5. **Ideas**: Things to consider for later
+6. **Learnings**: Knowledge worth preserving
+
+---
+
+## Workflow-Specific Customisation
+
+Some workflows may add domain-specific sections **after** the standard 6:
+
+```markdown
+## 🧠 Key Insights & Discoveries
+## 🔧 Technical Notes & Implementation Details  
+## 💡 Ideas & Future Enhancements
+## 🔗 Cross-System Connections
+## 📝 User Notes
+## 🤖 LLM Observations
+
+# --- Workflow-specific sections below ---
+
+## 🔒 Security Considerations        # security.toml specific
+## 📊 Performance Observations       # optimize.toml specific
+```
+
+The standard 6 sections should be present; additional sections are optional.
+
+### Special Case: nexus.toml
+
+The `nexus.toml` (Innovation Consulting Coordinator) uses 8 sections tailored for consulting engagements:
+
+- 🎯 Strategic Insights & Key Discoveries
+- 👥 Team Coordination Notes
+- 💼 Client Relationship Management
+- 🔧 Methodology & Process Notes
+- 💡 Innovation Opportunities & Ideas
+- 🔗 Cross-Project Connections
+- 📝 Client Feedback & Iterations
+- 🤖 Nexus Observations
+
+This is acceptable because nexus.toml coordinates multi-agent consulting teams with specific client management needs.
+
+---
+
+## Anti-Patterns
+
+❌ **Don't do this:**
+
+- Empty notepad (defeats the purpose)
+- Duplicating main deliverables (notepad is for *incidental* insights)
+- Long prose (use bullet points)
+- Skipping sections (at minimum write "Nothing notable")
+- Mixing concerns between sections
+
+✅ **Do this:**
+
+- Brief, scannable bullet points
+- Concrete observations with context
+- Update as you work, not just at the end
+- Include "negative results" (what didn't work)
+
+---
+
+## Example: Well-Written Notepad
+
+```markdown
+# Development Workflow Notepad
+**Workflow**: Development  
+**Task**: add-user-authentication  
+**Created**: 2025-12-15
+
+---
+
+## 🧠 Key Insights & Discoveries
+- The existing session middleware already has hooks for auth - can reuse
+- Password hashing is inconsistent across the codebase (some bcrypt, some argon2)
+- Found undocumented rate limiting in the login route
+
+## 🔧 Technical Notes & Implementation Details  
+- JWT tokens set to 24h expiry - matches existing API tokens
+- Refresh token rotation implemented to prevent token reuse
+- Had to patch passport.js for async/await compatibility
+
+## 💡 Ideas & Future Enhancements
+- [ ] Add "remember me" functionality (extend token to 30 days)
+- [ ] Consider OAuth2 social login for v2
+- [ ] Password strength meter on frontend would improve UX
+
+## 🔗 Cross-System Connections
+- Auth module connects to: User model, Session middleware, Email service
+- Related PR: #142 (added email verification)
+- See also: security.toml review from last week
+
+## 📝 User Notes
+- Client prefers email-based 2FA over SMS (cost reasons)
+
+## 🤖 LLM Observations
+- Codebase consistently uses middleware pattern for cross-cutting concerns
+- Error handling follows the AppError class pattern throughout
+- Test coverage expectation appears to be >80% based on existing tests
+
+---
+*This notepad captures valuable insights that emerge during systematic analysis*
+```
+
+---
+
+## Integration with Context Handoff
+
+When creating a `handoff.md` for session transitions, reference the notepad:
+
+```markdown
+## Notes for Next Session
+See `0-notepad.md` for detailed observations, especially:
+- Key Insights section: explains the middleware reuse decision
+- Technical Notes: JWT configuration rationale
+```
+
+The notepad and handoff work together - notepad captures details, handoff summarises state.
