@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/lia-banner.svg?v=3" alt="Lia: The AI Slow-Code Framework" width="100%">
+<img src="assets/lia-banner.svg?v=4" alt="Lia: The AI Slow-Code Framework" width="100%">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Specs](https://img.shields.io/badge/specs-18-green.svg)](#-what-is-slow-code)

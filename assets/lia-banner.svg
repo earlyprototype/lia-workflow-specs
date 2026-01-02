@@ -1,12 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 180">
   <defs>
-    <!-- CRT scanline effect -->
-    <pattern id="scanlines" patternUnits="userSpaceOnUse" width="4" height="4">
-      <rect width="4" height="2" fill="rgba(0,0,0,0.1)"/>
-    </pattern>
-    <!-- Retro glow -->
     <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
       <feMerge>
         <feMergeNode in="coloredBlur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -15,65 +10,54 @@
   </defs>
   
   <!-- Terminal background -->
-  <rect width="800" height="220" fill="#0a0a0a"/>
-  <rect width="800" height="220" fill="url(#scanlines)"/>
+  <rect width="800" height="180" fill="#0d1117"/>
   
-  <!-- Border - retro terminal style -->
-  <rect x="8" y="8" width="784" height="204" fill="none" stroke="#33ff33" stroke-width="2" opacity="0.3"/>
-  <rect x="12" y="12" width="776" height="196" fill="none" stroke="#33ff33" stroke-width="1" opacity="0.2"/>
+  <!-- Subtle grid pattern -->
+  <g opacity="0.03">
+    <line x1="0" y1="20" x2="800" y2="20" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="40" x2="800" y2="40" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="60" x2="800" y2="60" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="80" x2="800" y2="80" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="100" x2="800" y2="100" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="120" x2="800" y2="120" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="140" x2="800" y2="140" stroke="#30363d" stroke-width="1"/>
+    <line x1="0" y1="160" x2="800" y2="160" stroke="#30363d" stroke-width="1"/>
+  </g>
   
-  <!-- ASCII Turtle - pixel style -->
-  <text x="40" y="55" font-family="'Courier New', monospace" font-size="14" fill="#33ff33" opacity="0.9" filter="url(#glow)">
-    <tspan x="40" dy="0">    ___-------___</tspan>
-    <tspan x="40" dy="16">  _-~~             ~~-_</tspan>
-    <tspan x="40" dy="16"> _-~                   /~-_</tspan>
-    <tspan x="40" dy="16">/~      L   I   A        /~\</tspan>
-    <tspan x="40" dy="16">//                        //\</tspan>
-    <tspan x="40" dy="16">///~`     |       |    '~\//\</tspan>
-    <tspan x="40" dy="16">./  _--_  |  . .  | _--_   \.</tspan>
-    <tspan x="40" dy="16">/_-~    ~-_|  \_/  |_-~    ~-_\</tspan>
-    <tspan x="40" dy="16">~-_       '-_____-'       _-~</tspan>
-    <tspan x="40" dy="16">   ~--_____-==-_____--~</tspan>
+  <!-- Top bar -->
+  <rect x="0" y="0" width="800" height="28" fill="#161b22"/>
+  <circle cx="20" cy="14" r="5" fill="#ff5f56"/>
+  <circle cx="40" cy="14" r="5" fill="#ffbd2e"/>
+  <circle cx="60" cy="14" r="5" fill="#27ca40"/>
+  <text x="400" y="18" font-family="SF Mono, Consolas, monospace" font-size="12" fill="#8b949e" text-anchor="middle">lia — slow-code</text>
+  
+  <!-- Prompt line -->
+  <text x="30" y="60" font-family="SF Mono, Consolas, monospace" font-size="14" fill="#8b949e">
+    <tspan fill="#f78166">➜</tspan>
+    <tspan fill="#a5d6ff"> ~/dev</tspan>
+    <tspan fill="#8b949e"> git:(</tspan><tspan fill="#7ee787">main</tspan><tspan fill="#8b949e">)</tspan>
   </text>
   
-  <!-- Main title - big pixel font style -->
-  <text x="320" y="70" font-family="'Courier New', monospace" font-size="48" font-weight="bold" fill="#00ffff" filter="url(#glow)">
-    SLOW-CODE
+  <!-- Main command -->
+  <text x="30" y="95" font-family="SF Mono, Consolas, monospace" font-size="32" font-weight="bold" fill="#58a6ff" filter="url(#glow)">
+    $ lia <tspan fill="#7ee787">--slow-code</tspan>
   </text>
   
-  <!-- Subtitle with cursor blink effect -->
-  <text x="320" y="105" font-family="'Courier New', monospace" font-size="16" fill="#33ff33" filter="url(#glow)">
-    &gt; The AI Framework That Thinks First_
-  </text>
+  <!-- Output box -->
+  <rect x="30" y="110" width="740" height="55" rx="6" fill="#161b22" stroke="#30363d" stroke-width="1"/>
   
-  <!-- ASCII box with tagline -->
-  <text font-family="'Courier New', monospace" font-size="12" fill="#888888">
-    <tspan x="320" y="135">┌────────────────────────────────────────┐</tspan>
-    <tspan x="320" y="150">│  Understand what you're building.      │</tspan>
-    <tspan x="320" y="165">│  Vibe coding is dead. Long live slow.  │</tspan>
-    <tspan x="320" y="180">└────────────────────────────────────────┘</tspan>
+  <!-- Output content -->
+  <text font-family="SF Mono, Consolas, monospace" font-size="13">
+    <tspan x="45" y="132" fill="#7ee787">✓</tspan>
+    <tspan fill="#c9d1d9"> Understand what you're building</tspan>
+    <tspan x="420" y="132" fill="#8b949e">// not just shipping it</tspan>
   </text>
-  
-  <!-- Stats bar - retro terminal style -->
-  <text x="40" y="200" font-family="'Courier New', monospace" font-size="11" fill="#ff6600" filter="url(#glow)">
-    [SPECS:18]
+  <text font-family="SF Mono, Consolas, monospace" font-size="13">
+    <tspan x="45" y="152" fill="#7ee787">✓</tspan>
+    <tspan fill="#c9d1d9"> 18 workflow specs</tspan>
+    <tspan x="220" y="152" fill="#f78166">⚡</tspan>
+    <tspan fill="#c9d1d9"> deliberate AI development</tspan>
+    <tspan x="500" y="152" fill="#f0883e">🐢</tspan>
+    <tspan fill="#8b949e"> slow &gt; fast</tspan>
   </text>
-  <text x="130" y="200" font-family="'Courier New', monospace" font-size="11" fill="#ff00ff" filter="url(#glow)">
-    [TRANSPARENCY:100%]
-  </text>
-  <text x="280" y="200" font-family="'Courier New', monospace" font-size="11" fill="#ffff00" filter="url(#glow)">
-    [VIBE-CODING:REJECTED]
-  </text>
-  <text x="460" y="200" font-family="'Courier New', monospace" font-size="11" fill="#00ff00" filter="url(#glow)">
-    [STATUS:DELIBERATE]
-  </text>
-  
-  <!-- Blinking cursor -->
-  <rect x="633" y="92" width="10" height="18" fill="#33ff33" opacity="0.8">
-    <animate attributeName="opacity" values="0.8;0;0.8" dur="1s" repeatCount="indefinite"/>
-  </rect>
-  
-  <!-- Corner decorations -->
-  <text x="750" y="30" font-family="'Courier New', monospace" font-size="10" fill="#444444">v2.0</text>
-  <text x="20" y="30" font-family="'Courier New', monospace" font-size="10" fill="#444444">~/lia</text>
 </svg>
