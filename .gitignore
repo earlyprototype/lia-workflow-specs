@@ -65,3 +65,5 @@ desktop.ini
 .lia/*/  # Local workflow artifacts (users keep their own)
 !.lia/commands/  # But keep the commands directory in repo
 
+
+.venv/
