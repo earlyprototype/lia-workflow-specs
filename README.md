@@ -54,17 +54,14 @@ Most AI tools help you **create** code. Few help you **debug** it. Lia has a com
 | `wtf.toml` | Code is mysterious | Feature archaeology — understand why code exists |
 | `investigate.toml` | Need root cause | Forensic analysis for crashes, data loss, security |
 
-**Why This Matters**: Research shows AI tools achieve near-perfect success during creation, then fail catastrophically during debugging (the "Troubleshooting Cliff"). Lia solves what others can't.
+**Why This Matters**: AI tools are strongest during creation and weakest during debugging — the "Troubleshooting Cliff". These specs give the debugging half the same structure the creation half gets.
 
-```bash
-# When your code breaks and you don't know why
-$ lia troubleshoot "API returning 500 errors intermittently"
+With the MCP server installed, ask your agent to run a spec:
 
-# When you inherit mysterious legacy code
-$ lia wtf "What does this auth middleware actually do?"
-
-# When you need forensic root cause analysis
-$ lia investigate "Production database corruption incident"
+```text
+"Run the troubleshoot workflow: API returning 500 errors intermittently"
+"Run the wtf workflow on this auth middleware"
+"Run the investigate workflow: production database corruption incident"
 ```
 
 ---
@@ -108,22 +105,22 @@ integrate.toml  # Integration and API development
 
 ### 2. Load and Execute
 
-```python
-# Example: Using with your AI assistant
-from lia import load_workflow
+Two ways to put a spec in front of your AI assistant:
 
-# Load the workflow spec
-workflow = load_workflow("specs/development/spec.toml")
+**A. Paste it into context.** Open the `.toml` spec and give it to your
+tool (Claude Code, Cursor, etc.) with your rough idea:
 
-# Start with a rough idea
-workflow.execute("I want to build a user authentication system")
-
-# The workflow guides you through:
-# 1. Requirements gathering (EARS format)
-# 2. Design document creation
-# 3. Implementation task list
-# Each phase requires your approval before proceeding
+```text
+"Follow the workflow in specs/development/spec.toml.
+ I want to build a user authentication system."
 ```
+
+**B. Use the MCP server** (below) — specs load as resources and your
+agent can list, read, and chain them without copy-paste.
+
+Either way the workflow guides you through requirements gathering
+(EARS format), a design document, and an implementation task list —
+each phase requiring your approval before proceeding.
 
 ### 3. Review Artifacts
 
@@ -410,12 +407,12 @@ base = "specs/quality/review.toml"
 
 ### Silent Mode for Automation
 
-```python
-# Automated nightly code review
-workflow = load_workflow("specs/quality/review.toml")
-workflow.mode = "silent"  # No user approval needed
-workflow.execute(changed_files=git.get_diff())
-# Results logged to .lia/review/nightly-{date}/
+Specs define a silent mode for unattended runs — tell the agent to run
+a spec silently (no per-phase approval) and log results to `.lia/`:
+
+```text
+"Run specs/quality/review.toml in silent mode over today's diff;
+ write results to .lia/review/nightly-2026-07-07/"
 ```
 
 ---
@@ -529,7 +526,6 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 ## Community
 
 - **Discussions:** [GitHub Discussions](../../discussions)
-- **Discord:** [Join our community](https://discord.gg/lia-workflows)
 
 ---
 
