@@ -443,31 +443,15 @@ When creating new specs, follow these principles:
 
 ---
 
-## Comparison with Other Tools
+## How Lia differs
 
-### Lia vs Speed-Focused Tools
+Most spec-driven AI tools — Spec Kit, OpenSpec and the like — optimise for autonomous speed: describe the work, let the agent run. Lia deliberately trades some of that speed for understanding. A few things follow from that choice:
 
-| Dimension | Spec Kit / OpenSpec | Lia |
-|-----------|---------------------|-----|
-| **Philosophy** | "AI does the work" | "AI teaches you to work" |
-| **Speed** | Fast, autonomous | Deliberate, transparent |
-| **Troubleshooting** | Limited / ad-hoc | Structured ecosystem |
-| **Complexity** | Multi-file, CLI-heavy | Single TOML, simple |
-| **Learning curve** | Steep | Gentle |
-| **Best for** | Experienced devs, speed | All devs, understanding |
+- **It's built to teach, not just to ship.** Every phase is visible and gated on your approval, so you finish knowing *why* the code is the way it is — not just that it exists.
+- **Debugging is a first-class citizen.** Most tools are strongest at creation and weakest at maintenance. Lia's troubleshooting specs (`troubleshoot`, `wtf`, `investigate`) give the debugging half the same structure the creation half gets.
+- **It stays simple.** One TOML file per workflow, no multi-file sync, no CLI to learn. It works wherever you can paste a spec — Cursor, Claude, Windsurf.
 
-### Feature Comparison
-
-| Feature | Lia | Speed Tools | Basic AI |
-|---------|-----|-------------|----------|
-| **Transparency** | YES | Partial | No |
-| **Troubleshooting** | 3 dedicated specs | Ad-hoc | None |
-| **Phase Approval** | Enforced | Optional | None |
-| **Context Markers** | Detect context rot | None | None |
-| **Proof Artifacts** | Before commit | Implicit | None |
-| **Tool Agnostic** | Works anywhere | Vendor-specific | Yes |
-| **Educational Focus** | Core value | Not a goal | None |
-| **Simplicity** | Single files | Complex setup | Simple |
+If you want maximum autonomous throughput, a speed-first tool may suit you better. Lia is for when understanding what you shipped matters as much as shipping it.
 
 ---
 
@@ -548,10 +532,4 @@ Built with lessons from thousands of hours of AI-assisted development.
 
 ---
 
-<div align="center">
-
-**Ready to understand what you're building?**
-
-[Get Started](GETTING_STARTED.md) · [Browse Specs](specs/) · [Examples](examples/)
-
-</div>
+**Start here:** [Getting Started](GETTING_STARTED.md) · [Browse the specs](specs/) · [Examples](examples/)
