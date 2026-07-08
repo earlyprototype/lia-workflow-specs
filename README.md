@@ -3,7 +3,7 @@
 <img src="assets/lia-banner.gif" alt="Lia: The AI Slow-Code Framework" width="100%">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Specs](https://img.shields.io/badge/specs-18-green.svg)](#what-is-slow-code)
+[![Specs](https://img.shields.io/badge/specs-19-green.svg)](#what-is-slow-code)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Slow-Code](https://img.shields.io/badge/philosophy-slow--code-purple.svg)](#what-is-slow-code)
 
@@ -475,7 +475,7 @@ When creating new specs, follow these principles:
 
 ### v1.0 (Current)
 ```
-[x] 18 core workflow specs
+[x] 19 core workflow specs
 [x] Troubleshooting ecosystem (troubleshoot, wtf, investigate)
 [x] Educational specs (learn, research, paper, recon)
 [x] Constitution and scope guards
