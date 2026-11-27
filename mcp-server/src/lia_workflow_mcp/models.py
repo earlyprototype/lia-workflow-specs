@@ -2,11 +2,14 @@
 Data models for workflow specifications.
 """
 
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+
 import tomli
+
+logger = logging.getLogger(__name__)
 
 
 class SpecCategory(str, Enum):
@@ -25,7 +28,7 @@ class WorkflowPhase:
     number: int
     name: str
     description: str
-    output_file: Optional[str] = None
+    output_file: str | None = None
     constraints: list[str] = field(default_factory=list)
 
 
@@ -186,7 +189,7 @@ class WorkflowSpec:
 class SpecCollection:
     """Collection of workflow specifications."""
     specs: list[WorkflowSpec] = field(default_factory=list)
-    specs_dir: Optional[Path] = None
+    specs_dir: Path | None = None
     
     def load_from_directory(self, specs_dir: Path) -> None:
         """Load all specs from a directory."""
@@ -202,11 +205,13 @@ class SpecCollection:
             try:
                 spec = WorkflowSpec.from_toml_file(toml_file)
                 self.specs.append(spec)
-            except Exception as e:
-                # Log error but continue loading other specs
-                print(f"Warning: Failed to load {toml_file}: {e}")
+            except Exception as exc:
+                logger.warning(
+                    "Failed to load %s: %s", toml_file, exc,
+                    exc_info=logger.isEnabledFor(logging.DEBUG),
+                )
     
-    def get_by_name(self, name: str) -> Optional[WorkflowSpec]:
+    def get_by_name(self, name: str) -> WorkflowSpec | None:
         """Get a spec by name."""
         for spec in self.specs:
             if spec.name == name or spec.filename == name:

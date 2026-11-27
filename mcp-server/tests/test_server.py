@@ -7,16 +7,39 @@ import asyncio
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
+from lia_workflow_mcp import server
 from lia_workflow_mcp.server import (
     validate_spec_content,
     compare_specs,
     generate_quick_reference,
 )
 from lia_workflow_mcp.models import (
+    SpecCollection,
     WorkflowSpec,
     SpecCategory,
     WorkflowPhase,
 )
+
+
+def test_initialise_specs_continues_after_malformed_files(tmp_path, monkeypatch, caplog, capsys):
+    workflows = tmp_path / "development"
+    workflows.mkdir()
+    (workflows / "dev.toml").write_text('description = "Develop"\nprompt = "Build it"', encoding="utf-8")
+    (workflows / "broken.toml").write_text("prompt = [", encoding="utf-8")
+    common = tmp_path / "_common"
+    common.mkdir()
+    (common / "workflow-triggers.toml").write_text("[triggers", encoding="utf-8")
+    monkeypatch.setenv("LIA_SPECS_DIR", str(tmp_path))
+    monkeypatch.setattr(server, "spec_collection", SpecCollection())
+    monkeypatch.setattr(server, "trigger_manager", None)
+
+    server.initialise_specs()
+
+    assert [spec.name for spec in server.spec_collection.specs] == ["dev"]
+    assert server.trigger_manager.get_suggested_next("dev") == []
+    assert capsys.readouterr().out == ""
+    assert "broken.toml" in caplog.text
+    assert "workflow-triggers.toml" in caplog.text
 
 
 class TestValidateSpecContent:

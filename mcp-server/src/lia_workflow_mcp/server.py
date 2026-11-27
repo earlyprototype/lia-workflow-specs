@@ -31,25 +31,25 @@ import asyncio
 import json
 import os
 import re
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import (
+    Prompt,
+    PromptArgument,
+    PromptMessage,
     Resource,
     ResourceContents,
+    TextContent,
     TextResourceContents,
     Tool,
-    TextContent,
-    Prompt,
-    PromptMessage,
-    PromptArgument,
 )
 
-from .models import SpecCollection, SpecCategory, WorkflowSpec
+from .models import SpecCategory, SpecCollection, WorkflowSpec
 from .triggers import TriggerManager
-
 
 # Initialise MCP server
 server = Server("lia-workflow-specs")
