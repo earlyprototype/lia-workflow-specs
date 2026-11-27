@@ -9,6 +9,8 @@ from pathlib import Path
 
 import tomli
 
+from .workflow_format import WorkflowDocument, workflow_files, workflow_text
+
 logger = logging.getLogger(__name__)
 
 
@@ -91,18 +93,19 @@ class WorkflowSpec:
         name = filepath.stem
         
         # Parse phases from prompt content
-        phases = cls._extract_phases(data.get("prompt", ""))
+        description, prompt = workflow_text(data)
+        phases = cls._extract_phases(prompt)
         
         # Extract tags from description
-        tags = cls._extract_tags(data.get("description", ""), category)
+        tags = cls._extract_tags(description, category)
         
         return cls(
             name=name,
             filename=filepath.name,
             filepath=filepath,
             category=category,
-            description=data.get("description", ""),
-            prompt=data.get("prompt", ""),
+            description=description,
+            prompt=prompt,
             phases=phases,
             tags=tags,
         )
@@ -110,22 +113,10 @@ class WorkflowSpec:
     @staticmethod
     def _extract_phases(prompt: str) -> list[WorkflowPhase]:
         """Extract workflow phases from prompt content."""
-        import re
-        phases = []
-        
-        # Pattern to match phase headers like "### 1. Task Analysis and Planning"
-        phase_pattern = r"###\s*(\d+)\.\s*([^\n]+)"
-        matches = re.findall(phase_pattern, prompt)
-        
-        for number_str, name in matches:
-            number = int(number_str)
-            phases.append(WorkflowPhase(
-                number=number,
-                name=name.strip(),
-                description="",  # Would require more sophisticated parsing
-            ))
-        
-        return phases
+        return [
+            WorkflowPhase(number=number, name=name, description="")
+            for _, number, name in WorkflowDocument(prompt).phase_headings()
+        ]
     
     @staticmethod
     def _extract_tags(description: str, category: SpecCategory) -> list[str]:
@@ -151,7 +142,7 @@ class WorkflowSpec:
         return {
             "name": self.name,
             "filename": self.filename,
-            "filepath": str(self.filepath),
+            "filepath": f"specs://{self.category.value}/{self.name}",
             "category": self.category.value,
             "description": self.description,
             "phase_count": len(self.phases),
@@ -199,9 +190,7 @@ class SpecCollection:
         if not specs_dir.exists():
             return
         
-        for toml_file in specs_dir.rglob("*.toml"):
-            if "_common" in toml_file.relative_to(specs_dir).parts:
-                continue
+        for toml_file in workflow_files(specs_dir):
             try:
                 spec = WorkflowSpec.from_toml_file(toml_file)
                 self.specs.append(spec)

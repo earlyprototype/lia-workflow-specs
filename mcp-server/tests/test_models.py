@@ -71,6 +71,10 @@ class TestWorkflowSpec:
         assert "development" in tags
         assert "testing" in tags
         assert "review" in tags
+
+    def test_extract_role_workflow_phases(self):
+        phases = WorkflowSpec._extract_phases("## PHASE 1: DEFINE SCOPE\n## PHASE 2: MAP DIMENSIONS")
+        assert [(phase.number, phase.name) for phase in phases] == [(1, "DEFINE SCOPE"), (2, "MAP DIMENSIONS")]
     
     def test_to_dict(self):
         spec = WorkflowSpec(
@@ -167,7 +171,7 @@ class TestSpecCollection:
         collection = SpecCollection()
         collection.load_from_directory(specs_dir)
 
-        assert len(collection.specs) == 16
+        assert len(collection.specs) == 19
         for spec in collection.specs:
             assert spec.category.value == spec.filepath.parent.name
             assert spec.description.strip(), spec.name

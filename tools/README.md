@@ -20,8 +20,11 @@ Validates workflow specification files for compliance with Lia standards.
 **Usage:**
 
 ```bash
-# Install dependencies
-pip install tomli
+# Install the schema validator and TOML reader
+python -m pip install -r tools/requirements.txt
+
+# Install the diagram parser once with Node.js 24
+npm ci --prefix tools --ignore-scripts
 
 # Validate single file
 python tools/spec-validator.py specs/development/spec.toml
@@ -29,12 +32,42 @@ python tools/spec-validator.py specs/development/spec.toml
 # Validate all specs
 python tools/spec-validator.py specs/
 
+# Check an installed copy against the same 19 category and filename pairs
+python tools/spec-validator.py ~/.lia/specs --catalog
+
 # Verbose output (show all checks)
 python tools/spec-validator.py specs/ -v
 
 # Quiet mode (errors only)
 python tools/spec-validator.py specs/ -q
 ```
+
+The repository-wide check also reports missing and unexpected workflow files.
+Directory discovery skips `_common`. The validator reads both top-level
+`description` and `prompt` strings and the `metadata.description` and
+`prompt.content` table fields used by `constitution` and `recon`.
+Each workflow must match the [workflow schema](../schemas/workflow-spec.schema.json).
+Number phases consecutively from 1. Each phase needs instructions outside
+fenced examples and HTML comments. Fenced examples inside blockquotes also
+count as code. Contributor workflows use third-level phase headings inside
+`<workflow-definition>`. Close the definition after the last phase. In older
+workflows that omit the closing tag, phase discovery stops at the Workflow
+Diagram heading. The role workflows `constitution` and `recon` use explicit
+`## PHASE 1: ...` headings. Their numbered tasks and deliverables stay within
+their respective sections.
+The validator checks the final phase of `development/spec.toml` in both file
+and catalog validation. It recognises a standalone copy of `spec.toml` by
+its “Feature Spec Creation Workflow” heading. Phase 3 must instruct the
+model to write the task list to a file named `3-tasks.md`.
+You can also use an output label such as **Output:** `3-tasks.md`.
+The Important Execution Instructions section can contain paragraphs, list items,
+blockquotes, and subsections. Include instruction text before the notepad template
+or the next main heading.
+The validator parses Mermaid blocks in the Workflow Diagram section and checks
+for workflow elements. It also accepts nonempty plain-text diagram blocks.
+It checks the six standard notepad headings with or without the icons shown in
+the base template. It also checks the custom templates used by `constitution`,
+`recon`, `paper` and `nexus`.
 
 **Example Output:**
 
@@ -47,12 +80,11 @@ Validating: spec.toml
 
 ⚠️  WARNINGS:
   • Missing recommended section: 'Agent Self-Development'
-  • Only found 4/6 notepad sections
 
 SUMMARY:
   ✗ INVALID
   Errors: 1
-  Warnings: 2
+  Warnings: 1
 ```
 
 ---
@@ -97,7 +129,7 @@ pip install -e .
 - `list_specs` - List all specs by category
 - `get_spec` - Get full spec content
 - `get_spec_prompt` - Get workflow instructions only
-- `validate_spec` - Check spec validity
+- `validate_spec` - Check the structure of a loaded prompt
 - `search_specs` - Keyword search
 - `get_spec_metadata` - Extract structured metadata
 - `compare_specs` - Compare two specs
@@ -155,6 +187,7 @@ python tools/spec-analyzer.py specs/ --report stats.md
 
 ```bash
 pip install -r tools/requirements.txt
+npm ci --prefix tools --ignore-scripts
 ```
 
 ### Testing
@@ -182,7 +215,11 @@ These tools are used in GitHub Actions:
 
 ```yaml
 # .github/workflows/validate-specs.yml
-- name: Validate TOML files
+- name: Install schema validator
+  run: python -m pip install -r tools/requirements.txt
+- name: Install diagram parser
+  run: npm ci --prefix tools --ignore-scripts
+- name: Validate the shipped workflow catalog
   run: python tools/spec-validator.py specs/
 ```
 

@@ -62,8 +62,10 @@ Thumbs.db
 desktop.ini
 
 # Project specific
+mcp-server/config/generated-config.json
 .lia/*/  # Local workflow artifacts (users keep their own)
 !.lia/commands/  # But keep the commands directory in repo
 
 
 .venv/
+/tools/node_modules/

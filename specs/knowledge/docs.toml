@@ -204,23 +204,15 @@ graph TD
     G --> H[Documentation Maintenance & Continuous Improvement]
     H --> I[Documentation Evaluation & Knowledge Transfer]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    I --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-    [*] --> I : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
+    I <--> Update
 ```
 
 # Documentation & Knowledge Management Instructions

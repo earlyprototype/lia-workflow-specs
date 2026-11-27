@@ -36,20 +36,23 @@ from pathlib import Path
 from typing import Any
 
 from mcp.server import Server
+from mcp.server.lowlevel.helper_types import ReadResourceContents
 from mcp.server.stdio import stdio_server
 from mcp.types import (
+    GetPromptResult,
     Prompt,
     PromptArgument,
     PromptMessage,
     Resource,
-    ResourceContents,
     TextContent,
     TextResourceContents,
     Tool,
 )
+from pydantic import AnyUrl
 
 from .models import SpecCategory, SpecCollection, WorkflowSpec
 from .triggers import TriggerManager
+from .workflow_format import WorkflowDocument
 
 # Initialise MCP server
 server = Server("lia-workflow-specs")
@@ -62,8 +65,15 @@ trigger_manager = TriggerManager()
 def get_specs_directory() -> Path:
     """Get the specs directory path from environment or default."""
     specs_dir = os.environ.get("LIA_SPECS_DIR")
-    if specs_dir:
-        return Path(specs_dir)
+    if specs_dir is not None:
+        remedy = "Set LIA_SPECS_DIR to an absolute directory containing the workflow specs."
+        try:
+            path = Path(specs_dir).expanduser().resolve()
+        except (RuntimeError, OSError, ValueError) as exc:
+            raise ValueError(f"Cannot resolve LIA_SPECS_DIR={specs_dir!r}. {remedy}") from exc
+        if not specs_dir or not path.is_dir():
+            raise ValueError(f"Invalid workflow directory: {path}. {remedy}")
+        return path
     
     # Default: look for specs directory relative to this file or workspace
     possible_paths = [
@@ -89,6 +99,8 @@ def initialise_specs():
     global trigger_manager
     specs_dir = get_specs_directory()
     spec_collection.load_from_directory(specs_dir)
+    if "LIA_SPECS_DIR" in os.environ and not spec_collection.specs:
+        raise ValueError(f"No workflows found in {specs_dir}. Set LIA_SPECS_DIR to the directory containing the specs.")
     trigger_manager = TriggerManager(specs_dir)
 
 
@@ -146,7 +158,12 @@ async def list_resources() -> list[Resource]:
 
 
 @server.read_resource()
-async def read_resource(uri: str) -> ResourceContents:
+async def read_mcp_resource(uri: AnyUrl) -> list[ReadResourceContents]:
+    resource = await read_resource(str(uri))
+    return [ReadResourceContents(content=resource.text, mime_type=resource.mimeType)]
+
+
+async def read_resource(uri: str) -> TextResourceContents:
     """Read a resource by URI."""
     
     # Parse URI
@@ -347,6 +364,10 @@ async def list_prompts() -> list[Prompt]:
 
 
 @server.get_prompt()
+async def get_mcp_prompt(name: str, arguments: dict[str, str] | None) -> GetPromptResult:
+    return GetPromptResult(messages=await get_prompt(name, arguments))
+
+
 async def get_prompt(name: str, arguments: dict[str, str] | None = None) -> list[PromptMessage]:
     """Get a specific prompt with arguments filled in."""
     args = arguments or {}
@@ -582,7 +603,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="validate_spec",
-            description="Validate a workflow spec file for required sections and formatting.",
+            description="Check prompt structure and diagram block presence. Use the repository validator for full validation.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -937,31 +958,25 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> Sequence[TextConten
 
 
 def validate_spec_content(spec: WorkflowSpec) -> str:
-    """Validate a spec and return results."""
+    """Report structural checks available from the loaded prompt."""
     errors = []
     warnings = []
     passed = []
     
     # Check required sections
-    required_sections = [
-        "Workflow Mode System",
-        "Goal",
-        "workflow-definition",
-        "IMPORTANT EXECUTION INSTRUCTIONS",
-        "0-Notepad Template",
-    ]
-    
-    for section in required_sections:
-        if section in spec.prompt:
+    document = WorkflowDocument(spec.prompt)
+    errors.extend(document.structure_errors())
+    for section, present in document.required_sections().items():
+        if present:
             passed.append(f"✓ Found required section: {section}")
         else:
             errors.append(f"✗ Missing required section: {section}")
     
-    # Check for Mermaid diagram
-    if "```mermaid" in spec.prompt.lower():
-        passed.append("✓ Contains Mermaid workflow diagram")
+    if any(block.content.strip() and block.language in {"", "text", "mermaid"}
+           for block in document.section_fences("workflow diagram")):
+        passed.append("✓ Found a nonempty workflow diagram block")
     else:
-        warnings.append("⚠ No Mermaid diagram found")
+        errors.append("✗ No Mermaid diagram or plain-text diagram found in Workflow Diagram")
     
     # Check MUST constraints
     must_count = len(re.findall(r"\bMUST\b", spec.prompt))
@@ -994,8 +1009,10 @@ def validate_spec_content(spec: WorkflowSpec) -> str:
         output.extend(passed)
         output.append("")
     
-    status = "❌ INVALID" if errors else ("⚠️ VALID with warnings" if warnings else "✅ VALID")
+    status = "❌ INVALID prompt structure" if errors else "Prompt structure passed"
     output.append(f"\n**Status**: {status}")
+    output.append("Run `python tools/spec-validator.py specs/` in the repository to check "
+                  "the TOML schema, Mermaid syntax and elements, and notepad template contents.")
     
     return "\n".join(output)
 
@@ -1282,8 +1299,10 @@ def suggest_workflow_sequence(task_description: str) -> str:
 
 def main():
     """Main entry point for the MCP server."""
-    # Initialise specs
-    initialise_specs()
+    try:
+        initialise_specs()
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     
     print(f"Loaded {len(spec_collection.specs)} workflow specs", file=__import__("sys").stderr)
     

@@ -1,6 +1,8 @@
 # MCP Server Configuration Files
 
-This directory contains ready-to-use configuration files for various MCP clients.
+After running `install.sh`, use the server entry in `generated-config.json` for
+Claude Desktop or Cursor. For a manual setup, replace `python3` in the sample
+files with the full path to the interpreter that installed the package.
 
 ## Claude Desktop
 
@@ -69,5 +71,5 @@ Restart Claude Desktop or Cursor to load the MCP server.
 After setup, you should see `lia-workflow-specs` in your available MCP servers.
 
 Test with:
-- "List all workflow specs" → Should show 17 specs
+- "List all workflow specs" → Should show 19 specs
 - "Recommend a workflow for implementing a feature" → Should suggest dev/spec

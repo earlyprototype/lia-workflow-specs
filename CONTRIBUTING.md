@@ -66,11 +66,15 @@ Follow the guidelines below for your specific contribution type.
 
 ### 4. Test Your Changes
 ```bash
-# Validate TOML syntax
+# Install the validation dependencies with Python and Node.js 24
+python -m pip install -r tools/requirements.txt
+npm ci --prefix tools --ignore-scripts
+
+# Validate the workflow
 python tools/spec-validator.py specs/your-category/your-spec.toml
 
-# Generate workflow diagram
-python tools/workflow-visualizer.py specs/your-category/your-spec.toml
+# Validate all shipped workflows and their diagrams
+python tools/spec-validator.py specs/ --catalog
 
 # Run any other relevant tests
 ```
@@ -132,6 +136,8 @@ prompt = """
 
 [Repeat for all phases]
 
+</workflow-definition>
+
 ## Workflow Diagram
 [Mermaid diagram showing phase flow]
 
@@ -146,8 +152,6 @@ prompt = """
 
 ## 0-Notepad Template
 [Standard notepad markdown template]
-
-</workflow-definition>
 """
 ```
 
@@ -309,6 +313,8 @@ required_fields = [
 ### Spec Validation
 All specs must pass validation:
 ```bash
+python -m pip install -r tools/requirements.txt
+npm ci --prefix tools --ignore-scripts
 python tools/spec-validator.py specs/your-category/your-spec.toml
 ```
 
@@ -501,14 +507,13 @@ Report violations to [conduct@lia-workflows.org](mailto:conduct@lia-workflows.or
 ## Resources
 
 ### Learning
-- [Workflow Design Patterns](docs/workflow-patterns.md)
+- [Workflow Guide](docs/workflow-guide.md)
 - [Best Practices](docs/best-practices.md)
 - [Example Gallery](examples/)
 
 ### Tools
 - [Spec Validator](tools/spec-validator.py)
-- [Workflow Visualizer](tools/workflow-visualizer.py)
-- [Spec Generator](tools/spec-generator.py)
+- [Planned tools](tools/README.md#planned-tools)
 
 ### Community
 - [Discussions](../../discussions)

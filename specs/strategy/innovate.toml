@@ -290,6 +290,18 @@ Provide ongoing support for innovation execution, helping users navigate challen
 
 </workflow-definition>
 
+## Workflow Diagram
+
+```mermaid
+flowchart LR
+    Discovery --> Ideation --> Evaluation --> Planning --> Support
+```
+
+## Important Execution Instructions
+
+Follow the phases in order. In Collaboration Mode, obtain approval at each phase checkpoint.
+In Silent Mode, record assumptions in the notepad as each phase specifies.
+
 ## Innovation Techniques and Methods
 
 ### Creative Thinking Approaches

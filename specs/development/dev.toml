@@ -177,7 +177,7 @@ Before committing changes, create a proof artifact documenting evidence of compl
 **Constraints:**
 - The model MUST create a '.lia/dev/{task_name}/proof-artifact.md' file with:
 
-```markdown
+````markdown
 # Proof Artifact: {task_name}
 **Created**: {timestamp}
 **Status**: Ready for commit
@@ -188,9 +188,9 @@ Before committing changes, create a proof artifact documenting evidence of compl
 - [ ] Criterion 3: {evidence}
 
 ## Tests Passing
-\`\`\`
+```
 {test output or CI status}
-\`\`\`
+```
 
 ## No Regressions
 - [ ] Existing tests still pass
@@ -209,7 +209,7 @@ Before committing changes, create a proof artifact documenting evidence of compl
 
 ## Reviewer Notes
 {Any context for human review}
-```
+````
 
 - The model MUST verify all checkboxes before proceeding to commit
 - If any verification fails, the model MUST document the issue and return to the relevant phase
@@ -226,19 +226,13 @@ graph TD
     G --> H[7. Proof Artifact]
     H --> I[Commit]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
 ```
 
 # Development Instructions

@@ -62,7 +62,8 @@ Collaboration and Silent modes.
 Test goal.
 
 <workflow-definition>
-Workflow definition here.
+### 1. Gather requirements
+Record acceptance criteria for the change.
 </workflow-definition>
 
 ## Workflow Diagram
@@ -83,7 +84,8 @@ Template here.
         )
         
         result = validate_spec_content(spec)
-        assert "VALID" in result
+        assert "Prompt structure passed" in result
+        assert "INVALID" not in result
         assert "✓ Found required section" in result
     
     def test_missing_sections(self):

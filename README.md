@@ -143,29 +143,28 @@ Connect any MCP-compatible AI agent to your workflow specs with the built-in MCP
 
 ### Quick Setup
 
-```bash
-# Install the MCP server
-cd mcp-server
-pip install -e .
+From the repository root, run the installer to copy the catalog to `~/.lia/specs`.
 
-# Or use the installer
-./install.sh --global
+```bash
+./mcp-server/install.sh --global
 ```
+
+To read specs directly from the checkout, run `./mcp-server/install.sh` without
+`--global`, or install the package manually with `python3 -m pip install -e ./mcp-server`.
 
 ### Configure Your Client
 
-**Claude Desktop** (`~/.config/claude/claude_desktop_config.json`):
-```json
-{
-  "mcpServers": {
-    "lia-workflow-specs": {
-      "command": "python3",
-      "args": ["-m", "lia_workflow_mcp.server"],
-      "env": {"LIA_SPECS_DIR": "~/.lia/specs"}
-    }
-  }
-}
-```
+Copy the `lia-workflow-specs` entry from
+`mcp-server/config/generated-config.json` into your client's `mcpServers`
+object. On Linux, Claude Desktop uses `~/.config/claude/claude_desktop_config.json`.
+The generated command contains the full path to the installing interpreter.
+A global install also records the absolute path to the copied catalog.
+Restart the client and open `specs://index` to see all 19 workflows.
+
+For a manual install, set `command` to the path printed by
+`python3 -c "import sys; print(sys.executable)"`, set `args` to
+`["-m", "lia_workflow_mcp.server"]`, and set `env.LIA_SPECS_DIR` to the absolute
+path of the checkout's `specs` directory.
 
 ### Available Features
 
@@ -365,7 +364,7 @@ phases = [
   └── 3-tasks.md             # Checkbox task list with requirements traceability
 ```
 
-**Real-world example:** See [examples/simple-feature-spec/](examples/simple-feature-spec/)
+Follow the [user authentication walkthrough](examples/feature-spec-example/) from the initial request to the implementation checklist.
 
 ---
 

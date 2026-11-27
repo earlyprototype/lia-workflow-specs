@@ -4,7 +4,11 @@
   "title": "Lia Workflow Specification",
   "description": "Schema for validating Lia workflow specification files",
   "type": "object",
-  "required": ["description", "prompt"],
+  "required": ["prompt"],
+  "anyOf": [
+    {"required": ["description"]},
+    {"required": ["metadata"], "properties": {"metadata": {"required": ["description"]}}}
+  ],
   "properties": {
     "description": {
       "type": "string",
@@ -12,9 +16,18 @@
       "description": "Brief description of the workflow's purpose"
     },
     "prompt": {
-      "type": "string",
-      "minLength": 100,
-      "description": "The full prompt content defining the workflow"
+      "oneOf": [
+        {"$ref": "#/definitions/promptText"},
+        {
+          "type": "object",
+          "required": ["content"],
+          "properties": {"content": {"$ref": "#/definitions/promptText"}}
+        }
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {"description": {"$ref": "#/properties/description"}}
     },
     "meta": {
       "type": "object",
@@ -143,6 +156,11 @@
     }
   },
   "definitions": {
+    "promptText": {
+      "type": "string",
+      "minLength": 100,
+      "description": "The full prompt content defining the workflow"
+    },
     "constraint": {
       "type": "string",
       "pattern": "^(MUST|SHOULD|MAY|MUST NOT|SHOULD NOT)\\s+.+",

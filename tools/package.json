@@ -1,0 +1,8 @@
+{
+  "name": "lia-spec-validator",
+  "private": true,
+  "dependencies": {
+    "jsdom": "26.1.0",
+    "mermaid": "11.17.2"
+  }
+}

@@ -27,7 +27,7 @@ The server provides tools for working with specs:
 | `get_spec_details` | Get detailed information about a spec |
 | `list_specs_by_category` | List all specs in a category |
 | `get_workflow_phases` | Get phases for a workflow |
-| `validate_spec` | Validate a spec file |
+| `validate_spec` | Check the structure of a loaded prompt |
 | `get_spec_prompt` | Get the full prompt text for a spec |
 | `compare_specs` | Compare two specs |
 | `get_workflow_chain` | Get chained workflow sequence |
@@ -43,6 +43,10 @@ pip install -e .
 ```
 
 ## Configuration
+
+After running `install.sh`, copy the server entry from `config/generated-config.json`
+into your client's `mcpServers` object. For a manual setup, replace `python3` in
+the examples below with the full path to the interpreter that installed the package.
 
 ### Environment Variables
 
@@ -61,7 +65,7 @@ Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json`
       "command": "python3",
       "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "LIA_SPECS_DIR": "${HOME}/.lia/specs"
+        "LIA_SPECS_DIR": "~/.lia/specs"
       }
     }
   }
@@ -128,10 +132,13 @@ This returns the complete prompt that defines the workflow phases, constraints, 
 
 # Returns validation results:
 # ✓ Found required sections
-# ✓ Contains Mermaid diagram
-# ✓ Has 6 defined phases
-# Status: ✅ VALID
+# ✓ Found a nonempty workflow diagram block
+# ✓ Has 7 defined phases
+# Status: Prompt structure passed
 ```
+
+For schema validation, Mermaid parsing and notepad checks, run the
+[repository validator](../tools/README.md#spec-validatorpy).
 
 ## Spec Categories
 
@@ -261,6 +268,8 @@ Each workflow defines:
 ### Running Tests
 
 ```bash
+python -m pip install -r ../tools/requirements.txt
+npm ci --prefix ../tools --ignore-scripts
 pip install -e ".[dev]"
 pytest
 ```

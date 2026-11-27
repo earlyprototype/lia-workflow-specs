@@ -10,17 +10,95 @@ Validates workflow specification files for:
 - Notepad template inclusion
 """
 
+import json
+import subprocess
 import sys
-import os
 from pathlib import Path
 from typing import List, Tuple, Dict
 import re
 
+from jsonschema import Draft7Validator
+from jsonschema.exceptions import best_match
+
 try:
-    import tomli
+    import tomllib as tomli
 except ImportError:
-    print("Error: tomli package required. Install with: pip install tomli")
-    sys.exit(1)
+    import tomli
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "mcp-server" / "src"))
+from lia_workflow_mcp.workflow_format import WorkflowDocument, workflow_files, workflow_text
+
+SCHEMA = Draft7Validator(json.loads((ROOT / "schemas/workflow-spec.schema.json").read_text(encoding="utf-8")))
+
+# The paths advertised by category in the README.
+CATALOG = {
+    "development": ("dev", "spec", "test"),
+    "quality": ("architecture", "constitution", "optimize", "review", "security"),
+    "problem-solving": ("investigate", "troubleshoot", "wtf"),
+    "research": ("learn", "paper", "recon", "research"),
+    "knowledge": ("docs",),
+    "strategy": ("innovate", "integrate", "nexus"),
+}
+
+
+STANDARD_NOTEPAD = {
+    "KEY INSIGHTS & DISCOVERIES", "TECHNICAL NOTES & IMPLEMENTATION DETAILS",
+    "IDEAS & FUTURE ENHANCEMENTS", "CROSS-SYSTEM CONNECTIONS", "USER NOTES", "LLM OBSERVATIONS",
+}
+
+CONNECTION_SUBJECT = {
+    "dev": "COMPONENT", "spec": "SPECIFICATION", "test": "TESTING", "docs": "DOCUMENTATION",
+    "review": "CODE", "learn": "LEARNING", "research": "TECHNOLOGY", "innovate": "COMPONENT",
+}
+
+CUSTOM_NOTEPADS = {
+    "constitution": {"CURRENT PHASE", "PROJECT OVERVIEW", "EXISTING STANDARDS",
+                     "DECISIONS MADE", "STANDARDS DEFINED", "QUESTIONS FOR USER"},
+    "recon": {"MISSION", "SEARCH DIMENSIONS DEFINED", "RAW DISCOVERY LOG", "TIER CLASSIFICATION",
+              "PATTERN OBSERVATIONS", "CRITICAL DISCOVERIES", "QUESTIONS EMERGING"},
+    "paper": {"KEY INSIGHTS & INTELLECTUAL DISCOVERIES", "METHODOLOGICAL NOTES & TECHNICAL DETAILS",
+              "RESEARCH QUESTIONS & FUTURE DIRECTIONS", "CROSS-PAPER CONNECTIONS & LITERATURE LINKS",
+              "RESEARCHER NOTES", "LLM OBSERVATIONS"},
+    "nexus": {"STRATEGIC INSIGHTS & KEY DISCOVERIES", "TEAM COORDINATION NOTES",
+              "CLIENT RELATIONSHIP MANAGEMENT", "METHODOLOGY & PROCESS NOTES",
+              "INNOVATION OPPORTUNITIES & IDEAS", "CROSS-PROJECT CONNECTIONS",
+              "CLIENT FEEDBACK & ITERATIONS", "NEXUS OBSERVATIONS"},
+}
+
+
+# Start at a sentence boundary so a negated write verb cannot start the match.
+TASK_LIST_OUTPUT = re.compile(r"""
+    (?: ^ | (?<=[.!?])\s+ )
+    (?i:
+        (?:(?:the\s+model|you)\s+)? (?: (?:must|shall|should)\s+ )?
+        (?:create|write|save|generate|produce|output)\s+
+        (?:(?:the|an?)\s+)?
+        (?:
+            # Descriptors belong to the object being written. Stop at a new clause or source.
+            (?:(?!(?:a|an|the|and|or|but|not|never|without|using|from|with|about|to|in)\b)[\w-]+\s+)*
+            (?:tasks?|task\s+list|plan|checklist|it)\s+
+        )?
+        (?:(?:to|into|as|at|in)\s+)?
+        (?:(?:(?:a|the)\s+)?file\s+(?:named\s+)?)?
+        # Markdown allows the colon inside or outside the emphasized label.
+      | (?P<emphasis>(?:\*{1,3}|_{1,3})?) (?:output|deliverable)
+        (?::(?P=emphasis)|(?P=emphasis):)\s*
+    )
+    (?P<quote>[`'"]?) (?: [\w.{}$/\\-]* [/\\] )? 3-tasks\.md (?P=quote)
+    (?= $ | [\s,;:!?)] | \.(?:\s|$) )
+""", re.VERBOSE)
+
+
+def has_walkthrough_task_list(document: WorkflowDocument) -> bool:
+    phases = list(document.phase_headings())
+    if not phases:
+        return False
+    heading, number, title = phases[-1]
+    if number != 3 or not re.search(r"\b(tasks?|implementation plan)\b", title, re.IGNORECASE):
+        return False
+    end = min(document.section_end(heading), document.phase_lines.stop)
+    return any(TASK_LIST_OUTPUT.search(text) for text in document.instruction_paragraphs(heading, end))
 
 
 class Colors:
@@ -36,19 +114,6 @@ class Colors:
 class SpecValidator:
     """Validates workflow specification files"""
     
-    # Required top-level keys
-    REQUIRED_KEYS = ['description', 'prompt']
-    
-    # Required sections in prompt content
-    REQUIRED_SECTIONS = [
-        'Workflow Mode System',
-        'Goal',
-        'workflow-definition',
-        'Workflow Diagram',
-        'IMPORTANT EXECUTION INSTRUCTIONS',
-        '0-Notepad Template'
-    ]
-    
     # Recommended sections
     RECOMMENDED_SECTIONS = [
         'Agent Mindset',
@@ -60,6 +125,7 @@ class SpecValidator:
         self.errors: List[str] = []
         self.warnings: List[str] = []
         self.info: List[str] = []
+        self.mermaid_diagrams: list[str] = []
     
     def validate_file(self, filepath: Path) -> Tuple[bool, Dict]:
         """
@@ -68,22 +134,29 @@ class SpecValidator:
         Returns:
             (is_valid, stats): Tuple of validation result and statistics
         """
-        self.errors = []
-        self.warnings = []
-        self.info = []
-        
+        self.inspect_file(filepath)
+        check_mermaid_diagrams([self])
+        return self.result(filepath)
+
+    def result(self, filepath: Path) -> Tuple[bool, Dict]:
         stats = {
             'file': str(filepath),
-            'errors': 0,
-            'warnings': 0,
-            'info': 0
+            'errors': len(self.errors),
+            'warnings': len(self.warnings),
+            'info': len(self.info)
         }
-        
+        return not self.errors, stats
+
+    def inspect_file(self, filepath: Path):
+        self.errors.clear()
+        self.warnings.clear()
+        self.info.clear()
+        self.mermaid_diagrams.clear()
+
         # Check file exists
         if not filepath.exists():
             self.errors.append(f"File does not exist: {filepath}")
-            stats['errors'] = len(self.errors)
-            return False, stats
+            return
         
         # Validate TOML syntax
         try:
@@ -92,75 +165,70 @@ class SpecValidator:
             self.info.append("✓ Valid TOML syntax")
         except Exception as e:
             self.errors.append(f"TOML syntax error: {str(e)}")
-            stats['errors'] = len(self.errors)
-            return False, stats
+            return
         
-        # Validate required keys
-        self._validate_required_keys(data)
-        
-        # Validate prompt content
-        if 'prompt' in data:
-            self._validate_prompt_content(data['prompt'])
-        
-        # Validate description
-        if 'description' in data:
-            self._validate_description(data['description'])
-        
-        # Update stats
-        stats['errors'] = len(self.errors)
-        stats['warnings'] = len(self.warnings)
-        stats['info'] = len(self.info)
-        
-        return len(self.errors) == 0, stats
-    
-    def _validate_required_keys(self, data: dict):
-        """Validate that all required top-level keys are present"""
-        for key in self.REQUIRED_KEYS:
-            if key not in data:
-                self.errors.append(f"Missing required key: '{key}'")
-            else:
-                self.info.append(f"✓ Found required key: '{key}'")
-    
-    def _validate_description(self, description: str):
-        """Validate description field"""
-        if not description or not description.strip():
-            self.warnings.append("Description is empty")
-        elif len(description) < 20:
-            self.warnings.append("Description is very short (< 20 chars)")
+        for error in SCHEMA.iter_errors(data):
+            detail = best_match([error])
+            # Report the constraint without echoing a potentially long workflow prompt.
+            self.errors.append(f"Schema error at {detail.json_path}: "
+                               f"{detail.validator} requires {json.dumps(detail.validator_value)}")
+        if self.errors:
+            return
+
+        try:
+            _, prompt = workflow_text(data)
+        except ValueError as exc:
+            self.errors.append(str(exc))
         else:
-            self.info.append(f"✓ Description length: {len(description)} chars")
+            self._validate_prompt_content(prompt, filepath)
     
-    def _validate_prompt_content(self, prompt: str):
+    def _validate_prompt_content(self, prompt: str, filepath: Path):
         """Validate prompt content for required sections"""
         # Check required sections
-        for section in self.REQUIRED_SECTIONS:
-            if section not in prompt:
+        document = WorkflowDocument(prompt)
+        self.errors.extend(document.structure_errors())
+        is_feature_spec = filepath.match("spec.toml") and (
+            filepath.absolute().match("development/spec.toml")
+            or any(h.level == 1 and h.title.casefold() == "feature spec creation workflow"
+                   for h in document.headings)
+        )
+        if is_feature_spec and not has_walkthrough_task_list(document):
+            self.errors.append("Restore the walkthrough's final phase 3 (Create Task List) "
+                               "and instruct the model to write 3-tasks.md")
+        for section, present in document.required_sections().items():
+            if not present:
                 self.errors.append(f"Missing required section: '{section}'")
             else:
                 self.info.append(f"✓ Found required section: '{section}'")
         
         # Check recommended sections
         for section in self.RECOMMENDED_SECTIONS:
-            if section not in prompt:
+            if not any(h.title.casefold() == section.casefold() for h in document.headings):
                 self.warnings.append(f"Missing recommended section: '{section}'")
             else:
                 self.info.append(f"✓ Found recommended section: '{section}'")
         
         # Validate workflow diagram
-        self._validate_workflow_diagram(prompt)
+        self._validate_workflow_diagram(document)
         
         # Validate constraints formatting
         self._validate_constraints(prompt)
         
         # Validate notepad template
-        self._validate_notepad_template(prompt)
+        self._validate_notepad_template(document, filepath.stem)
     
-    def _validate_workflow_diagram(self, prompt: str):
-        """Validate that workflow diagram exists and uses Mermaid"""
-        if '```mermaid' in prompt.lower():
-            self.info.append("✓ Found Mermaid workflow diagram")
-        else:
-            self.warnings.append("Workflow diagram may not use Mermaid format")
+    def _validate_workflow_diagram(self, document: WorkflowDocument):
+        diagrams = [b for b in document.section_fences("workflow diagram")
+                    if b.language in {"mermaid", "text", ""}]
+        if not diagrams:
+            self.errors.append("Workflow Diagram needs a fenced Mermaid or plain-text diagram")
+        for block in diagrams:
+            if not block.content.strip():
+                self.errors.append("Workflow Diagram contains an empty diagram")
+            elif block.language == "mermaid":
+                self.mermaid_diagrams.append(block.content)
+            else:
+                self.info.append("✓ Found plain-text workflow diagram")
     
     def _validate_constraints(self, prompt: str):
         """Validate constraint formatting"""
@@ -180,25 +248,21 @@ class SpecValidator:
         if may_count > 0:
             self.info.append(f"✓ Found {may_count} MAY constraints")
     
-    def _validate_notepad_template(self, prompt: str):
-        """Validate notepad template structure"""
-        required_notepad_sections = [
-            '## 🧠 Key Insights',
-            '## 🔧 Technical Notes',
-            '## 💡 Ideas',
-            '## 🔗 Cross-',
-            '## 📝 User Notes',
-            '## 🤖 LLM Observations'
-        ]
-        
-        found_sections = sum(1 for section in required_notepad_sections if section in prompt)
-        
-        if found_sections >= 5:
-            self.info.append(f"✓ Found {found_sections}/6 notepad sections")
-        elif found_sections >= 3:
-            self.warnings.append(f"Only found {found_sections}/6 notepad sections")
+    def _validate_notepad_template(self, document: WorkflowDocument, name: str):
+        blocks = document.section_fences("0-notepad template", "notepad template")
+        template = next((b.content for b in blocks if b.language in {"md", "markdown"}), "")
+        titles = {
+            re.sub(r"^[🧠🔧💡🔗📝🤖🔬]\s+", "", heading.title).upper()
+            for heading in WorkflowDocument(template).headings if heading.level == 2
+        }
+        subject = CONNECTION_SUBJECT.get(name)
+        if subject and f"CROSS-{subject} CONNECTIONS" in titles:
+            titles.add("CROSS-SYSTEM CONNECTIONS")
+        missing = CUSTOM_NOTEPADS.get(name, STANDARD_NOTEPAD) - titles
+        if missing:
+            self.errors.append("Notepad template incomplete. Missing: " + ", ".join(sorted(missing)))
         else:
-            self.errors.append(f"Notepad template incomplete ({found_sections}/6 sections)")
+            self.info.append("✓ Found required notepad sections")
     
     def print_results(self, filepath: Path, is_valid: bool):
         """Print validation results with colors"""
@@ -235,9 +299,30 @@ class SpecValidator:
         print()
 
 
-def find_spec_files(directory: Path) -> List[Path]:
-    """Find all .toml files in directory and subdirectories"""
-    return list(directory.rglob('*.toml'))
+def check_mermaid_diagrams(validators: list[SpecValidator]):
+    """Parse all Mermaid blocks in one Node process and attribute errors to their files."""
+    entries = [(v, diagram) for v in validators for diagram in v.mermaid_diagrams]
+    if not entries:
+        return
+    try:
+        result = subprocess.run(
+            ["node", str(ROOT / "tools" / "parse-mermaid.mjs")],
+            input=json.dumps([diagram for _, diagram in entries]),
+            capture_output=True, encoding="utf-8", check=True, timeout=60,
+        )
+        errors = json.loads(result.stdout)
+        if len(errors) != len(entries):
+            raise ValueError("Incomplete result from Mermaid")
+    except (OSError, subprocess.SubprocessError, ValueError) as exc:
+        message = f"Cannot check Mermaid diagram ({exc}). Install Node.js and run npm ci --prefix tools."
+        for validator, _ in entries:
+            validator.errors.append(message)
+        return
+    for (validator, _), error in zip(entries, errors):
+        if error is None:
+            validator.info.append("✓ Parsed Mermaid workflow diagram")
+        else:
+            validator.errors.append(f"Invalid Mermaid workflow diagram: {error}")
 
 
 def main():
@@ -281,6 +366,8 @@ Examples:
         help='Quiet mode (errors only)'
     )
     
+    parser.add_argument('--catalog', action='store_true',
+                        help='Check the complete shipped inventory in a copy of the specs directory')
     args = parser.parse_args()
     
     # Get path
@@ -294,22 +381,37 @@ Examples:
     if path.is_file():
         spec_files = [path]
     else:
-        spec_files = find_spec_files(path)
-    
+        spec_files = workflow_files(path)
+
+    inventory_errors = []
+    if args.catalog or path.resolve() == ROOT / 'specs':
+        expected = {Path(category) / f'{name}.toml' for category, names in CATALOG.items() for name in names}
+        actual = {file.relative_to(path) for file in spec_files}
+        inventory_errors.extend(f"Missing workflow: {p}" for p in sorted(expected - actual))
+        inventory_errors.extend(f"Unexpected workflow: {p}" for p in sorted(actual - expected))
     if not spec_files:
-        print(f"{Colors.YELLOW}No .toml files found in {path}{Colors.RESET}")
-        sys.exit(0)
+        inventory_errors.append(f"No workflow .toml files found in {path}")
+    for error in inventory_errors:
+        print(error)
     
     # Validate each file
-    validator = SpecValidator(verbose=args.verbose)
+    reports = []
+    for spec_file in spec_files:
+        validator = SpecValidator(verbose=args.verbose)
+        validator.inspect_file(spec_file)
+        reports.append(validator)
+    check_mermaid_diagrams(reports)
     results = []
     
-    for spec_file in spec_files:
-        is_valid, stats = validator.validate_file(spec_file)
+    for spec_file, validator in zip(spec_files, reports):
+        is_valid, stats = validator.result(spec_file)
         results.append((spec_file, is_valid, stats))
         
         if not args.quiet:
             validator.print_results(spec_file, is_valid)
+        else:
+            for error in validator.errors:
+                print(f"{spec_file}: {error}")
     
     # Print overall summary
     print(f"\n{Colors.BOLD}{'=' * 60}{Colors.RESET}")
@@ -318,7 +420,7 @@ Examples:
     
     valid_count = sum(1 for _, is_valid, _ in results if is_valid)
     invalid_count = len(results) - valid_count
-    total_errors = sum(stats['errors'] for _, _, stats in results)
+    total_errors = len(inventory_errors) + sum(stats['errors'] for _, _, stats in results)
     total_warnings = sum(stats['warnings'] for _, _, stats in results)
     
     print(f"Total files: {len(results)}")
@@ -328,7 +430,7 @@ Examples:
     print(f"{Colors.YELLOW}Total warnings: {total_warnings}{Colors.RESET}")
     
     # Exit code
-    if invalid_count > 0:
+    if total_errors:
         print(f"\n{Colors.RED}❌ Validation failed{Colors.RESET}")
         sys.exit(1)
     elif total_warnings > 0:
@@ -340,5 +442,6 @@ Examples:
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(errors="backslashreplace")
     main()
 
