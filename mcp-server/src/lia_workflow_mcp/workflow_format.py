@@ -42,6 +42,30 @@ class CodeBlock:
     content: str
 
 
+# Backtick spans can contain literal HTML comment delimiters.
+_CODE_OR_COMMENT = re.compile(
+    r"(?<!`)(?P<ticks>`+)(?!`).*?(?<!`)(?P=ticks)(?!`)|<!--.*?(?:(?P<close>-->)|$)"
+)
+
+
+def _without_comments(line: str, in_comment: bool) -> tuple[str, bool]:
+    if in_comment:
+        _, close, line = line.partition("-->")
+        if not close:
+            return "", True
+
+    visible = []
+    start = 0
+    for match in _CODE_OR_COMMENT.finditer(line):
+        if match["ticks"]:
+            continue
+        visible.append(line[start:match.start()])
+        if not match["close"]:
+            return "".join(visible), True
+        start = match.end()
+    return "".join(visible) + line[start:], False
+
+
 class WorkflowDocument:
     """Index Markdown headings and closed fences by their position in the prompt."""
 
@@ -50,9 +74,10 @@ class WorkflowDocument:
         self.fences: list[CodeBlock] = []
         self.prose = dedent(prompt).splitlines()
         lines = iter(enumerate(self.prose))
+        in_comment = False
         for number, line in lines:
             fence = re.fullmatch(r" {0,3}(`{3,}|~{3,})(.*)", line)
-            if fence:
+            if fence and not in_comment:
                 marker, language = fence.groups()
                 closing = re.compile(rf" {{0,3}}{marker}{marker[0]}*[ \t]*")
                 content = []
@@ -63,7 +88,11 @@ class WorkflowDocument:
                         self.fences.append(CodeBlock(number, language.strip().casefold(), "\n".join(content)))
                         break
                     content.append(code)
-            elif heading := re.fullmatch(r" {0,3}(#{1,6})[ \t]+(.+?)\s*", line):
+                continue
+            if in_comment or "<!--" in line:
+                line, in_comment = _without_comments(line, in_comment)
+                self.prose[number] = line
+            if heading := re.fullmatch(r" {0,3}(#{1,6})[ \t]+(.+?)\s*", line):
                 title = re.sub(r"[ \t]+#+$", "", heading[2]).strip()
                 self.headings.append(Heading(number, len(heading[1]), title))
 
@@ -78,19 +107,27 @@ class WorkflowDocument:
                 yield from (block for block in self.fences if heading.line < block.line < end)
 
     def phase_headings(self):
+        role_phase_end = 0
         for heading in self.headings:
-            if heading.level == 3:
-                match = re.fullmatch(r"(?:phase\s+)?(\d+)[.:]\s*(\S.*)", heading.title, re.IGNORECASE)
-            elif heading.level == 2:
-                match = re.fullmatch(r"phase\s+(\d+)[.:]\s*(\S.*)", heading.title, re.IGNORECASE)
-            else:
+            if heading.level not in {2, 3}:
                 continue
+            # Within a role phase, a bare numbered subheading introduces a task.
+            prefix = r"phase\s+" if heading.level == 2 or heading.line < role_phase_end else r"(?:phase\s+)?"
+            match = re.fullmatch(prefix + r"(\d+)[.:]\s*(\S.*)", heading.title, re.IGNORECASE)
             if match:
+                if heading.level == 2:
+                    role_phase_end = self.section_end(heading)
                 yield heading, int(match[1]), match[2]
 
-    def phase_instruction_errors(self):
+    def phase_errors(self):
+        phases = list(self.phase_headings())
+        for expected, (_, number, name) in enumerate(phases, start=1):
+            if number != expected:
+                yield f"Expected phase {expected}, observed {number} ({name})"
+                break
+
         end = len(self.prose)
-        for heading, number, name in reversed(list(self.phase_headings())):
+        for heading, number, name in reversed(phases):
             body = self.prose[heading.line + 1:min(end, self.section_end(heading))]
             if not any(line.strip() and line.strip() not in {"---", "</workflow-definition>"}
                        and not line.lstrip().startswith("#") for line in body):
@@ -99,12 +136,12 @@ class WorkflowDocument:
 
     def required_sections(self) -> dict[str, bool]:
         titles = {h.title.casefold() for h in self.headings}
-        phases = self.phase_headings()
-        if "your role" in titles:
-            checks = {"Phase 1": any(h.level == 2 and n == 1 for h, n, _ in phases)}
+        first_phase = next(self.phase_headings(), None)
+        if first_phase and first_phase[0].level == 2:
+            checks = {"Your Role": "your role" in titles}
         else:
             checks = {
-                "Numbered workflow phase": any(h.level == 3 for h, _, _ in phases),
+                "Numbered workflow phase": first_phase is not None,
                 "Workflow Modes": bool(titles & {"workflow modes", "workflow mode system"}),
                 "Goal": "goal" in titles,
                 "workflow-definition": any(line.strip() == "<workflow-definition>" for line in self.prose),

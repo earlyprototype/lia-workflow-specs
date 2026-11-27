@@ -127,6 +127,89 @@ def test_each_declared_phase_needs_instructions(global_install, workflow, headin
     assert f"phase {number}" in diagnostic and "instruction" in diagnostic
 
 
+@pytest.mark.parametrize("workflow, heading, following, replacement, expected, observed", [
+    ("knowledge/docs.toml", "### 3.", "### 4.", None, 3, 4),
+    ("knowledge/docs.toml", "### 3.", "### 4.", "### 2.", 3, 2),
+    ("development/dev.toml", "### 1.", "### 2.", "### 0.", 1, 0),
+    ("research/recon.toml", "## PHASE 2:", "## PHASE 3:", "## PHASE 3:", 2, 3),
+])
+def test_catalog_reports_phase_number_out_of_sequence(
+    global_install, workflow, heading, following, replacement, expected, observed
+):
+    path = global_install / workflow
+    text = path.read_text(encoding="utf-8")
+    start = text.index(heading)
+    if replacement is None:
+        text = text[:start] + text[text.index(following, start):]
+    else:
+        text = text.replace(heading, replacement, 1)
+    path.write_text(text, encoding="utf-8")
+
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 1, result.stdout
+    assert any(path.name in line and f"expected phase {expected}" in line.lower()
+               and f"observed {observed}" in line.lower() for line in result.stdout.splitlines())
+
+
+@pytest.mark.parametrize("body, valid", [
+    ("<!-- Implementation instructions go here. -->", False),
+    ("<!-- Draft instructions\n### 9. Example phase\nImplement it.\n-->", False),
+    ("<!-- Draft\nnotes --> Implement the feature. <!-- End of note -->", True),
+    ("Remove the literal `<!--` marker.", True),
+])
+def test_phase_body_excludes_html_comments(global_install, body, valid):
+    path = global_install / "development/dev.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("\n", text.index("### 3. Implementation"))
+    end = text.index("### 4.", start)
+    path.write_text(text[:start] + f"\n{body}\n" + text[end:], encoding="utf-8")
+    result = validate(path, "-q")
+    if valid:
+        assert result.returncode == 0, result.stdout
+    else:
+        assert result.returncode == 1, result.stdout
+        assert any(path.name in line and "Phase 3" in line and "no instructions" in line
+                   for line in result.stdout.splitlines())
+
+
+@pytest.mark.parametrize("workflow, introduction", [
+    ("development/dev.toml", "## Your Role\nGuide the implementation."),
+    ("research/recon.toml", "## Goal\nSurvey the project landscape."),
+])
+def test_optional_introduction_preserves_phase_format(global_install, workflow, introduction):
+    path = global_install / workflow
+    text = path.read_text(encoding="utf-8")
+    start = text.index("\n## ")
+    path.write_text(text[:start] + f"\n{introduction}\n" + text[start:], encoding="utf-8")
+    result = validate(path, "-q")
+    assert result.returncode == 0, result.stdout
+
+
+def test_numbered_subheading_in_role_phase_is_a_task(global_install):
+    path = global_install / "research/recon.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("### Tasks", text.index("## PHASE 1:"))
+    text = text[:start] + text[start:].replace("### Tasks", "### 1. Scope the search", 1)
+    path.write_text(text, encoding="utf-8")
+    server.initialise_specs()
+    recon = server.spec_collection.get_by_name("recon")
+    assert [phase.number for phase in recon.phases] == [1, 2, 3, 4, 5, 6]
+    result = validate(path, "-q")
+    assert result.returncode == 0, result.stdout
+
+
+def test_nested_phase_cannot_supply_its_parent_instructions(global_install):
+    path = global_install / "research/recon.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("\n", text.index("## PHASE 1:"))
+    end = text.index("## PHASE 2:", start)
+    path.write_text(text[:start] + "\n\n#" + text[end:], encoding="utf-8")
+    result = validate(path, "-q")
+    assert result.returncode == 1, result.stdout
+    assert any(path.name in line and "Phase 1" in line and "no instructions" in line
+               for line in result.stdout.splitlines())
+
+
 @pytest.mark.asyncio
 async def test_contributor_phase_headings_are_discoverable(global_install):
     path = global_install / "development/dev.toml"
@@ -215,6 +298,21 @@ def test_unrelated_notepad_headings_rejected(global_install):
     result = validate(path, "-q")
     assert result.returncode == 1 and path.name in result.stdout
     assert "USER NOTES" in result.stdout.upper()
+
+
+def test_accepts_shipped_base_notepad(global_install):
+    base = (ROOT / "templates/base-workflow.toml").read_text(encoding="utf-8")
+    start = base.index("# ```markdown", base.index("# NOTEPAD TEMPLATE"))
+    end = base.index("\n# ```", start) + len("\n# ```")
+    notepad = "\n".join(line[1:].removeprefix(" ") for line in base[start:end].splitlines())
+
+    path = global_install / "development/dev.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("```markdown", text.index("## 0-Notepad Template"))
+    end = text.index("\n```", start) + len("\n```")
+    path.write_text(text[:start] + notepad + text[end:], encoding="utf-8")
+    result = validate(path, "-q")
+    assert result.returncode == 0, result.stdout
 
 
 def test_walkthrough_tasks_link_to_their_requirements():

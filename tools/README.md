@@ -47,11 +47,15 @@ Directory discovery skips `_common`. The validator reads both top-level
 `description` and `prompt` strings and the `metadata.description` and
 `prompt.content` table fields used by `constitution` and `recon`.
 Each workflow must match the [workflow schema](../schemas/workflow-spec.schema.json).
-Each declared phase needs instructions outside fenced examples.
+Number phases consecutively from 1. Each phase needs instructions outside
+fenced examples and HTML comments. Contributor workflows use third-level
+phase headings. The `constitution` and `recon` workflows use second-level
+phase headings.
 The validator parses Mermaid blocks in the Workflow Diagram section and checks
 for workflow elements. It also accepts nonempty plain-text diagram blocks.
-It checks the six standard notepad headings
-and the custom templates used by `constitution`, `recon`, `paper` and `nexus`.
+It checks the six standard notepad headings with or without the icons shown in
+the base template. It also checks the custom templates used by `constitution`,
+`recon`, `paper` and `nexus`.
 
 **Example Output:**
 

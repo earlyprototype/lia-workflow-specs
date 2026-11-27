@@ -152,7 +152,7 @@ class SpecValidator:
         """Validate prompt content for required sections"""
         # Check required sections
         document = WorkflowDocument(prompt)
-        self.errors.extend(document.phase_instruction_errors())
+        self.errors.extend(document.phase_errors())
         for section, present in document.required_sections().items():
             if not present:
                 self.errors.append(f"Missing required section: '{section}'")
@@ -209,8 +209,10 @@ class SpecValidator:
     def _validate_notepad_template(self, document: WorkflowDocument, name: str):
         blocks = document.section_fences("0-notepad template", "notepad template")
         template = next((b.content for b in blocks if b.language in {"md", "markdown"}), "")
-        titles = {h.title.removeprefix("🔬 ").upper() for h in WorkflowDocument(template).headings
-                  if h.level == 2}
+        titles = {
+            re.sub(r"^[🧠🔧💡🔗📝🤖🔬]\s+", "", heading.title).upper()
+            for heading in WorkflowDocument(template).headings if heading.level == 2
+        }
         subject = CONNECTION_SUBJECT.get(name)
         if subject and f"CROSS-{subject} CONNECTIONS" in titles:
             titles.add("CROSS-SYSTEM CONNECTIONS")
