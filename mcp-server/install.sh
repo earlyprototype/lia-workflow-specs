@@ -100,7 +100,8 @@ generate_config() {
     local output_file=$1
     local config_specs_dir="$SPECS_DIR"
     if [ "$INSTALL_GLOBAL" = true ]; then
-        config_specs_dir='~/.lia/specs'
+        # Ask the installing interpreter for the native path of the directory Bash populated.
+        config_specs_dir=$(cd -- "$SPECS_DIR" && "$PYTHON_CMD" -c 'import os; print(os.getcwd(), end="")')
     fi
     
     "$PYTHON_CMD" - "$config_specs_dir" > "$output_file" <<'PY'

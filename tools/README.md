@@ -51,6 +51,9 @@ Number phases consecutively from 1. Each phase needs instructions outside
 fenced examples and HTML comments. Contributor workflows use third-level
 phase headings. The `constitution` and `recon` workflows use second-level
 phase headings.
+In the feature-spec workflow, the final phase (phase 3) must instruct the model
+to write `3-tasks.md`. In every workflow, place execution instructions between
+the Important Execution Instructions heading and the next heading.
 The validator parses Mermaid blocks in the Workflow Diagram section and checks
 for workflow elements. It also accepts nonempty plain-text diagram blocks.
 It checks the six standard notepad headings with or without the icons shown in

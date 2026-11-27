@@ -6,7 +6,7 @@ server_dir=$(cd "$(dirname "$0")/.." && pwd)
 fixture=$(mktemp -d)
 fixture=$(cd "$fixture" && pwd)
 trap 'rm -rf -- "$fixture"' EXIT
-mkdir -p "$fixture/bin" "$fixture/home" "$fixture/mcp-server/tests"
+mkdir -p "$fixture/bin" "$fixture/bash home" "$fixture/windows profile" "$fixture/mcp-server/tests"
 cp -R "$server_dir/../specs" "$fixture/"
 cp -R "$server_dir/src" "$server_dir/pyproject.toml" "$server_dir/README.md" \
     "$server_dir/install.sh" "$fixture/mcp-server/"
@@ -22,10 +22,10 @@ fi
 printf '#!/bin/sh\nexit 49\n' > "$fixture/bin/python3"
 chmod +x "$fixture/bin/python3"
 export PATH="$fixture/bin:$scripts:$PATH"
-export HOME="$fixture/home"
-export USERPROFILE="$HOME"
+export HOME="$fixture/bash home"
+export USERPROFILE="$fixture/windows profile"
 export PIP_NO_INDEX=1
 unset PYTHONPATH
 
 "$fixture/mcp-server/install.sh" --global
-python "$fixture/mcp-server/tests/check_global_install.py"
+python "$fixture/mcp-server/tests/check_global_install.py" "$HOME/.lia/specs"

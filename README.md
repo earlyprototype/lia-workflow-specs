@@ -158,6 +158,7 @@ Copy the `lia-workflow-specs` entry from
 `mcp-server/config/generated-config.json` into your client's `mcpServers`
 object. On Linux, Claude Desktop uses `~/.config/claude/claude_desktop_config.json`.
 The generated command contains the full path to the installing interpreter.
+A global install also records the absolute path to the copied catalog.
 Restart the client and open `specs://index` to see all 19 workflows.
 
 For a manual install, set `command` to the path printed by

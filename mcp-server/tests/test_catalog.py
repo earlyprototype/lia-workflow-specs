@@ -127,25 +127,47 @@ def test_each_declared_phase_needs_instructions(global_install, workflow, headin
     assert f"phase {number}" in diagnostic and "instruction" in diagnostic
 
 
-def test_catalog_requires_walkthrough_task_list_phase(global_install):
+@pytest.mark.parametrize("phase", [
+    pytest.param("", id="removed"),
+    pytest.param(None, id="numbered-troubleshooting"),
+    pytest.param("### 3. Publish Design\nSend the design for review.", id="unrelated-phase"),
+    pytest.param("### 3. Publish Design\nSend the design and the existing 3-tasks.md.", id="unrelated-delivery"),
+    pytest.param("### 3. Create Task List\nRead the existing 3-tasks.md.", id="input-only"),
+    pytest.param("### 3. Create Task List\nWrite tasks to 3-tasks.md.bak.", id="wrong-file"),
+    pytest.param("### 3. Create Task List\nReview the design.\n<!-- Write 3-tasks.md. -->", id="comment"),
+    pytest.param("### 3. Create Task List\nWrite 3-tasks.md.\n### 4. Publish Design\nSend the design.", id="not-final"),
+])
+def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
     path = global_install / "development/spec.toml"
     text = path.read_text(encoding="utf-8")
     start = text.index("### 3. Create Task List")
     end = text.index("## Troubleshooting", start)
-    path.write_text(text[:start] + text[end:], encoding="utf-8")
+    if phase is None:
+        text = text.replace("### Design Complexity", "### 3. Design Complexity", 1)
+        phase = ""
+    path.write_text(text[:start] + phase + "\n\n" + text[end:], encoding="utf-8")
 
     result = validate(global_install, "--catalog", "-q")
     assert result.returncode == 1, result.stdout
-    assert any(path.name in line and "phase 3" in line.lower() and "task" in line.lower()
+    assert any(path.name in line and "phase 3" in line.lower() and "3-tasks.md" in line
                for line in result.stdout.splitlines()), result.stdout
 
 
-@pytest.mark.parametrize("body", ["", "<!-- draft -->\n```text\nExample instructions\n```"])
-def test_catalog_requires_execution_instructions(global_install, body):
-    path = global_install / "strategy/innovate.toml"
+@pytest.mark.parametrize("workflow, following, body", [
+    ("strategy/innovate", "## Innovation Techniques and Methods", ""),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "<!-- draft -->\n```text\nExample instructions\n```"),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "***"),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "  _ _ _\n- - - -"),
+    ("development/dev", "## 0-Notepad Template", ""),
+    ("development/spec", "## 0-Notepad Template", ""),
+])
+def test_catalog_requires_execution_instructions(global_install, workflow, following, body):
+    path = global_install / f"{workflow}.toml"
     text = path.read_text(encoding="utf-8")
-    start = text.index("\n", text.index("## Important Execution Instructions"))
-    end = text.index("## Innovation Techniques and Methods", start)
+    heading = re.search(r"^#+ Important Execution Instructions$", text, re.IGNORECASE | re.MULTILINE)
+    assert heading
+    start = heading.end()
+    end = text.index(following, start)
     path.write_text(text[:start] + f"\n{body}\n" + text[end:], encoding="utf-8")
 
     result = validate(global_install, "--catalog", "-q")

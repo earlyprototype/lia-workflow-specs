@@ -10,14 +10,16 @@ from tempfile import TemporaryDirectory
 from mcp import ClientSession, StdioServerParameters, stdio_client
 
 
-async def check_install():
+async def check_install(installed_specs: Path):
     config_path = Path(__file__).resolve().parents[1] / "config/generated-config.json"
     config = json.loads(config_path.read_text(encoding="utf-8"))
     entry = config["mcpServers"]["lia-workflow-specs"]
     assert Path(entry["command"]) == Path(sys.executable), entry["command"]
-    specs_dir = Path(entry["env"]["LIA_SPECS_DIR"]).expanduser()
-    assert specs_dir == Path.home() / ".lia" / "specs"
-    assert (specs_dir / "development/dev.toml").is_file()
+    assert (installed_specs / "development/dev.toml").is_file()
+    if os.name == "nt":
+        assert installed_specs != Path.home() / ".lia" / "specs"
+    specs_dir = Path(entry["env"]["LIA_SPECS_DIR"])
+    assert specs_dir.is_absolute() and specs_dir.samefile(installed_specs), specs_dir
 
     with TemporaryDirectory() as project:
         os.environ["PATH"] = project
@@ -42,4 +44,4 @@ async def check_install():
 
 
 if __name__ == "__main__":
-    asyncio.run(asyncio.wait_for(check_install(), timeout=30))
+    asyncio.run(asyncio.wait_for(check_install(Path(sys.argv[1])), timeout=30))

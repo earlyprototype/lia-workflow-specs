@@ -46,6 +46,7 @@ class CodeBlock:
 _CODE_OR_COMMENT = re.compile(
     r"(?<!`)(?P<ticks>`+)(?!`).*?(?<!`)(?P=ticks)(?!`)|<!--.*?(?:(?P<close>-->)|$)"
 )
+_THEMATIC_BREAK = re.compile(r"([*_-])(?:[ \t]*\1){2,}")
 
 
 def _without_comments(line: str, in_comment: bool) -> tuple[str, bool]:
@@ -127,10 +128,12 @@ class WorkflowDocument:
                     role_phase_end = self.section_end(heading)
                 yield heading, int(match[1]), match[2]
 
-    def _has_instructions(self, heading: Heading, end: int) -> bool:
-        body = self.prose[heading.line + 1:end]
-        return any(line.strip() and line.strip() not in {"---", "</workflow-definition>"}
-                   and not line.lstrip().startswith("#") for line in body)
+    def instruction_lines(self, heading: Heading, end: int):
+        for line in self.prose[heading.line + 1:end]:
+            text = line.strip()
+            if (text and not text.startswith("#") and text != "</workflow-definition>"
+                    and not _THEMATIC_BREAK.fullmatch(text)):
+                yield text
 
     def phase_errors(self):
         phases = list(self.phase_headings())
@@ -141,15 +144,18 @@ class WorkflowDocument:
 
         end = self.phase_lines.stop
         for heading, number, name in reversed(phases):
-            if not self._has_instructions(heading, min(end, self.section_end(heading))):
+            if not any(self.instruction_lines(heading, min(end, self.section_end(heading)))):
                 yield f"Phase {number} ({name}) has no instructions"
             end = heading.line
 
     def structure_errors(self):
         yield from self.phase_errors()
-        for heading in self.headings:
-            if (heading.title.casefold() == "important execution instructions"
-                    and not self._has_instructions(heading, self.section_end(heading))):
+        for index, heading in enumerate(self.headings):
+            if heading.title.casefold() != "important execution instructions":
+                continue
+            # Shipped workflows can start the next section at a deeper heading level.
+            end = self.headings[index + 1].line if index + 1 < len(self.headings) else len(self.prose)
+            if not any(self.instruction_lines(heading, end)):
                 yield "Add instructions to the Important Execution Instructions section"
 
     def required_sections(self) -> dict[str, bool]:

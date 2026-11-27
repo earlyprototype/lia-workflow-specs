@@ -67,6 +67,21 @@ CUSTOM_NOTEPADS = {
 }
 
 
+def has_walkthrough_task_list(document: WorkflowDocument) -> bool:
+    phases = list(document.phase_headings())
+    if not phases:
+        return False
+    heading, number, title = phases[-1]
+    if number != 3 or not re.search(r"\b(tasks?|implementation plan)\b", title, re.IGNORECASE):
+        return False
+    end = min(document.section_end(heading), document.phase_lines.stop)
+    task_output = re.compile(
+        r"\b(?i:create|write|save|generate|produce|output|deliverable)\b.*?"
+        r"(?<![\w.-])3-tasks\.md(?![\w/-]|\.\w)"
+    )
+    return any(task_output.search(line) for line in document.instruction_lines(heading, end))
+
+
 class Colors:
     """ANSI color codes for terminal output"""
     GREEN = '\033[92m'
@@ -155,8 +170,9 @@ class SpecValidator:
         document = WorkflowDocument(prompt)
         self.errors.extend(document.structure_errors())
         if (filepath.resolve() == self.catalog_root / "development/spec.toml"
-                and not any(number == 3 for _, number, _ in document.phase_headings())):
-            self.errors.append("Restore phase 3 (Create Task List) from the feature-spec walkthrough")
+                and not has_walkthrough_task_list(document)):
+            self.errors.append("Restore the walkthrough's final phase 3 (Create Task List) "
+                               "and instruct the model to write 3-tasks.md")
         for section, present in document.required_sections().items():
             if not present:
                 self.errors.append(f"Missing required section: '{section}'")
