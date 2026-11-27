@@ -73,8 +73,8 @@ npm ci --prefix tools --ignore-scripts
 # Validate the workflow
 python tools/spec-validator.py specs/your-category/your-spec.toml
 
-# Generate workflow diagram
-python tools/workflow-visualizer.py specs/your-category/your-spec.toml
+# Validate all shipped workflows and their diagrams
+python tools/spec-validator.py specs/ --catalog
 
 # Run any other relevant tests
 ```

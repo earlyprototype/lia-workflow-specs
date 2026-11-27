@@ -965,7 +965,7 @@ def validate_spec_content(spec: WorkflowSpec) -> str:
     
     # Check required sections
     document = WorkflowDocument(spec.prompt)
-    errors.extend(document.phase_errors())
+    errors.extend(document.structure_errors())
     for section, present in document.required_sections().items():
         if present:
             passed.append(f"✓ Found required section: {section}")

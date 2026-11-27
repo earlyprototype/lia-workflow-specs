@@ -28,6 +28,17 @@ async def check_install():
             assert result.contents[0].mimeType == "application/json"
             catalog = json.loads(result.contents[0].text)
             assert len(catalog["specs"]) == catalog["total_specs"] == 19
+            resources = (await client.list_resources()).resources
+            tools = (await client.list_tools()).tools
+            prompts = (await client.list_prompts()).prompts
+            assert len(resources) > 30
+            assert len(tools) >= 10
+            assert sum(p.name.startswith("start-") for p in prompts) == 19
+            search = await client.call_tool("search_specs", {"query": "security"})
+            assert not search.isError and "security" in search.content[0].text.lower()
+            recommendation = await client.call_tool("recommend_workflow", {"task_description": "implement a feature"})
+            assert not recommendation.isError and "dev" in recommendation.content[0].text.lower()
+            print(f"Discovered {len(resources)} resources, {len(tools)} tools and {len(prompts)} prompts")
 
 
 if __name__ == "__main__":

@@ -96,6 +96,14 @@ class WorkflowDocument:
                 title = re.sub(r"[ \t]+#+$", "", heading[2]).strip()
                 self.headings.append(Heading(number, len(heading[1]), title))
 
+        markers = [line.strip() for line in self.prose]
+        self.phase_lines = range(len(markers))
+        if "<workflow-definition>" in markers:
+            start = markers.index("<workflow-definition>") + 1
+            end = next((i for i in range(start, len(markers)) if markers[i] == "</workflow-definition>"),
+                       len(markers))
+            self.phase_lines = range(start, end)
+
     def section_end(self, heading: Heading) -> int:
         return next((h.line for h in self.headings if h.line > heading.line and h.level <= heading.level),
                     len(self.prose))
@@ -109,7 +117,7 @@ class WorkflowDocument:
     def phase_headings(self):
         role_phase_end = 0
         for heading in self.headings:
-            if heading.level not in {2, 3}:
+            if heading.line not in self.phase_lines or heading.level not in {2, 3}:
                 continue
             # Within a role phase, a bare numbered subheading introduces a task.
             prefix = r"phase\s+" if heading.level == 2 or heading.line < role_phase_end else r"(?:phase\s+)?"
@@ -119,6 +127,11 @@ class WorkflowDocument:
                     role_phase_end = self.section_end(heading)
                 yield heading, int(match[1]), match[2]
 
+    def _has_instructions(self, heading: Heading, end: int) -> bool:
+        body = self.prose[heading.line + 1:end]
+        return any(line.strip() and line.strip() not in {"---", "</workflow-definition>"}
+                   and not line.lstrip().startswith("#") for line in body)
+
     def phase_errors(self):
         phases = list(self.phase_headings())
         for expected, (_, number, name) in enumerate(phases, start=1):
@@ -126,13 +139,18 @@ class WorkflowDocument:
                 yield f"Expected phase {expected}, observed {number} ({name})"
                 break
 
-        end = len(self.prose)
+        end = self.phase_lines.stop
         for heading, number, name in reversed(phases):
-            body = self.prose[heading.line + 1:min(end, self.section_end(heading))]
-            if not any(line.strip() and line.strip() not in {"---", "</workflow-definition>"}
-                       and not line.lstrip().startswith("#") for line in body):
+            if not self._has_instructions(heading, min(end, self.section_end(heading))):
                 yield f"Phase {number} ({name}) has no instructions"
             end = heading.line
+
+    def structure_errors(self):
+        yield from self.phase_errors()
+        for heading in self.headings:
+            if (heading.title.casefold() == "important execution instructions"
+                    and not self._has_instructions(heading, self.section_end(heading))):
+                yield "Add instructions to the Important Execution Instructions section"
 
     def required_sections(self) -> dict[str, bool]:
         titles = {h.title.casefold() for h in self.headings}

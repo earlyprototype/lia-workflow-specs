@@ -35,7 +35,7 @@ Related to #
 
 - [ ] Validated TOML syntax
 - [ ] Tested with AI assistant (Claude/GPT-4/Other)
-- [ ] Generated workflow diagrams
+- [ ] Checked workflow diagrams with the spec validator
 - [ ] Reviewed documentation rendering
 - [ ] Checked for broken links
 - [ ] Ran spec validator

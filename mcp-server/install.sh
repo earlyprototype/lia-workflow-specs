@@ -61,31 +61,25 @@ show_help() {
 }
 
 check_python() {
-    if command -v python3 &> /dev/null; then
-        PYTHON_CMD="python3"
-    elif command -v python &> /dev/null; then
-        PYTHON_CMD="python"
-    else
-        print_error "Python 3 is required but not found"
-        exit 1
-    fi
-    
-    PYTHON_VERSION=$($PYTHON_CMD --version 2>&1 | awk '{print $2}')
-    print_success "Found Python: $PYTHON_VERSION"
-}
-
-check_pip() {
-    if ! $PYTHON_CMD -m pip --version &> /dev/null; then
-        print_error "pip is required but not found"
-        exit 1
-    fi
-    print_success "Found pip"
+    local candidate interpreter
+    for candidate in python3 python; do
+        interpreter=$("$candidate" -c 'import sys; print(sys.executable if sys.version_info >= (3, 10) else "")' 2>/dev/null) || continue
+        # Native Windows Python writes CRLF when its output is captured by Bash.
+        interpreter=${interpreter%$'\r'}
+        if [[ -n "$interpreter" ]] && "$interpreter" -m pip --version &> /dev/null; then
+            PYTHON_CMD="$interpreter"
+            print_success "Found Python with pip ($candidate)"
+            return
+        fi
+    done
+    print_error "Install Python 3.10 or later with pip and make python3 or python available on PATH"
+    exit 1
 }
 
 install_package() {
     print_info "Installing MCP server package..."
     cd "$SCRIPT_DIR"
-    $PYTHON_CMD -m pip install -e . --quiet
+    "$PYTHON_CMD" -m pip install -e . --quiet
     print_success "MCP server package installed"
 }
 
@@ -174,7 +168,6 @@ print_header
 
 # Check requirements
 check_python
-check_pip
 
 # Install package
 install_package

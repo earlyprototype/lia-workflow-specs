@@ -127,6 +127,48 @@ def test_each_declared_phase_needs_instructions(global_install, workflow, headin
     assert f"phase {number}" in diagnostic and "instruction" in diagnostic
 
 
+def test_catalog_requires_walkthrough_task_list_phase(global_install):
+    path = global_install / "development/spec.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("### 3. Create Task List")
+    end = text.index("## Troubleshooting", start)
+    path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 1, result.stdout
+    assert any(path.name in line and "phase 3" in line.lower() and "task" in line.lower()
+               for line in result.stdout.splitlines()), result.stdout
+
+
+@pytest.mark.parametrize("body", ["", "<!-- draft -->\n```text\nExample instructions\n```"])
+def test_catalog_requires_execution_instructions(global_install, body):
+    path = global_install / "strategy/innovate.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("\n", text.index("## Important Execution Instructions"))
+    end = text.index("## Innovation Techniques and Methods", start)
+    path.write_text(text[:start] + f"\n{body}\n" + text[end:], encoding="utf-8")
+
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 1, result.stdout
+    assert any(path.name in line and "execution instructions" in line.lower()
+               and "add" in line.lower() for line in result.stdout.splitlines()), result.stdout
+
+
+@pytest.mark.asyncio
+async def test_numbered_technique_after_definition_is_not_a_phase(global_install):
+    path = global_install / "strategy/innovate.toml"
+    text = path.read_text(encoding="utf-8")
+    heading = "### Creative Thinking Approaches"
+    assert text.index(heading) > text.index("</workflow-definition>")
+    path.write_text(text.replace(heading, "### 1. Creative Thinking Approaches"), encoding="utf-8")
+
+    server.initialise_specs()
+    phases, = await server.call_tool("get_workflow_phases", {"spec_name": "innovate"})
+    assert re.findall(r"^(\d+)\. ", phases.text, re.MULTILINE) == list("12345")
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 0, result.stdout
+
+
 @pytest.mark.parametrize("workflow, heading, following, replacement, expected, observed", [
     ("knowledge/docs.toml", "### 3.", "### 4.", None, 3, 4),
     ("knowledge/docs.toml", "### 3.", "### 4.", "### 2.", 3, 2),

@@ -86,8 +86,9 @@ class SpecValidator:
         'Agent Self-Development',
     ]
     
-    def __init__(self, verbose: bool = False):
+    def __init__(self, verbose: bool = False, catalog_root: Path = ROOT / "specs"):
         self.verbose = verbose
+        self.catalog_root = catalog_root
         self.errors: List[str] = []
         self.warnings: List[str] = []
         self.info: List[str] = []
@@ -146,13 +147,16 @@ class SpecValidator:
         except ValueError as exc:
             self.errors.append(str(exc))
         else:
-            self._validate_prompt_content(prompt, filepath.stem)
+            self._validate_prompt_content(prompt, filepath)
     
-    def _validate_prompt_content(self, prompt: str, name: str):
+    def _validate_prompt_content(self, prompt: str, filepath: Path):
         """Validate prompt content for required sections"""
         # Check required sections
         document = WorkflowDocument(prompt)
-        self.errors.extend(document.phase_errors())
+        self.errors.extend(document.structure_errors())
+        if (filepath.resolve() == self.catalog_root / "development/spec.toml"
+                and not any(number == 3 for _, number, _ in document.phase_headings())):
+            self.errors.append("Restore phase 3 (Create Task List) from the feature-spec walkthrough")
         for section, present in document.required_sections().items():
             if not present:
                 self.errors.append(f"Missing required section: '{section}'")
@@ -173,7 +177,7 @@ class SpecValidator:
         self._validate_constraints(prompt)
         
         # Validate notepad template
-        self._validate_notepad_template(document, name)
+        self._validate_notepad_template(document, filepath.stem)
     
     def _validate_workflow_diagram(self, document: WorkflowDocument):
         diagrams = [b for b in document.section_fences("workflow diagram")
@@ -354,8 +358,9 @@ Examples:
     
     # Validate each file
     reports = []
+    catalog_root = path.resolve() if args.catalog else ROOT / "specs"
     for spec_file in spec_files:
-        validator = SpecValidator(verbose=args.verbose)
+        validator = SpecValidator(verbose=args.verbose, catalog_root=catalog_root)
         validator.inspect_file(spec_file)
         reports.append(validator)
     check_mermaid_diagrams(reports)

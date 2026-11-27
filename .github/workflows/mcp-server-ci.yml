@@ -104,7 +104,15 @@ jobs:
 
   integration:
     name: Integration Test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: '1'
     needs: [test, validate-specs]
     
     steps:
@@ -116,65 +124,11 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install and read the catalog with the minimum MCP SDK
+      - name: Cache installer dependencies with the minimum MCP SDK
         run: |
-          python -m venv "$RUNNER_TEMP/lia installer"
-          source "$RUNNER_TEMP/lia installer/bin/activate"
-          export HOME="$RUNNER_TEMP/lia-home"
-          export PIP_CONSTRAINT="$RUNNER_TEMP/mcp-floor.txt"
-          echo 'mcp==1.30.0' > "$PIP_CONSTRAINT"
-          ./mcp-server/install.sh --global
-          python3 mcp-server/tests/check_global_install.py
-          echo "$VIRTUAL_ENV/bin" >> "$GITHUB_PATH"
-      
-      - name: Test MCP server functions
+          python -m pip download --dest "$RUNNER_TEMP/lia-wheels" ./mcp-server 'mcp==1.30.0' hatchling editables
+
+      - name: Install offline and read the catalog with an unusable python3 on PATH
         run: |
-          python -c "
-          import asyncio
-          import os
-          import sys
-          
-          sys.path.insert(0, 'mcp-server/src')
-          os.environ['LIA_SPECS_DIR'] = 'specs'
-          
-          from lia_workflow_mcp.server import (
-              initialise_specs,
-              list_resources,
-              list_tools,
-              list_prompts,
-              call_tool,
-          )
-          
-          initialise_specs()
-          
-          async def test():
-              # Test resources
-              resources = await list_resources()
-              assert len(resources) > 30, f'Expected >30 resources, got {len(resources)}'
-              print(f'✓ Resources: {len(resources)}')
-              
-              # Test tools
-              tools = await list_tools()
-              assert len(tools) >= 10, f'Expected >=10 tools, got {len(tools)}'
-              print(f'✓ Tools: {len(tools)}')
-              
-              # Test prompts
-              prompts = await list_prompts()
-              assert sum(p.name.startswith('start-') for p in prompts) == 19
-              print(f'✓ Prompts: {len(prompts)}')
-              
-              # Test tool call
-              result = await call_tool('search_specs', {'query': 'security'})
-              assert len(result) > 0
-              print('✓ Tool calls working')
-              
-              # Test recommendation
-              result = await call_tool('recommend_workflow', {'task_description': 'implement a feature'})
-              assert 'dev' in result[0].text.lower()
-              print('✓ Recommendations working')
-              
-              print()
-              print('All integration tests passed!')
-          
-          asyncio.run(test())
-          "
+          export PIP_FIND_LINKS="$RUNNER_TEMP/lia-wheels"
+          bash mcp-server/tests/check_global_install.sh
