@@ -182,21 +182,14 @@ graph TD
     F --> G[Monitoring & Long-term Performance Management]
     G --> H[Documentation & Knowledge Transfer]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
 ```
 
 # Performance Optimization Instructions

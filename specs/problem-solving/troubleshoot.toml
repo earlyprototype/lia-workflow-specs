@@ -183,21 +183,14 @@ graph TD
     F --> G[Verification & Monitoring]
     G --> H[Documentation & Knowledge Management]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
 ```
 
 # Troubleshooting Instructions

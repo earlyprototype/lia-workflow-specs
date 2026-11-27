@@ -13,7 +13,7 @@ Every workflow creates a `0-notepad.md` file to capture insights during executio
 
 ## Standard 6-Section Format
 
-All workflow notepads should use this structure:
+Use this structure for a standard workflow notepad.
 
 ```markdown
 # {Workflow Name} Notepad
@@ -91,7 +91,11 @@ Some workflows may add domain-specific sections **after** the standard 6:
 ## PERFORMANCE OBSERVATIONS       # optimize.toml specific
 ```
 
-The standard 6 sections should be present; additional sections are optional.
+Keep all six headings in a standard notepad. Some workflows name the subject of
+the connections section. For example, `dev.toml` uses `CROSS-COMPONENT CONNECTIONS`.
+
+`constitution.toml`, `recon.toml`, `paper.toml` and `nexus.toml` each define a
+custom template. Use the headings in the workflow's Notepad Template section.
 
 ### Special Case: nexus.toml
 

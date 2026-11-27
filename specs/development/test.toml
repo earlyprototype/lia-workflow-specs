@@ -178,21 +178,14 @@ graph TD
     F --> G[Test Maintenance & Continuous Improvement]
     G --> H[Testing Documentation & Knowledge Transfer]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
 ```
 
 # Testing Strategy & Automation Instructions

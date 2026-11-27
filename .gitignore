@@ -68,3 +68,4 @@ mcp-server/config/generated-config.json
 
 
 .venv/
+/tools/node_modules/

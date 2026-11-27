@@ -237,22 +237,15 @@ graph TD
     G --> H[Risk Assessment & Mitigation Planning]
     H --> I[Final Recommendations & Delivery]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    I --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-    [*] --> I : Update
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
+    I <--> Update
 ```
 
 # Innovation Consulting Instructions

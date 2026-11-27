@@ -219,25 +219,16 @@ graph TD
     H --> I[Architecture Implementation & Governance]
     I --> J[Architecture Documentation & Knowledge Transfer]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    I --> [*] : Update
-    J --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-    [*] --> I : Update
-    [*] --> J : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
+    I <--> Update
+    J <--> Update
 ```
 
 # Architecture Instructions

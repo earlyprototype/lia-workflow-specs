@@ -66,7 +66,10 @@ Follow the guidelines below for your specific contribution type.
 
 ### 4. Test Your Changes
 ```bash
-# Validate TOML syntax
+# Install the diagram parser with Node.js 24
+npm ci --prefix tools --ignore-scripts
+
+# Validate the workflow
 python tools/spec-validator.py specs/your-category/your-spec.toml
 
 # Generate workflow diagram
@@ -309,6 +312,7 @@ required_fields = [
 ### Spec Validation
 All specs must pass validation:
 ```bash
+npm ci --prefix tools --ignore-scripts
 python tools/spec-validator.py specs/your-category/your-spec.toml
 ```
 

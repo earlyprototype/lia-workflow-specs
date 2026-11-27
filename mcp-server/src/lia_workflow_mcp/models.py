@@ -9,7 +9,7 @@ from pathlib import Path
 
 import tomli
 
-from .workflow_format import workflow_files, workflow_text
+from .workflow_format import WorkflowDocument, workflow_files, workflow_text
 
 logger = logging.getLogger(__name__)
 
@@ -113,22 +113,10 @@ class WorkflowSpec:
     @staticmethod
     def _extract_phases(prompt: str) -> list[WorkflowPhase]:
         """Extract workflow phases from prompt content."""
-        import re
-        phases = []
-        
-        # Both "### 1. Task Analysis" and "## PHASE 1: DEFINE SCOPE" introduce phases.
-        phase_pattern = r"^[ \t]*(?:###[ \t]*|##[ \t]+phase[ \t]+)(\d+)[.:][ \t]*(.+)$"
-        matches = re.findall(phase_pattern, prompt, re.MULTILINE | re.IGNORECASE)
-        
-        for number_str, name in matches:
-            number = int(number_str)
-            phases.append(WorkflowPhase(
-                number=number,
-                name=name.strip(),
-                description="",  # Would require more sophisticated parsing
-            ))
-        
-        return phases
+        return [
+            WorkflowPhase(number=number, name=name, description="")
+            for _, number, name in WorkflowDocument(prompt).phase_headings()
+        ]
     
     @staticmethod
     def _extract_tags(description: str, category: SpecCategory) -> list[str]:

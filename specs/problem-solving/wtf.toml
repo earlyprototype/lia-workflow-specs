@@ -231,25 +231,16 @@ graph TD
     H --> I[Integration Strategy & Implementation Planning]
     I --> J[Knowledge Transfer & Archaeological Summary]
     
-    B --> [*] : Update
-    C --> [*] : Update
-    D --> [*] : Update
-    E --> [*] : Update
-    F --> [*] : Update
-    G --> [*] : Update
-    H --> [*] : Update
-    I --> [*] : Update
-    J --> [*] : Update
-    [*] --> B : Update
-    [*] --> C : Update
-    [*] --> D : Update
-    [*] --> E : Update
-    [*] --> F : Update
-    [*] --> G : Update
-    [*] --> H : Update
-    [*] --> I : Update
-    [*] --> J : Update
-}
+    Update[Update existing work]
+    B <--> Update
+    C <--> Update
+    D <--> Update
+    E <--> Update
+    F <--> Update
+    G <--> Update
+    H <--> Update
+    I <--> Update
+    J <--> Update
 ```
 
 # Archaeological Investigation Instructions

@@ -23,6 +23,9 @@ Validates workflow specification files for compliance with Lia standards.
 # Install the TOML reader on Python 3.10 (Python 3.11 and later include it)
 pip install tomli
 
+# Install the diagram parser once with Node.js 24
+npm ci --prefix tools --ignore-scripts
+
 # Validate single file
 python tools/spec-validator.py specs/development/spec.toml
 
@@ -43,6 +46,10 @@ The repository-wide check also reports missing and unexpected workflow files.
 Directory discovery skips `_common`. The validator reads both top-level
 `description` and `prompt` strings and the `metadata.description` and
 `prompt.content` table fields used by `constitution` and `recon`.
+The validator looks for phase headings and instructions outside fenced examples.
+It parses Mermaid blocks in the Workflow Diagram section locally and accepts
+nonempty plain-text diagram blocks. It checks the six standard notepad headings
+and the custom templates used by `constitution`, `recon`, `paper` and `nexus`.
 
 **Example Output:**
 
@@ -55,12 +62,11 @@ Validating: spec.toml
 
 ⚠️  WARNINGS:
   • Missing recommended section: 'Agent Self-Development'
-  • Only found 4/6 notepad sections
 
 SUMMARY:
   ✗ INVALID
   Errors: 1
-  Warnings: 2
+  Warnings: 1
 ```
 
 ---
@@ -163,6 +169,7 @@ python tools/spec-analyzer.py specs/ --report stats.md
 
 ```bash
 pip install -r tools/requirements.txt
+npm ci --prefix tools --ignore-scripts
 ```
 
 ### Testing
@@ -190,7 +197,9 @@ These tools are used in GitHub Actions:
 
 ```yaml
 # .github/workflows/validate-specs.yml
-- name: Validate TOML files
+- name: Install diagram parser
+  run: npm ci --prefix tools --ignore-scripts
+- name: Validate the shipped workflow catalog
   run: python tools/spec-validator.py specs/
 ```
 

@@ -66,6 +66,11 @@ jobs:
       with:
         python-version: '3.11'
         
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+    - name: Install diagram parser
+      run: npm ci --prefix tools --ignore-scripts
     - name: Validate the shipped workflow catalog
       run: python tools/spec-validator.py specs/
 

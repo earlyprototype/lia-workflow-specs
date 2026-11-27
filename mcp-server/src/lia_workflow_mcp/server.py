@@ -52,7 +52,7 @@ from pydantic import AnyUrl
 
 from .models import SpecCategory, SpecCollection, WorkflowSpec
 from .triggers import TriggerManager
-from .workflow_format import required_sections
+from .workflow_format import WorkflowDocument
 
 # Initialise MCP server
 server = Server("lia-workflow-specs")
@@ -66,9 +66,13 @@ def get_specs_directory() -> Path:
     """Get the specs directory path from environment or default."""
     specs_dir = os.environ.get("LIA_SPECS_DIR")
     if specs_dir is not None:
-        path = Path(specs_dir).expanduser().resolve()
+        remedy = "Set LIA_SPECS_DIR to an absolute directory containing the workflow specs."
+        try:
+            path = Path(specs_dir).expanduser().resolve()
+        except (RuntimeError, OSError, ValueError) as exc:
+            raise ValueError(f"Cannot resolve LIA_SPECS_DIR={specs_dir!r}. {remedy}") from exc
         if not specs_dir or not path.is_dir():
-            raise ValueError(f"Set LIA_SPECS_DIR to the workflow specs directory. Invalid directory: {path}")
+            raise ValueError(f"Invalid workflow directory: {path}. {remedy}")
         return path
     
     # Default: look for specs directory relative to this file or workspace
@@ -960,17 +964,18 @@ def validate_spec_content(spec: WorkflowSpec) -> str:
     passed = []
     
     # Check required sections
-    for section, present in required_sections(spec.prompt).items():
+    document = WorkflowDocument(spec.prompt)
+    for section, present in document.required_sections().items():
         if present:
             passed.append(f"✓ Found required section: {section}")
         else:
             errors.append(f"✗ Missing required section: {section}")
     
-    # Check for Mermaid diagram
-    if "```mermaid" in spec.prompt.lower():
-        passed.append("✓ Contains Mermaid workflow diagram")
+    if any(block.content.strip() and block.language in {"", "text", "mermaid"}
+           for block in document.section_fences("workflow diagram")):
+        passed.append("✓ Contains a workflow diagram")
     else:
-        warnings.append("⚠ No Mermaid diagram found")
+        errors.append("✗ No Mermaid diagram or plain-text diagram found in Workflow Diagram")
     
     # Check MUST constraints
     must_count = len(re.findall(r"\bMUST\b", spec.prompt))

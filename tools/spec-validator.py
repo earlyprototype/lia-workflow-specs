@@ -10,6 +10,8 @@ Validates workflow specification files for:
 - Notepad template inclusion
 """
 
+import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import List, Tuple, Dict
@@ -22,7 +24,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "mcp-server" / "src"))
-from lia_workflow_mcp.workflow_format import required_sections, workflow_files, workflow_text
+from lia_workflow_mcp.workflow_format import WorkflowDocument, workflow_files, workflow_text
 
 
 # The paths advertised by category in the README.
@@ -36,34 +38,29 @@ CATALOG = {
 }
 
 
-def count_notepad_sections(prompt: str) -> int:
-    """Count headings in the Markdown template inside the notepad section."""
-    lines = iter(prompt.splitlines())
-    notepad_level = 0
-    for line in lines:
-        heading = re.fullmatch(r" {0,3}(#{1,6})(?:[ \t]+(.*))?", line)
-        if heading:
-            level = len(heading[1])
-            if notepad_level and level <= notepad_level:
-                break
-            if (heading[2] or "").strip().casefold() in {"0-notepad template", "notepad template"}:
-                notepad_level = level
+STANDARD_NOTEPAD = {
+    "KEY INSIGHTS & DISCOVERIES", "TECHNICAL NOTES & IMPLEMENTATION DETAILS",
+    "IDEAS & FUTURE ENHANCEMENTS", "CROSS-SYSTEM CONNECTIONS", "USER NOTES", "LLM OBSERVATIONS",
+}
 
-        fence = re.fullmatch(r" {0,3}(`{3,}|~{3,})(.*)", line)
-        if fence:
-            marker, language = fence.groups()
-            closing = re.compile(rf" {{0,3}}{marker}{marker[0]}*[ \t]*")
-            is_template = notepad_level > 0 and language.strip().lower() in {"markdown", "md"}
-            sections = set()
-            # Headings inside a fenced example cannot open or close a document section.
-            for code_line in lines:
-                if closing.fullmatch(code_line):
-                    if is_template:
-                        return len(sections)
-                    break
-                if is_template and code_line.startswith("## ") and code_line[3:].strip():
-                    sections.add(code_line[3:].strip())
-    return 0
+CONNECTION_SUBJECT = {
+    "dev": "COMPONENT", "spec": "SPECIFICATION", "test": "TESTING", "docs": "DOCUMENTATION",
+    "review": "CODE", "learn": "LEARNING", "research": "TECHNOLOGY", "innovate": "COMPONENT",
+}
+
+CUSTOM_NOTEPADS = {
+    "constitution": {"CURRENT PHASE", "PROJECT OVERVIEW", "EXISTING STANDARDS",
+                     "DECISIONS MADE", "STANDARDS DEFINED", "QUESTIONS FOR USER"},
+    "recon": {"MISSION", "SEARCH DIMENSIONS DEFINED", "RAW DISCOVERY LOG", "TIER CLASSIFICATION",
+              "PATTERN OBSERVATIONS", "CRITICAL DISCOVERIES", "QUESTIONS EMERGING"},
+    "paper": {"KEY INSIGHTS & INTELLECTUAL DISCOVERIES", "METHODOLOGICAL NOTES & TECHNICAL DETAILS",
+              "RESEARCH QUESTIONS & FUTURE DIRECTIONS", "CROSS-PAPER CONNECTIONS & LITERATURE LINKS",
+              "RESEARCHER NOTES", "LLM OBSERVATIONS"},
+    "nexus": {"STRATEGIC INSIGHTS & KEY DISCOVERIES", "TEAM COORDINATION NOTES",
+              "CLIENT RELATIONSHIP MANAGEMENT", "METHODOLOGY & PROCESS NOTES",
+              "INNOVATION OPPORTUNITIES & IDEAS", "CROSS-PROJECT CONNECTIONS",
+              "CLIENT FEEDBACK & ITERATIONS", "NEXUS OBSERVATIONS"},
+}
 
 
 class Colors:
@@ -90,6 +87,7 @@ class SpecValidator:
         self.errors: List[str] = []
         self.warnings: List[str] = []
         self.info: List[str] = []
+        self.mermaid_diagrams: list[str] = []
     
     def validate_file(self, filepath: Path) -> Tuple[bool, Dict]:
         """
@@ -98,22 +96,29 @@ class SpecValidator:
         Returns:
             (is_valid, stats): Tuple of validation result and statistics
         """
-        self.errors = []
-        self.warnings = []
-        self.info = []
-        
+        self.inspect_file(filepath)
+        check_mermaid_diagrams([self])
+        return self.result(filepath)
+
+    def result(self, filepath: Path) -> Tuple[bool, Dict]:
         stats = {
             'file': str(filepath),
-            'errors': 0,
-            'warnings': 0,
-            'info': 0
+            'errors': len(self.errors),
+            'warnings': len(self.warnings),
+            'info': len(self.info)
         }
-        
+        return not self.errors, stats
+
+    def inspect_file(self, filepath: Path):
+        self.errors.clear()
+        self.warnings.clear()
+        self.info.clear()
+        self.mermaid_diagrams.clear()
+
         # Check file exists
         if not filepath.exists():
             self.errors.append(f"File does not exist: {filepath}")
-            stats['errors'] = len(self.errors)
-            return False, stats
+            return
         
         # Validate TOML syntax
         try:
@@ -122,8 +127,7 @@ class SpecValidator:
             self.info.append("✓ Valid TOML syntax")
         except Exception as e:
             self.errors.append(f"TOML syntax error: {str(e)}")
-            stats['errors'] = len(self.errors)
-            return False, stats
+            return
         
         try:
             description, prompt = workflow_text(data)
@@ -131,14 +135,7 @@ class SpecValidator:
             self.errors.append(str(exc))
         else:
             self._validate_description(description)
-            self._validate_prompt_content(prompt)
-        
-        # Update stats
-        stats['errors'] = len(self.errors)
-        stats['warnings'] = len(self.warnings)
-        stats['info'] = len(self.info)
-        
-        return len(self.errors) == 0, stats
+            self._validate_prompt_content(prompt, filepath.stem)
     
     def _validate_description(self, description: str):
         """Validate description field"""
@@ -147,10 +144,11 @@ class SpecValidator:
         else:
             self.info.append(f"✓ Description length: {len(description)} chars")
     
-    def _validate_prompt_content(self, prompt: str):
+    def _validate_prompt_content(self, prompt: str, name: str):
         """Validate prompt content for required sections"""
         # Check required sections
-        for section, present in required_sections(prompt).items():
+        document = WorkflowDocument(prompt)
+        for section, present in document.required_sections().items():
             if not present:
                 self.errors.append(f"Missing required section: '{section}'")
             else:
@@ -158,26 +156,32 @@ class SpecValidator:
         
         # Check recommended sections
         for section in self.RECOMMENDED_SECTIONS:
-            if section not in prompt:
+            if not any(h.title.casefold() == section.casefold() for h in document.headings):
                 self.warnings.append(f"Missing recommended section: '{section}'")
             else:
                 self.info.append(f"✓ Found recommended section: '{section}'")
         
         # Validate workflow diagram
-        self._validate_workflow_diagram(prompt)
+        self._validate_workflow_diagram(document)
         
         # Validate constraints formatting
         self._validate_constraints(prompt)
         
         # Validate notepad template
-        self._validate_notepad_template(prompt)
+        self._validate_notepad_template(document, name)
     
-    def _validate_workflow_diagram(self, prompt: str):
-        """Validate that workflow diagram exists and uses Mermaid"""
-        if '```mermaid' in prompt.lower():
-            self.info.append("✓ Found Mermaid workflow diagram")
-        else:
-            self.warnings.append("Workflow diagram may not use Mermaid format")
+    def _validate_workflow_diagram(self, document: WorkflowDocument):
+        diagrams = [b for b in document.section_fences("workflow diagram")
+                    if b.language in {"mermaid", "text", ""}]
+        if not diagrams:
+            self.errors.append("Workflow Diagram needs a fenced Mermaid or plain-text diagram")
+        for block in diagrams:
+            if not block.content.strip():
+                self.errors.append("Workflow Diagram contains an empty diagram")
+            elif block.language == "mermaid":
+                self.mermaid_diagrams.append(block.content)
+            else:
+                self.info.append("✓ Found plain-text workflow diagram")
     
     def _validate_constraints(self, prompt: str):
         """Validate constraint formatting"""
@@ -197,16 +201,19 @@ class SpecValidator:
         if may_count > 0:
             self.info.append(f"✓ Found {may_count} MAY constraints")
     
-    def _validate_notepad_template(self, prompt: str):
-        """Validate notepad template structure"""
-        found_sections = count_notepad_sections(prompt)
-        
-        if found_sections >= 5:
-            self.info.append(f"✓ Found {found_sections} notepad sections")
-        elif found_sections >= 3:
-            self.warnings.append(f"Only found {found_sections} notepad sections")
+    def _validate_notepad_template(self, document: WorkflowDocument, name: str):
+        blocks = document.section_fences("0-notepad template", "notepad template")
+        template = next((b.content for b in blocks if b.language in {"md", "markdown"}), "")
+        titles = {h.title.removeprefix("🔬 ").upper() for h in WorkflowDocument(template).headings
+                  if h.level == 2}
+        subject = CONNECTION_SUBJECT.get(name)
+        if subject and f"CROSS-{subject} CONNECTIONS" in titles:
+            titles.add("CROSS-SYSTEM CONNECTIONS")
+        missing = CUSTOM_NOTEPADS.get(name, STANDARD_NOTEPAD) - titles
+        if missing:
+            self.errors.append("Notepad template incomplete. Missing: " + ", ".join(sorted(missing)))
         else:
-            self.errors.append(f"Notepad template incomplete ({found_sections} sections)")
+            self.info.append("✓ Found required notepad sections")
     
     def print_results(self, filepath: Path, is_valid: bool):
         """Print validation results with colors"""
@@ -241,6 +248,32 @@ class SpecValidator:
         print(f"  Errors: {len(self.errors)}")
         print(f"  Warnings: {len(self.warnings)}")
         print()
+
+
+def check_mermaid_diagrams(validators: list[SpecValidator]):
+    """Parse all Mermaid blocks in one Node process and attribute errors to their files."""
+    entries = [(v, diagram) for v in validators for diagram in v.mermaid_diagrams]
+    if not entries:
+        return
+    try:
+        result = subprocess.run(
+            ["node", str(ROOT / "tools" / "parse-mermaid.mjs")],
+            input=json.dumps([diagram for _, diagram in entries]),
+            capture_output=True, encoding="utf-8", check=True, timeout=60,
+        )
+        errors = json.loads(result.stdout)
+        if len(errors) != len(entries):
+            raise ValueError("Incomplete result from Mermaid")
+    except (OSError, subprocess.SubprocessError, ValueError) as exc:
+        message = f"Cannot check Mermaid diagram ({exc}). Install Node.js and run npm ci --prefix tools."
+        for validator, _ in entries:
+            validator.errors.append(message)
+        return
+    for (validator, _), error in zip(entries, errors):
+        if error is None:
+            validator.info.append("✓ Parsed Mermaid workflow diagram")
+        else:
+            validator.errors.append(f"Invalid Mermaid workflow diagram: {error}")
 
 
 def main():
@@ -313,11 +346,16 @@ Examples:
         print(error)
     
     # Validate each file
-    validator = SpecValidator(verbose=args.verbose)
+    reports = []
+    for spec_file in spec_files:
+        validator = SpecValidator(verbose=args.verbose)
+        validator.inspect_file(spec_file)
+        reports.append(validator)
+    check_mermaid_diagrams(reports)
     results = []
     
-    for spec_file in spec_files:
-        is_valid, stats = validator.validate_file(spec_file)
+    for spec_file, validator in zip(spec_files, reports):
+        is_valid, stats = validator.result(spec_file)
         results.append((spec_file, is_valid, stats))
         
         if not args.quiet:
