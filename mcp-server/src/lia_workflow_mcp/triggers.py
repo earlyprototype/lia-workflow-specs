@@ -8,14 +8,16 @@ IMPORTANT: Every spec is fully independent. These are suggestions only,
 not dependencies. See docs/workflow-composition.md for full explanation.
 """
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
 
 try:
     import tomli
 except ImportError:
     import tomllib as tomli
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -51,7 +53,7 @@ class TriggerManager:
     methods for determining workflow sequences and recommendations.
     """
     
-    def __init__(self, specs_dir: Optional[Path] = None):
+    def __init__(self, specs_dir: Path | None = None):
         """
         Initialise the trigger manager.
         
@@ -100,8 +102,11 @@ class TriggerManager:
                         typical_outputs=trigger_info.get("typical_outputs", trigger_info.get("provides", [])),
                         works_well_with=trigger_info.get("works_well_with", trigger_info.get("requires", [])),
                     )
-        except Exception as e:
-            print(f"Warning: Failed to load triggers: {e}")
+        except Exception as exc:
+            logger.warning(
+                "Failed to load %s: %s", triggers_file, exc,
+                exc_info=logger.isEnabledFor(logging.DEBUG),
+            )
     
     def get_suggested_next(self, current: str) -> list[str]:
         """
@@ -181,7 +186,7 @@ class TriggerManager:
     # Alias for backwards compatibility  
     get_workflow_inputs = get_helpful_context
     
-    def find_chain_for_task(self, task_keywords: list[str]) -> Optional[WorkflowChain]:
+    def find_chain_for_task(self, task_keywords: list[str]) -> WorkflowChain | None:
         """
         Find a predefined chain that matches the task keywords.
         
@@ -211,7 +216,7 @@ class TriggerManager:
     def build_custom_chain(
         self,
         start: str,
-        end: Optional[str] = None,
+        end: str | None = None,
         max_length: int = 5
     ) -> list[str]:
         """

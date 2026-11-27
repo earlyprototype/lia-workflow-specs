@@ -116,7 +116,7 @@ class TestWorkflowSpec:
     def test_from_toml_file(self):
         # Create a temporary TOML file
         with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".toml", delete=False, dir="/tmp"
+            mode="w", suffix=".toml", delete=False
         ) as f:
             f.write('''
 description = "A test workflow specification"
@@ -146,6 +146,32 @@ More content.
 
 class TestSpecCollection:
     """Tests for SpecCollection."""
+
+    def test_skips_common_directory_during_discovery(self, tmp_path):
+        support_dir = tmp_path / "_common" / "templates"
+        support_dir.mkdir(parents=True)
+        workflow_dir = tmp_path / "development"
+        workflow_dir.mkdir()
+        content = 'description = "A workflow"\nprompt = "Run the workflow"'
+        (support_dir / "example.toml").write_text(content, encoding="utf-8")
+        workflow = workflow_dir / "example.toml"
+        workflow.write_text(content, encoding="utf-8")
+
+        collection = SpecCollection()
+        collection.load_from_directory(tmp_path)
+
+        assert [spec.filepath for spec in collection.specs] == [workflow]
+
+    def test_bundled_workflow_count_and_metadata(self):
+        specs_dir = Path(__file__).resolve().parents[2] / "specs"
+        collection = SpecCollection()
+        collection.load_from_directory(specs_dir)
+
+        assert len(collection.specs) == 16
+        for spec in collection.specs:
+            assert spec.category.value == spec.filepath.parent.name
+            assert spec.description.strip(), spec.name
+            assert spec.prompt.strip(), spec.name
     
     def test_empty_collection(self):
         collection = SpecCollection()
