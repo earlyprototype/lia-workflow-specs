@@ -147,6 +147,8 @@ def replace_final_phase(catalog, phase):
     pytest.param("### 3. Create Task List\nRead the existing 3-tasks.md.", id="input-only"),
     pytest.param("### 3. Create Task List\nCreate a release summary using the existing 3-tasks.md as input.",
                  id="summary-from-task-list"),
+    pytest.param("### 3. Create Task List\nWrite a summary using the checklist in `3-tasks.md`.",
+                 id="checklist-as-source"),
     pytest.param("### 3. Create Task List\nWrite 2-design.md using the existing 3-tasks.md as input.",
                  id="write-design"),
     pytest.param("### 3. Create Task List\nDo not write 3-tasks.md.", id="prohibited-write"),
@@ -166,12 +168,25 @@ def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
                for line in result.stdout.splitlines()), result.stdout
 
 
+@pytest.mark.parametrize("target", ["file", "directory"])
+def test_installed_copy_requires_walkthrough_task_list_phase(global_install, target):
+    path = replace_final_phase(global_install, "")
+    result = validate(path if target == "file" else global_install, "-q")
+    assert result.returncode == 1, result.stdout
+    assert any(path.name in line and "phase 3" in line.lower() and "3-tasks.md" in line
+               for line in result.stdout.splitlines()), result.stdout
+
+
 @pytest.mark.parametrize("instruction", [
     "Write\n`3-tasks.md`.",
     "Write the implementation tasks to\n`3-tasks.md`.",
     "- The model MUST save the task list to\n  `.lia/specs/{feature_name}/3-tasks.md`.",
+    "Write a numbered checklist to `3-tasks.md`.",
+    "Save the prioritized implementation tasks in `3-tasks.md`.",
+    "**Output:** `3-tasks.md`",
+    "__Deliverable__: `3-tasks.md`",
 ])
-def test_catalog_accepts_wrapped_task_list_destination(global_install, instruction):
+def test_catalog_accepts_task_list_destination(global_install, instruction):
     replace_final_phase(global_install, "### 3. Create Task List\n" + instruction)
     result = validate(global_install, "--catalog", "-q")
     assert result.returncode == 0, result.stdout
@@ -183,10 +198,13 @@ def test_catalog_accepts_wrapped_task_list_destination(global_install, instructi
     ("strategy/innovate", "## Innovation Techniques and Methods", "***", False),
     ("strategy/innovate", "## Innovation Techniques and Methods", "  _ _ _\n- - - -", False),
     ("strategy/innovate", "## Innovation Techniques and Methods", "- [ ]", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", ">", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "> Ask for feedback.", True),
     ("strategy/innovate", "## Innovation Techniques and Methods", "-\n*\n+\n1.\n2) [x]", False),
     ("strategy/innovate", "## Innovation Techniques and Methods", "### Collaboration Mode\nAsk for feedback.", True),
     ("development/dev", "## 0-Notepad Template", "", False),
     ("development/spec", "## 0-Notepad Template", "", False),
+    ("development/spec", "## 0-Notepad Template", "## Collaboration Mode\nAsk the user to approve each document.", True),
 ])
 def test_catalog_requires_execution_instructions(global_install, workflow, following, body, valid):
     path = global_install / f"{workflow}.toml"

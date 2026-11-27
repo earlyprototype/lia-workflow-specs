@@ -106,10 +106,13 @@ class WorkflowDocument:
                        len(markers))
             self.phase_lines = range(start, end)
 
-    def section_end(self, heading: Heading, *, min_level: int = 1) -> int:
-        level = max(heading.level, min_level)
-        return next((h.line for h in self.headings if h.line > heading.line and h.level <= level),
-                    len(self.prose))
+    def section_end(self, heading: Heading, *stop_titles: str) -> int:
+        for following in self.headings:
+            if following.line > heading.line and (
+                following.level <= heading.level or following.title.casefold() in stop_titles
+            ):
+                return following.line
+        return len(self.prose)
 
     def section_fences(self, *titles: str):
         for heading in self.headings:
@@ -134,7 +137,7 @@ class WorkflowDocument:
         """Join wrapped prose within each paragraph or list item."""
         paragraph = []
         for line in self.prose[heading.line + 1:end]:
-            text = line.strip()
+            text = line.strip().lstrip("> \t")
             if text.startswith("#") or text == "</workflow-definition>" or _THEMATIC_BREAK.fullmatch(text):
                 text = ""
             markers = _LIST_MARKERS.match(text)
@@ -166,8 +169,8 @@ class WorkflowDocument:
         for heading in self.headings:
             if heading.title.casefold() != "important execution instructions":
                 continue
-            # Shipped workflows use both H1 and H2 for main sections such as the notepad.
-            end = self.section_end(heading, min_level=2)
+            # spec.toml places its notepad at H2 after the H1 execution instructions.
+            end = self.section_end(heading, "0-notepad template", "notepad template")
             if not any(self.instruction_paragraphs(heading, end)):
                 yield "Add instructions to the Important Execution Instructions section"
 

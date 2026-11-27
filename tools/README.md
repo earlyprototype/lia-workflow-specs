@@ -51,10 +51,13 @@ Number phases consecutively from 1. Each phase needs instructions outside
 fenced examples and HTML comments. Contributor workflows use third-level
 phase headings. The `constitution` and `recon` workflows use second-level
 phase headings.
-In phase 3 of the feature-spec workflow, name the output file in a write
-instruction such as “Write the task list to `3-tasks.md`.” This must be the
-final phase. The Important Execution Instructions section can contain paragraphs,
-list items, and subsections. Include instruction text before the next main section.
+The validator checks `development/spec.toml` when you validate the file, its
+directory, or the full catalog. Its final phase must be phase 3. Name the
+destination in an instruction such as “Write a numbered checklist to `3-tasks.md`.”
+You can also use an output label such as **Output:** `3-tasks.md`.
+The Important Execution Instructions section can contain paragraphs, list items,
+blockquotes, and subsections. Include instruction text before the notepad template
+or the next main heading.
 The validator parses Mermaid blocks in the Workflow Diagram section and checks
 for workflow elements. It also accepts nonempty plain-text diagram blocks.
 It checks the six standard notepad headings with or without the icons shown in

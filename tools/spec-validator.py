@@ -74,10 +74,16 @@ TASK_LIST_OUTPUT = re.compile(r"""
         (?:(?:the\s+model|you)\s+)? (?: (?:must|shall|should)\s+ )?
         (?:create|write|save|generate|produce|output)\s+
         (?:(?:the|an?)\s+)?
-        (?: (?:implementation\s+)? (?:tasks?|task\s+list|plan|checklist|it)\s+ )?
+        (?:
+            # Descriptors belong to the object being written. Stop at a new clause or source.
+            (?:(?!(?:a|an|the|and|or|but|not|never|without|using|from|with|about|to|in)\b)[\w-]+\s+)*
+            (?:tasks?|task\s+list|plan|checklist|it)\s+
+        )?
         (?:(?:to|into|as|at|in)\s+)?
         (?:(?:the\s+)?file\s+)?
-      | (?:output|deliverable):\s*
+        # Markdown allows the colon inside or outside the emphasized label.
+      | (?P<emphasis>(?:\*{1,3}|_{1,3})?) (?:output|deliverable)
+        (?::(?P=emphasis)|(?P=emphasis):)\s*
     )
     (?P<quote>[`'"]?) (?: [\w.{}$/\\-]* [/\\] )? 3-tasks\.md (?P=quote)
     (?= $ | [\s,;:!?)] | \.(?:\s|$) )
@@ -114,9 +120,8 @@ class SpecValidator:
         'Agent Self-Development',
     ]
     
-    def __init__(self, verbose: bool = False, catalog_root: Path = ROOT / "specs"):
+    def __init__(self, verbose: bool = False):
         self.verbose = verbose
-        self.catalog_root = catalog_root
         self.errors: List[str] = []
         self.warnings: List[str] = []
         self.info: List[str] = []
@@ -182,8 +187,7 @@ class SpecValidator:
         # Check required sections
         document = WorkflowDocument(prompt)
         self.errors.extend(document.structure_errors())
-        if (filepath.resolve() == self.catalog_root / "development/spec.toml"
-                and not has_walkthrough_task_list(document)):
+        if filepath.absolute().match("development/spec.toml") and not has_walkthrough_task_list(document):
             self.errors.append("Restore the walkthrough's final phase 3 (Create Task List) "
                                "and instruct the model to write 3-tasks.md")
         for section, present in document.required_sections().items():
@@ -387,9 +391,8 @@ Examples:
     
     # Validate each file
     reports = []
-    catalog_root = path.resolve() if args.catalog else ROOT / "specs"
     for spec_file in spec_files:
-        validator = SpecValidator(verbose=args.verbose, catalog_root=catalog_root)
+        validator = SpecValidator(verbose=args.verbose)
         validator.inspect_file(spec_file)
         reports.append(validator)
     check_mermaid_diagrams(reports)
