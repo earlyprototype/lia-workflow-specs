@@ -152,6 +152,10 @@ def replace_final_phase(catalog, phase):
     pytest.param("### 3. Create Task List\nWrite 2-design.md using the existing 3-tasks.md as input.",
                  id="write-design"),
     pytest.param("### 3. Create Task List\nDo not write 3-tasks.md.", id="prohibited-write"),
+    pytest.param("### 3. Create Task List\nDo not write the task list to a file named `3-tasks.md`.",
+                 id="prohibited-named-file"),
+    pytest.param("### 3. Create Task List\nWrite the task list using a file named `3-tasks.md`.",
+                 id="named-input-file"),
     pytest.param("### 3. Create Task List\n- The model MUST NOT\n  create `3-tasks.md`.", id="wrapped-prohibition"),
     pytest.param("### 3. Create Task List\n- Write the task list to\n- `3-tasks.md` is an input.", id="separate-bullets"),
     pytest.param("### 3. Create Task List\nWrite tasks to 3-tasks.md.bak.", id="wrong-file"),
@@ -168,13 +172,22 @@ def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
                for line in result.stdout.splitlines()), result.stdout
 
 
-@pytest.mark.parametrize("target", ["file", "directory"])
-def test_installed_copy_requires_walkthrough_task_list_phase(global_install, target):
+@pytest.mark.parametrize("target", ["file", "directory", "standalone"])
+def test_installed_copy_requires_walkthrough_task_list_phase(global_install, tmp_path, target):
     path = replace_final_phase(global_install, "")
-    result = validate(path if target == "file" else global_install, "-q")
+    if target == "standalone":
+        path = shutil.copyfile(path, tmp_path / path.name)
+    result = validate(global_install if target == "directory" else path, "-q")
     assert result.returncode == 1, result.stdout
     assert any(path.name in line and "phase 3" in line.lower() and "3-tasks.md" in line
                for line in result.stdout.splitlines()), result.stdout
+
+
+def test_unrelated_standalone_workflow_can_use_spec_filename(tmp_path):
+    path = tmp_path / "spec.toml"
+    shutil.copyfile(ROOT / "specs/quality/architecture.toml", path)
+    result = validate(path, "-q")
+    assert result.returncode == 0, result.stdout
 
 
 @pytest.mark.parametrize("instruction", [
@@ -182,6 +195,7 @@ def test_installed_copy_requires_walkthrough_task_list_phase(global_install, tar
     "Write the implementation tasks to\n`3-tasks.md`.",
     "- The model MUST save the task list to\n  `.lia/specs/{feature_name}/3-tasks.md`.",
     "Write a numbered checklist to `3-tasks.md`.",
+    pytest.param("Write the task list to a file named `3-tasks.md`.", id="named-file"),
     "Save the prioritized implementation tasks in `3-tasks.md`.",
     "**Output:** `3-tasks.md`",
     "__Deliverable__: `3-tasks.md`",
@@ -199,6 +213,12 @@ def test_catalog_accepts_task_list_destination(global_install, instruction):
     ("strategy/innovate", "## Innovation Techniques and Methods", "  _ _ _\n- - - -", False),
     ("strategy/innovate", "## Innovation Techniques and Methods", "- [ ]", False),
     ("strategy/innovate", "## Innovation Techniques and Methods", ">", False),
+    pytest.param("strategy/innovate", "## Innovation Techniques and Methods",
+                 "> ```\n> ```", False, id="empty-quoted-fence"),
+    pytest.param("strategy/innovate", "## Innovation Techniques and Methods",
+                 "> > ~~~~text\n> > Example only.\n> > ~~~~", False, id="nested-quoted-fence"),
+    pytest.param("strategy/innovate", "## Innovation Techniques and Methods",
+                 "> ```text\n> Example only.\n\nAsk for feedback.", True, id="instruction-after-quote"),
     ("strategy/innovate", "## Innovation Techniques and Methods", "> Ask for feedback.", True),
     ("strategy/innovate", "## Innovation Techniques and Methods", "-\n*\n+\n1.\n2) [x]", False),
     ("strategy/innovate", "## Innovation Techniques and Methods", "### Collaboration Mode\nAsk for feedback.", True),
@@ -225,12 +245,16 @@ def test_catalog_requires_execution_instructions(global_install, workflow, follo
 
 
 @pytest.mark.asyncio
-async def test_numbered_technique_after_definition_is_not_a_phase(global_install):
+@pytest.mark.parametrize("closed", [True, False], ids=["closed", "unclosed"])
+async def test_numbered_technique_after_definition_is_not_a_phase(global_install, closed):
     path = global_install / "strategy/innovate.toml"
     text = path.read_text(encoding="utf-8")
     heading = "### Creative Thinking Approaches"
     assert text.index(heading) > text.index("</workflow-definition>")
-    path.write_text(text.replace(heading, "### 1. Creative Thinking Approaches"), encoding="utf-8")
+    if not closed:
+        text = text.replace("</workflow-definition>", "")
+    number = 1 if closed else 6
+    path.write_text(text.replace(heading, f"### {number}. Creative Thinking Approaches"), encoding="utf-8")
 
     server.initialise_specs()
     phases, = await server.call_tool("get_workflow_phases", {"spec_name": "innovate"})
@@ -307,6 +331,21 @@ def test_numbered_subheading_in_role_phase_is_a_task(global_install):
     recon = server.spec_collection.get_by_name("recon")
     assert [phase.number for phase in recon.phases] == [1, 2, 3, 4, 5, 6]
     result = validate(path, "-q")
+    assert result.returncode == 0, result.stdout
+
+
+@pytest.mark.asyncio
+async def test_numbered_role_deliverable_is_not_a_phase(global_install):
+    path = global_install / "research/recon.toml"
+    text = path.read_text(encoding="utf-8")
+    heading = "### landscape-analysis.md"
+    assert text.index(heading) > text.index("## PHASE 6:")
+    path.write_text(text.replace(heading, "### 1. landscape-analysis.md"), encoding="utf-8")
+
+    server.initialise_specs()
+    phases, = await server.call_tool("get_workflow_phases", {"spec_name": "recon"})
+    assert re.findall(r"^(\d+)\. ", phases.text, re.MULTILINE) == list("123456")
+    result = validate(global_install, "--catalog", "-q")
     assert result.returncode == 0, result.stdout
 
 

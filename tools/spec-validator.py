@@ -80,7 +80,7 @@ TASK_LIST_OUTPUT = re.compile(r"""
             (?:tasks?|task\s+list|plan|checklist|it)\s+
         )?
         (?:(?:to|into|as|at|in)\s+)?
-        (?:(?:the\s+)?file\s+)?
+        (?:(?:(?:a|the)\s+)?file\s+(?:named\s+)?)?
         # Markdown allows the colon inside or outside the emphasized label.
       | (?P<emphasis>(?:\*{1,3}|_{1,3})?) (?:output|deliverable)
         (?::(?P=emphasis)|(?P=emphasis):)\s*
@@ -187,7 +187,12 @@ class SpecValidator:
         # Check required sections
         document = WorkflowDocument(prompt)
         self.errors.extend(document.structure_errors())
-        if filepath.absolute().match("development/spec.toml") and not has_walkthrough_task_list(document):
+        is_feature_spec = filepath.match("spec.toml") and (
+            filepath.absolute().match("development/spec.toml")
+            or any(h.level == 1 and h.title.casefold() == "feature spec creation workflow"
+                   for h in document.headings)
+        )
+        if is_feature_spec and not has_walkthrough_task_list(document):
             self.errors.append("Restore the walkthrough's final phase 3 (Create Task List) "
                                "and instruct the model to write 3-tasks.md")
         for section, present in document.required_sections().items():

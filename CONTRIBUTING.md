@@ -136,6 +136,8 @@ prompt = """
 
 [Repeat for all phases]
 
+</workflow-definition>
+
 ## Workflow Diagram
 [Mermaid diagram showing phase flow]
 
@@ -150,8 +152,6 @@ prompt = """
 
 ## 0-Notepad Template
 [Standard notepad markdown template]
-
-</workflow-definition>
 """
 ```
 

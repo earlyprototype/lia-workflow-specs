@@ -48,6 +48,17 @@ _CODE_OR_COMMENT = re.compile(
 )
 _THEMATIC_BREAK = re.compile(r"([*_-])(?:[ \t]*\1){2,}")
 _LIST_MARKERS = re.compile(r"(?:(?:[-+*]|\d+[.)]|\[[ xX]\])(?:[ \t]+|$))+")
+_QUOTE_MARKER = re.compile(r" {0,3}>[ \t]?")
+_EXPLICIT_PHASE = re.compile(r"phase\s+(\d+)[.:]\s*(\S.*)", re.IGNORECASE)
+_NUMBERED_PHASE = re.compile(r"(\d+)[.:]\s*(\S.*)")
+
+
+def _unquote(line: str, limit: int | None = None) -> tuple[int, str]:
+    depth = offset = 0
+    while depth != limit and (marker := _QUOTE_MARKER.match(line, offset)):
+        depth += 1
+        offset = marker.end()
+    return depth, line[offset:]
 
 
 def _without_comments(line: str, in_comment: bool) -> tuple[str, bool]:
@@ -75,21 +86,12 @@ class WorkflowDocument:
         self.headings: list[Heading] = []
         self.fences: list[CodeBlock] = []
         self.prose = dedent(prompt).splitlines()
-        lines = iter(enumerate(self.prose))
         in_comment = False
-        for number, line in lines:
-            fence = re.fullmatch(r" {0,3}(`{3,}|~{3,})(.*)", line)
+        for number, line in enumerate(self.prose):
+            depth, unquoted = _unquote(line)
+            fence = re.fullmatch(r" {0,3}(`{3,}|~{3,})(.*)", unquoted)
             if fence and not in_comment:
-                marker, language = fence.groups()
-                closing = re.compile(rf" {{0,3}}{marker}{marker[0]}*[ \t]*")
-                content = []
-                self.prose[number] = ""
-                for index, code in lines:
-                    self.prose[index] = ""
-                    if closing.fullmatch(code):
-                        self.fences.append(CodeBlock(number, language.strip().casefold(), "\n".join(content)))
-                        break
-                    content.append(code)
+                self._read_fence(number, depth, *fence.groups())
                 continue
             if in_comment or "<!--" in line:
                 line, in_comment = _without_comments(line, in_comment)
@@ -102,9 +104,28 @@ class WorkflowDocument:
         self.phase_lines = range(len(markers))
         if "<workflow-definition>" in markers:
             start = markers.index("<workflow-definition>") + 1
-            end = next((i for i in range(start, len(markers)) if markers[i] == "</workflow-definition>"),
-                       len(markers))
+            try:
+                end = markers.index("</workflow-definition>", start)
+            except ValueError:
+                # Older prompts end their phase definitions at the required diagram.
+                end = next((h.line for h in self.headings if h.line >= start and h.level <= 2
+                            and h.title.casefold() == "workflow diagram"), start)
             self.phase_lines = range(start, end)
+
+    def _read_fence(self, start: int, quote_depth: int, marker: str, language: str):
+        closing = re.compile(rf" {{0,3}}{marker}{marker[0]}*[ \t]*")
+        content = []
+        self.prose[start] = ""
+        for index in range(start + 1, len(self.prose)):
+            depth, code = _unquote(self.prose[index], quote_depth)
+            if depth < quote_depth:
+                break  # The blockquote ended before the closing fence.
+            self.prose[index] = ""
+            if closing.fullmatch(code):
+                if not quote_depth:
+                    self.fences.append(CodeBlock(start, language.strip().casefold(), "\n".join(content)))
+                break
+            content.append(code)
 
     def section_end(self, heading: Heading, *stop_titles: str) -> int:
         for following in self.headings:
@@ -121,16 +142,13 @@ class WorkflowDocument:
                 yield from (block for block in self.fences if heading.line < block.line < end)
 
     def phase_headings(self):
-        role_phase_end = 0
-        for heading in self.headings:
-            if heading.line not in self.phase_lines or heading.level not in {2, 3}:
-                continue
-            # Within a role phase, a bare numbered subheading introduces a task.
-            prefix = r"phase\s+" if heading.level == 2 or heading.line < role_phase_end else r"(?:phase\s+)?"
-            match = re.fullmatch(prefix + r"(\d+)[.:]\s*(\S.*)", heading.title, re.IGNORECASE)
+        headings = [h for h in self.headings if h.line in self.phase_lines and h.level in {2, 3}]
+        role_workflow = any(h.level == 2 and _EXPLICIT_PHASE.fullmatch(h.title) for h in headings)
+        for heading in headings:
+            match = _EXPLICIT_PHASE.fullmatch(heading.title)
+            if not match and heading.level == 3 and not role_workflow:
+                match = _NUMBERED_PHASE.fullmatch(heading.title)
             if match:
-                if heading.level == 2:
-                    role_phase_end = self.section_end(heading)
                 yield heading, int(match[1]), match[2]
 
     def instruction_paragraphs(self, heading: Heading, end: int):

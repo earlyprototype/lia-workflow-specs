@@ -48,12 +48,17 @@ Directory discovery skips `_common`. The validator reads both top-level
 `prompt.content` table fields used by `constitution` and `recon`.
 Each workflow must match the [workflow schema](../schemas/workflow-spec.schema.json).
 Number phases consecutively from 1. Each phase needs instructions outside
-fenced examples and HTML comments. Contributor workflows use third-level
-phase headings. The `constitution` and `recon` workflows use second-level
-phase headings.
-The validator checks `development/spec.toml` when you validate the file, its
-directory, or the full catalog. Its final phase must be phase 3. Name the
-destination in an instruction such as “Write a numbered checklist to `3-tasks.md`.”
+fenced examples and HTML comments. Fenced examples inside blockquotes also
+count as code. Contributor workflows use third-level phase headings inside
+`<workflow-definition>`. Close the definition after the last phase. In older
+workflows that omit the closing tag, phase discovery stops at the Workflow
+Diagram heading. The role workflows `constitution` and `recon` use explicit
+`## PHASE 1: ...` headings. Their numbered tasks and deliverables stay within
+their respective sections.
+The validator checks the final phase of `development/spec.toml` in both file
+and catalog validation. It recognises a standalone copy of `spec.toml` by
+its “Feature Spec Creation Workflow” heading. Phase 3 must instruct the
+model to write the task list to a file named `3-tasks.md`.
 You can also use an output label such as **Output:** `3-tasks.md`.
 The Important Execution Instructions section can contain paragraphs, list items,
 blockquotes, and subsections. Include instruction text before the notepad template
