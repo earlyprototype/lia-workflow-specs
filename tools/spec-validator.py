@@ -67,6 +67,23 @@ CUSTOM_NOTEPADS = {
 }
 
 
+# Start at a sentence boundary so a negated write verb cannot start the match.
+TASK_LIST_OUTPUT = re.compile(r"""
+    (?: ^ | (?<=[.!?])\s+ )
+    (?i:
+        (?:(?:the\s+model|you)\s+)? (?: (?:must|shall|should)\s+ )?
+        (?:create|write|save|generate|produce|output)\s+
+        (?:(?:the|an?)\s+)?
+        (?: (?:implementation\s+)? (?:tasks?|task\s+list|plan|checklist|it)\s+ )?
+        (?:(?:to|into|as|at|in)\s+)?
+        (?:(?:the\s+)?file\s+)?
+      | (?:output|deliverable):\s*
+    )
+    (?P<quote>[`'"]?) (?: [\w.{}$/\\-]* [/\\] )? 3-tasks\.md (?P=quote)
+    (?= $ | [\s,;:!?)] | \.(?:\s|$) )
+""", re.VERBOSE)
+
+
 def has_walkthrough_task_list(document: WorkflowDocument) -> bool:
     phases = list(document.phase_headings())
     if not phases:
@@ -75,11 +92,7 @@ def has_walkthrough_task_list(document: WorkflowDocument) -> bool:
     if number != 3 or not re.search(r"\b(tasks?|implementation plan)\b", title, re.IGNORECASE):
         return False
     end = min(document.section_end(heading), document.phase_lines.stop)
-    task_output = re.compile(
-        r"\b(?i:create|write|save|generate|produce|output|deliverable)\b.*?"
-        r"(?<![\w.-])3-tasks\.md(?![\w/-]|\.\w)"
-    )
-    return any(task_output.search(line) for line in document.instruction_lines(heading, end))
+    return any(TASK_LIST_OUTPUT.search(text) for text in document.instruction_paragraphs(heading, end))
 
 
 class Colors:

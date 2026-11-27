@@ -7,6 +7,8 @@
 #   ./install.sh --help       # Show help
 
 set -e
+# Git Bash reads UTF-8 paths from Python, including when pip reports its location.
+export PYTHONIOENCODING=utf-8
 
 # Colours for output
 RED='\033[0;31m'

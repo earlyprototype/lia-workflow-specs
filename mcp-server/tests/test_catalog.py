@@ -127,18 +127,8 @@ def test_each_declared_phase_needs_instructions(global_install, workflow, headin
     assert f"phase {number}" in diagnostic and "instruction" in diagnostic
 
 
-@pytest.mark.parametrize("phase", [
-    pytest.param("", id="removed"),
-    pytest.param(None, id="numbered-troubleshooting"),
-    pytest.param("### 3. Publish Design\nSend the design for review.", id="unrelated-phase"),
-    pytest.param("### 3. Publish Design\nSend the design and the existing 3-tasks.md.", id="unrelated-delivery"),
-    pytest.param("### 3. Create Task List\nRead the existing 3-tasks.md.", id="input-only"),
-    pytest.param("### 3. Create Task List\nWrite tasks to 3-tasks.md.bak.", id="wrong-file"),
-    pytest.param("### 3. Create Task List\nReview the design.\n<!-- Write 3-tasks.md. -->", id="comment"),
-    pytest.param("### 3. Create Task List\nWrite 3-tasks.md.\n### 4. Publish Design\nSend the design.", id="not-final"),
-])
-def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
-    path = global_install / "development/spec.toml"
+def replace_final_phase(catalog, phase):
+    path = catalog / "development/spec.toml"
     text = path.read_text(encoding="utf-8")
     start = text.index("### 3. Create Task List")
     end = text.index("## Troubleshooting", start)
@@ -146,6 +136,29 @@ def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
         text = text.replace("### Design Complexity", "### 3. Design Complexity", 1)
         phase = ""
     path.write_text(text[:start] + phase + "\n\n" + text[end:], encoding="utf-8")
+    return path
+
+
+@pytest.mark.parametrize("phase", [
+    pytest.param("", id="removed"),
+    pytest.param(None, id="numbered-troubleshooting"),
+    pytest.param("### 3. Publish Design\nSend the design for review.", id="unrelated-phase"),
+    pytest.param("### 3. Publish Design\nSend the design and the existing 3-tasks.md.", id="unrelated-delivery"),
+    pytest.param("### 3. Create Task List\nRead the existing 3-tasks.md.", id="input-only"),
+    pytest.param("### 3. Create Task List\nCreate a release summary using the existing 3-tasks.md as input.",
+                 id="summary-from-task-list"),
+    pytest.param("### 3. Create Task List\nWrite 2-design.md using the existing 3-tasks.md as input.",
+                 id="write-design"),
+    pytest.param("### 3. Create Task List\nDo not write 3-tasks.md.", id="prohibited-write"),
+    pytest.param("### 3. Create Task List\n- The model MUST NOT\n  create `3-tasks.md`.", id="wrapped-prohibition"),
+    pytest.param("### 3. Create Task List\n- Write the task list to\n- `3-tasks.md` is an input.", id="separate-bullets"),
+    pytest.param("### 3. Create Task List\nWrite tasks to 3-tasks.md.bak.", id="wrong-file"),
+    pytest.param("### 3. Create Task List\nWrite `3-tasks.md backup`.", id="quoted-wrong-file"),
+    pytest.param("### 3. Create Task List\nReview the design.\n<!-- Write 3-tasks.md. -->", id="comment"),
+    pytest.param("### 3. Create Task List\nWrite 3-tasks.md.\n### 4. Publish Design\nSend the design.", id="not-final"),
+])
+def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
+    path = replace_final_phase(global_install, phase)
 
     result = validate(global_install, "--catalog", "-q")
     assert result.returncode == 1, result.stdout
@@ -153,15 +166,29 @@ def test_catalog_requires_walkthrough_task_list_phase(global_install, phase):
                for line in result.stdout.splitlines()), result.stdout
 
 
-@pytest.mark.parametrize("workflow, following, body", [
-    ("strategy/innovate", "## Innovation Techniques and Methods", ""),
-    ("strategy/innovate", "## Innovation Techniques and Methods", "<!-- draft -->\n```text\nExample instructions\n```"),
-    ("strategy/innovate", "## Innovation Techniques and Methods", "***"),
-    ("strategy/innovate", "## Innovation Techniques and Methods", "  _ _ _\n- - - -"),
-    ("development/dev", "## 0-Notepad Template", ""),
-    ("development/spec", "## 0-Notepad Template", ""),
+@pytest.mark.parametrize("instruction", [
+    "Write\n`3-tasks.md`.",
+    "Write the implementation tasks to\n`3-tasks.md`.",
+    "- The model MUST save the task list to\n  `.lia/specs/{feature_name}/3-tasks.md`.",
 ])
-def test_catalog_requires_execution_instructions(global_install, workflow, following, body):
+def test_catalog_accepts_wrapped_task_list_destination(global_install, instruction):
+    replace_final_phase(global_install, "### 3. Create Task List\n" + instruction)
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 0, result.stdout
+
+
+@pytest.mark.parametrize("workflow, following, body, valid", [
+    ("strategy/innovate", "## Innovation Techniques and Methods", "", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "<!-- draft -->\n```text\nExample instructions\n```", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "***", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "  _ _ _\n- - - -", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "- [ ]", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "-\n*\n+\n1.\n2) [x]", False),
+    ("strategy/innovate", "## Innovation Techniques and Methods", "### Collaboration Mode\nAsk for feedback.", True),
+    ("development/dev", "## 0-Notepad Template", "", False),
+    ("development/spec", "## 0-Notepad Template", "", False),
+])
+def test_catalog_requires_execution_instructions(global_install, workflow, following, body, valid):
     path = global_install / f"{workflow}.toml"
     text = path.read_text(encoding="utf-8")
     heading = re.search(r"^#+ Important Execution Instructions$", text, re.IGNORECASE | re.MULTILINE)
@@ -171,6 +198,9 @@ def test_catalog_requires_execution_instructions(global_install, workflow, follo
     path.write_text(text[:start] + f"\n{body}\n" + text[end:], encoding="utf-8")
 
     result = validate(global_install, "--catalog", "-q")
+    if valid:
+        assert result.returncode == 0, result.stdout
+        return
     assert result.returncode == 1, result.stdout
     assert any(path.name in line and "execution instructions" in line.lower()
                and "add" in line.lower() for line in result.stdout.splitlines()), result.stdout
