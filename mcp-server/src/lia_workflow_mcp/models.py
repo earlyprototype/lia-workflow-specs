@@ -197,6 +197,8 @@ class SpecCollection:
             return
         
         for toml_file in specs_dir.rglob("*.toml"):
+            if "_common" in toml_file.relative_to(specs_dir).parts:
+                continue
             try:
                 spec = WorkflowSpec.from_toml_file(toml_file)
                 self.specs.append(spec)
