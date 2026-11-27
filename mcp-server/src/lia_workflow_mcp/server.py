@@ -36,20 +36,23 @@ from pathlib import Path
 from typing import Any
 
 from mcp.server import Server
+from mcp.server.lowlevel.helper_types import ReadResourceContents
 from mcp.server.stdio import stdio_server
 from mcp.types import (
+    GetPromptResult,
     Prompt,
     PromptArgument,
     PromptMessage,
     Resource,
-    ResourceContents,
     TextContent,
     TextResourceContents,
     Tool,
 )
+from pydantic import AnyUrl
 
 from .models import SpecCategory, SpecCollection, WorkflowSpec
 from .triggers import TriggerManager
+from .workflow_format import required_sections
 
 # Initialise MCP server
 server = Server("lia-workflow-specs")
@@ -62,8 +65,11 @@ trigger_manager = TriggerManager()
 def get_specs_directory() -> Path:
     """Get the specs directory path from environment or default."""
     specs_dir = os.environ.get("LIA_SPECS_DIR")
-    if specs_dir:
-        return Path(specs_dir)
+    if specs_dir is not None:
+        path = Path(specs_dir).expanduser().resolve()
+        if not specs_dir or not path.is_dir():
+            raise ValueError(f"Set LIA_SPECS_DIR to the workflow specs directory. Invalid directory: {path}")
+        return path
     
     # Default: look for specs directory relative to this file or workspace
     possible_paths = [
@@ -89,6 +95,8 @@ def initialise_specs():
     global trigger_manager
     specs_dir = get_specs_directory()
     spec_collection.load_from_directory(specs_dir)
+    if "LIA_SPECS_DIR" in os.environ and not spec_collection.specs:
+        raise ValueError(f"No workflows found in {specs_dir}. Set LIA_SPECS_DIR to the directory containing the specs.")
     trigger_manager = TriggerManager(specs_dir)
 
 
@@ -146,7 +154,12 @@ async def list_resources() -> list[Resource]:
 
 
 @server.read_resource()
-async def read_resource(uri: str) -> ResourceContents:
+async def read_mcp_resource(uri: AnyUrl) -> list[ReadResourceContents]:
+    resource = await read_resource(str(uri))
+    return [ReadResourceContents(content=resource.text, mime_type=resource.mimeType)]
+
+
+async def read_resource(uri: str) -> TextResourceContents:
     """Read a resource by URI."""
     
     # Parse URI
@@ -347,6 +360,10 @@ async def list_prompts() -> list[Prompt]:
 
 
 @server.get_prompt()
+async def get_mcp_prompt(name: str, arguments: dict[str, str] | None) -> GetPromptResult:
+    return GetPromptResult(messages=await get_prompt(name, arguments))
+
+
 async def get_prompt(name: str, arguments: dict[str, str] | None = None) -> list[PromptMessage]:
     """Get a specific prompt with arguments filled in."""
     args = arguments or {}
@@ -943,16 +960,8 @@ def validate_spec_content(spec: WorkflowSpec) -> str:
     passed = []
     
     # Check required sections
-    required_sections = [
-        "Workflow Mode System",
-        "Goal",
-        "workflow-definition",
-        "IMPORTANT EXECUTION INSTRUCTIONS",
-        "0-Notepad Template",
-    ]
-    
-    for section in required_sections:
-        if section in spec.prompt:
+    for section, present in required_sections(spec.prompt).items():
+        if present:
             passed.append(f"✓ Found required section: {section}")
         else:
             errors.append(f"✗ Missing required section: {section}")
@@ -1282,8 +1291,10 @@ def suggest_workflow_sequence(task_description: str) -> str:
 
 def main():
     """Main entry point for the MCP server."""
-    # Initialise specs
-    initialise_specs()
+    try:
+        initialise_specs()
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
     
     print(f"Loaded {len(spec_collection.specs)} workflow specs", file=__import__("sys").stderr)
     

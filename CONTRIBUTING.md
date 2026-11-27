@@ -501,14 +501,13 @@ Report violations to [conduct@lia-workflows.org](mailto:conduct@lia-workflows.or
 ## Resources
 
 ### Learning
-- [Workflow Design Patterns](docs/workflow-patterns.md)
+- [Workflow Guide](docs/workflow-guide.md)
 - [Best Practices](docs/best-practices.md)
 - [Example Gallery](examples/)
 
 ### Tools
 - [Spec Validator](tools/spec-validator.py)
-- [Workflow Visualizer](tools/workflow-visualizer.py)
-- [Spec Generator](tools/spec-generator.py)
+- [Planned tools](tools/README.md#planned-tools)
 
 ### Community
 - [Discussions](../../discussions)

@@ -61,7 +61,7 @@ Add to your Claude Desktop config (`~/.config/claude/claude_desktop_config.json`
       "command": "python3",
       "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "LIA_SPECS_DIR": "${HOME}/.lia/specs"
+        "LIA_SPECS_DIR": "~/.lia/specs"
       }
     }
   }

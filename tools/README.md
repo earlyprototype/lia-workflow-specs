@@ -20,7 +20,7 @@ Validates workflow specification files for compliance with Lia standards.
 **Usage:**
 
 ```bash
-# Install dependencies
+# Install the TOML reader on Python 3.10 (Python 3.11 and later include it)
 pip install tomli
 
 # Validate single file
@@ -29,12 +29,20 @@ python tools/spec-validator.py specs/development/spec.toml
 # Validate all specs
 python tools/spec-validator.py specs/
 
+# Check an installed copy against the same 19 category and filename pairs
+python tools/spec-validator.py ~/.lia/specs --catalog
+
 # Verbose output (show all checks)
 python tools/spec-validator.py specs/ -v
 
 # Quiet mode (errors only)
 python tools/spec-validator.py specs/ -q
 ```
+
+The repository-wide check also reports missing and unexpected workflow files.
+Directory discovery skips `_common`. The validator reads both top-level
+`description` and `prompt` strings and the `metadata.description` and
+`prompt.content` table fields used by `constitution` and `recon`.
 
 **Example Output:**
 

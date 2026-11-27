@@ -6,12 +6,17 @@ on:
     paths:
       - 'mcp-server/**'
       - 'specs/**'
+      - 'tools/spec-validator.py'
+      - 'README.md'
       - '.github/workflows/mcp-server-ci.yml'
   pull_request:
     branches: [master, main]
     paths:
       - 'mcp-server/**'
       - 'specs/**'
+      - 'tools/spec-validator.py'
+      - 'README.md'
+      - '.github/workflows/mcp-server-ci.yml'
 
 jobs:
   test:
@@ -43,30 +48,6 @@ jobs:
         env:
           LIA_SPECS_DIR: ${{ github.workspace }}/specs
       
-      - name: Test spec loading
-        run: |
-          cd mcp-server
-          python -c "
-          import sys
-          sys.path.insert(0, 'src')
-          from lia_workflow_mcp.models import SpecCollection
-          from pathlib import Path
-          
-          collection = SpecCollection()
-          collection.load_from_directory(Path('../specs'))
-          
-          print(f'Loaded {len(collection.specs)} specs')
-          assert len(collection.specs) >= 15, f'Expected at least 15 specs, got {len(collection.specs)}'
-          
-          # Test categories
-          categories = collection.get_categories()
-          expected_categories = ['development', 'quality', 'problem-solving', 'research', 'knowledge', 'strategy']
-          for cat in expected_categories:
-              assert cat in categories, f'Missing category: {cat}'
-          
-          print('All spec loading tests passed!')
-          "
-  
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -103,24 +84,13 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install dependencies
-        run: |
-          pip install tomli
-      
-      - name: Validate all specs
-        continue-on-error: true  # Spec validation is informational - don't block PR
-        run: |
-          # Validate workflow specs (excluding _common which contains config/template files)
-          for dir in specs/development specs/quality specs/problem-solving specs/research specs/knowledge specs/strategy; do
-            echo "Validating $dir..."
-            python tools/spec-validator.py "$dir" || true
-          done
-          echo "Note: Some specs may have warnings about format differences. This is informational."
+      - name: Validate the shipped workflow catalog
+        run: python tools/spec-validator.py specs/
 
   integration:
     name: Integration Test
     runs-on: ubuntu-latest
-    needs: [test]  # Run after tests pass (spec validation is informational)
+    needs: [test, validate-specs]
     
     steps:
       - name: Checkout repository
@@ -169,7 +139,7 @@ jobs:
               
               # Test prompts
               prompts = await list_prompts()
-              assert len(prompts) >= 15, f'Expected >=15 prompts, got {len(prompts)}'
+              assert sum(p.name.startswith('start-') for p in prompts) == 19
               print(f'✓ Prompts: {len(prompts)}')
               
               # Test tool call

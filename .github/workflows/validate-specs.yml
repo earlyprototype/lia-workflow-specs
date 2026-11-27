@@ -2,15 +2,12 @@ name: Validate Workflow Specs
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, main, develop ]
     paths:
       - 'specs/**/*.toml'
       - 'tools/**'
   pull_request:
-    branches: [ main, develop ]
-    paths:
-      - 'specs/**/*.toml'
-      - 'tools/**'
+    branches: [ master, main, develop ]
 
 jobs:
   validate-toml-syntax:
@@ -26,17 +23,12 @@ jobs:
       with:
         python-version: '3.11'
         
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install toml tomli tomli-w
-        
     - name: Validate TOML files
       run: |
         python -c "
         import sys
         import os
-        import tomli
+        import tomllib
         
         errors = []
         spec_dir = 'specs'
@@ -47,7 +39,7 @@ jobs:
                     filepath = os.path.join(root, file)
                     try:
                         with open(filepath, 'rb') as f:
-                            tomli.load(f)
+                            tomllib.load(f)
                         print(f'✓ {filepath}')
                     except Exception as e:
                         errors.append(f'{filepath}: {str(e)}')
@@ -74,67 +66,8 @@ jobs:
       with:
         python-version: '3.11'
         
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install toml tomli
-        
-    - name: Check required sections
-      run: |
-        python -c "
-        import sys
-        import os
-        import tomli
-        
-        required_keys = ['description', 'prompt']
-        required_sections = [
-            'Workflow Mode System',
-            'Goal',
-            'workflow-definition',
-            'Workflow Diagram',
-            'IMPORTANT EXECUTION INSTRUCTIONS',
-            '0-Notepad Template'
-        ]
-        
-        errors = []
-        warnings = []
-        spec_dir = 'specs'
-        
-        for root, dirs, files in os.walk(spec_dir):
-            for file in files:
-                if file.endswith('.toml'):
-                    filepath = os.path.join(root, file)
-                    
-                    with open(filepath, 'rb') as f:
-                        data = tomli.load(f)
-                    
-                    # Check required keys
-                    for key in required_keys:
-                        if key not in data:
-                            errors.append(f'{filepath}: Missing required key \"{key}\"')
-                    
-                    # Check required sections in prompt
-                    if 'prompt' in data:
-                        prompt_content = data['prompt']
-                        for section in required_sections:
-                            if section not in prompt_content:
-                                warnings.append(f'{filepath}: Missing recommended section \"{section}\"')
-                    
-                    print(f'Checked: {filepath}')
-        
-        if warnings:
-            print(f'\n⚠️  Found {len(warnings)} warnings:')
-            for w in warnings:
-                print(f'  {w}')
-        
-        if errors:
-            print(f'\n❌ Found {len(errors)} errors:')
-            for e in errors:
-                print(f'  {e}')
-            sys.exit(1)
-        else:
-            print(f'\n✅ All specs have required structure')
-        "
+    - name: Validate the shipped workflow catalog
+      run: python tools/spec-validator.py specs/
 
   validate-markdown-links:
     runs-on: ubuntu-latest
@@ -154,7 +87,9 @@ jobs:
         errors = []
         
         # Check main markdown files
-        md_files = ['README.md', 'CONTRIBUTING.md', 'GETTING_STARTED.md', 'CHANGELOG.md']
+        from pathlib import Path
+        md_files = [Path(name) for name in ('README.md', 'CONTRIBUTING.md', 'GETTING_STARTED.md', 'CHANGELOG.md')]
+        md_files.extend(Path('examples/feature-spec-example').glob('*.md'))
         
         for md_file in md_files:
             if os.path.exists(md_file):
@@ -166,10 +101,10 @@ jobs:
                 
                 for text, link in links:
                     # Check internal file links
-                    if not link.startswith('http') and not link.startswith('#'):
+                    if not link.startswith(('https://', 'http://', '#', 'mailto:', '../../issues', '../../pulls', '../../discussions')):
                         # Remove anchors
                         file_path = link.split('#')[0]
-                        if file_path and not os.path.exists(file_path):
+                        if file_path and not (md_file.parent / file_path).exists():
                             errors.append(f'{md_file}: Broken link to {file_path}')
                 
                 print(f'Checked: {md_file}')
@@ -213,3 +148,6 @@ jobs:
           echo "❌ Markdown Links: Failed" >> $GITHUB_STEP_SUMMARY
         fi
 
+        test "${{ needs.validate-toml-syntax.result }}" = success &&
+          test "${{ needs.validate-spec-structure.result }}" = success &&
+          test "${{ needs.validate-markdown-links.result }}" = success

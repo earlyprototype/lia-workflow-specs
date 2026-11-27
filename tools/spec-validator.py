@@ -11,16 +11,29 @@ Validates workflow specification files for:
 """
 
 import sys
-import os
 from pathlib import Path
 from typing import List, Tuple, Dict
 import re
 
 try:
-    import tomli
+    import tomllib as tomli
 except ImportError:
-    print("Error: tomli package required. Install with: pip install tomli")
-    sys.exit(1)
+    import tomli
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "mcp-server" / "src"))
+from lia_workflow_mcp.workflow_format import required_sections, workflow_files, workflow_text
+
+
+# The paths advertised by category in the README.
+CATALOG = {
+    "development": ("dev", "spec", "test"),
+    "quality": ("architecture", "constitution", "optimize", "review", "security"),
+    "problem-solving": ("investigate", "troubleshoot", "wtf"),
+    "research": ("learn", "paper", "recon", "research"),
+    "knowledge": ("docs",),
+    "strategy": ("innovate", "integrate", "nexus"),
+}
 
 
 class Colors:
@@ -35,19 +48,6 @@ class Colors:
 
 class SpecValidator:
     """Validates workflow specification files"""
-    
-    # Required top-level keys
-    REQUIRED_KEYS = ['description', 'prompt']
-    
-    # Required sections in prompt content
-    REQUIRED_SECTIONS = [
-        'Workflow Mode System',
-        'Goal',
-        'workflow-definition',
-        'Workflow Diagram',
-        'IMPORTANT EXECUTION INSTRUCTIONS',
-        '0-Notepad Template'
-    ]
     
     # Recommended sections
     RECOMMENDED_SECTIONS = [
@@ -95,16 +95,13 @@ class SpecValidator:
             stats['errors'] = len(self.errors)
             return False, stats
         
-        # Validate required keys
-        self._validate_required_keys(data)
-        
-        # Validate prompt content
-        if 'prompt' in data:
-            self._validate_prompt_content(data['prompt'])
-        
-        # Validate description
-        if 'description' in data:
-            self._validate_description(data['description'])
+        try:
+            description, prompt = workflow_text(data)
+        except ValueError as exc:
+            self.errors.append(str(exc))
+        else:
+            self._validate_description(description)
+            self._validate_prompt_content(prompt)
         
         # Update stats
         stats['errors'] = len(self.errors)
@@ -113,19 +110,9 @@ class SpecValidator:
         
         return len(self.errors) == 0, stats
     
-    def _validate_required_keys(self, data: dict):
-        """Validate that all required top-level keys are present"""
-        for key in self.REQUIRED_KEYS:
-            if key not in data:
-                self.errors.append(f"Missing required key: '{key}'")
-            else:
-                self.info.append(f"✓ Found required key: '{key}'")
-    
     def _validate_description(self, description: str):
         """Validate description field"""
-        if not description or not description.strip():
-            self.warnings.append("Description is empty")
-        elif len(description) < 20:
+        if len(description) < 20:
             self.warnings.append("Description is very short (< 20 chars)")
         else:
             self.info.append(f"✓ Description length: {len(description)} chars")
@@ -133,8 +120,8 @@ class SpecValidator:
     def _validate_prompt_content(self, prompt: str):
         """Validate prompt content for required sections"""
         # Check required sections
-        for section in self.REQUIRED_SECTIONS:
-            if section not in prompt:
+        for section, present in required_sections(prompt).items():
+            if not present:
                 self.errors.append(f"Missing required section: '{section}'")
             else:
                 self.info.append(f"✓ Found required section: '{section}'")
@@ -182,23 +169,18 @@ class SpecValidator:
     
     def _validate_notepad_template(self, prompt: str):
         """Validate notepad template structure"""
-        required_notepad_sections = [
-            '## 🧠 Key Insights',
-            '## 🔧 Technical Notes',
-            '## 💡 Ideas',
-            '## 🔗 Cross-',
-            '## 📝 User Notes',
-            '## 🤖 LLM Observations'
-        ]
-        
-        found_sections = sum(1 for section in required_notepad_sections if section in prompt)
+        template = re.search(
+            r"^#{1,6} (?:0-)?notepad template[^\n]*\n.*?^```(?:markdown|md)\s*\n(.*?)^```",
+            prompt, re.IGNORECASE | re.MULTILINE | re.DOTALL,
+        )
+        found_sections = len(set(re.findall(r"^## (.+)$", template[1], re.MULTILINE))) if template else 0
         
         if found_sections >= 5:
-            self.info.append(f"✓ Found {found_sections}/6 notepad sections")
+            self.info.append(f"✓ Found {found_sections} notepad sections")
         elif found_sections >= 3:
-            self.warnings.append(f"Only found {found_sections}/6 notepad sections")
+            self.warnings.append(f"Only found {found_sections} notepad sections")
         else:
-            self.errors.append(f"Notepad template incomplete ({found_sections}/6 sections)")
+            self.errors.append(f"Notepad template incomplete ({found_sections} sections)")
     
     def print_results(self, filepath: Path, is_valid: bool):
         """Print validation results with colors"""
@@ -233,11 +215,6 @@ class SpecValidator:
         print(f"  Errors: {len(self.errors)}")
         print(f"  Warnings: {len(self.warnings)}")
         print()
-
-
-def find_spec_files(directory: Path) -> List[Path]:
-    """Find all .toml files in directory and subdirectories"""
-    return list(directory.rglob('*.toml'))
 
 
 def main():
@@ -281,6 +258,8 @@ Examples:
         help='Quiet mode (errors only)'
     )
     
+    parser.add_argument('--catalog', action='store_true',
+                        help='Check the complete shipped inventory in a copy of the specs directory')
     args = parser.parse_args()
     
     # Get path
@@ -294,11 +273,18 @@ Examples:
     if path.is_file():
         spec_files = [path]
     else:
-        spec_files = find_spec_files(path)
-    
+        spec_files = workflow_files(path)
+
+    inventory_errors = []
+    if args.catalog or path.resolve() == ROOT / 'specs':
+        expected = {Path(category) / f'{name}.toml' for category, names in CATALOG.items() for name in names}
+        actual = {file.relative_to(path) for file in spec_files}
+        inventory_errors.extend(f"Missing workflow: {p}" for p in sorted(expected - actual))
+        inventory_errors.extend(f"Unexpected workflow: {p}" for p in sorted(actual - expected))
     if not spec_files:
-        print(f"{Colors.YELLOW}No .toml files found in {path}{Colors.RESET}")
-        sys.exit(0)
+        inventory_errors.append(f"No workflow .toml files found in {path}")
+    for error in inventory_errors:
+        print(error)
     
     # Validate each file
     validator = SpecValidator(verbose=args.verbose)
@@ -310,6 +296,9 @@ Examples:
         
         if not args.quiet:
             validator.print_results(spec_file, is_valid)
+        else:
+            for error in validator.errors:
+                print(f"{spec_file}: {error}")
     
     # Print overall summary
     print(f"\n{Colors.BOLD}{'=' * 60}{Colors.RESET}")
@@ -318,7 +307,7 @@ Examples:
     
     valid_count = sum(1 for _, is_valid, _ in results if is_valid)
     invalid_count = len(results) - valid_count
-    total_errors = sum(stats['errors'] for _, _, stats in results)
+    total_errors = len(inventory_errors) + sum(stats['errors'] for _, _, stats in results)
     total_warnings = sum(stats['warnings'] for _, _, stats in results)
     
     print(f"Total files: {len(results)}")
@@ -328,7 +317,7 @@ Examples:
     print(f"{Colors.YELLOW}Total warnings: {total_warnings}{Colors.RESET}")
     
     # Exit code
-    if invalid_count > 0:
+    if total_errors:
         print(f"\n{Colors.RED}❌ Validation failed{Colors.RESET}")
         sys.exit(1)
     elif total_warnings > 0:
@@ -340,5 +329,6 @@ Examples:
 
 
 if __name__ == '__main__':
+    sys.stdout.reconfigure(errors="backslashreplace")
     main()
 

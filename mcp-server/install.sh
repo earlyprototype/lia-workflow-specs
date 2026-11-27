@@ -105,6 +105,10 @@ install_specs_global() {
 generate_config() {
     local config_type=$1
     local output_file=$2
+    local config_specs_dir="$SPECS_DIR"
+    if [ "$INSTALL_GLOBAL" = true ]; then
+        config_specs_dir='~/.lia/specs'
+    fi
     
     case $config_type in
         "claude-desktop")
@@ -115,7 +119,7 @@ generate_config() {
       "command": "$PYTHON_CMD",
       "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "LIA_SPECS_DIR": "$SPECS_DIR"
+        "LIA_SPECS_DIR": "$config_specs_dir"
       }
     }
   }
@@ -130,7 +134,7 @@ EOF
       "command": "$PYTHON_CMD",
       "args": ["-m", "lia_workflow_mcp.server"],
       "env": {
-        "LIA_SPECS_DIR": "$SPECS_DIR"
+        "LIA_SPECS_DIR": "$config_specs_dir"
       }
     }
   }

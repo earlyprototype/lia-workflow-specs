@@ -143,14 +143,15 @@ Connect any MCP-compatible AI agent to your workflow specs with the built-in MCP
 
 ### Quick Setup
 
-```bash
-# Install the MCP server
-cd mcp-server
-pip install -e .
+From the repository root, install the server and copy the catalog to `~/.lia/specs`:
 
-# Or use the installer
-./install.sh --global
+```bash
+./mcp-server/install.sh --global
 ```
+
+For an editable install that reads directly from the checkout, run
+`python3 -m pip install -e ./mcp-server` and set `LIA_SPECS_DIR` to the absolute
+path of the checkout's `specs` directory. Use the same Python interpreter in the client.
 
 ### Configure Your Client
 
@@ -365,7 +366,7 @@ phases = [
   └── 3-tasks.md             # Checkbox task list with requirements traceability
 ```
 
-**Real-world example:** See [examples/simple-feature-spec/](examples/simple-feature-spec/)
+Follow the [user authentication walkthrough](examples/feature-spec-example/) from the initial request to the implementation checklist.
 
 ---
 
