@@ -154,7 +154,7 @@ class WorkflowSpec:
         return {
             "name": self.name,
             "filename": self.filename,
-            "filepath": str(self.filepath),
+            "filepath": f"specs://{self.category.value}/{self.name}",
             "category": self.category.value,
             "description": self.description,
             "phase_count": len(self.phases),

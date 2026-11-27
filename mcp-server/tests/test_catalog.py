@@ -8,11 +8,9 @@ import sys
 from pathlib import Path
 
 import pytest
-from mcp.shared.memory import create_connected_server_and_client_session
-
 from lia_workflow_mcp import server
 from lia_workflow_mcp.models import SpecCollection
-
+from mcp.shared.memory import create_connected_server_and_client_session
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -44,7 +42,11 @@ async def test_global_install_serves_readme_catalog(global_install):
         assert catalog["total_specs"] == len(advertised) == 19
         assert {item["name"] for item in catalog["specs"]} == advertised
         for item in catalog["specs"]:
-            resource = await client.read_resource(f"specs://{item['category']}/{item['name']}")
+            uri = f"specs://{item['category']}/{item['name']}"
+            assert item["filepath"] == uri
+            metadata = await client.read_resource(f"{uri}/metadata")
+            assert json.loads(metadata.contents[0].text)["filepath"] == uri
+            resource = await client.read_resource(uri)
             assert resource.contents[0].text.strip(), item["name"]
             starter = await client.get_prompt(f"start-{item['name']}", {"task": "Offline example"})
             assert resource.contents[0].text in starter.messages[0].content.text
@@ -68,7 +70,7 @@ def test_invalid_explicit_path_reports_remedy(global_install, monkeypatch, kind)
 def validate(*args):
     return subprocess.run(
         [sys.executable, "-X", "utf8", str(ROOT / "tools/spec-validator.py"), *args],
-        cwd=ROOT, capture_output=True, encoding="utf-8",
+        cwd=ROOT, capture_output=True, encoding="utf-8", check=False,
     )
 
 
@@ -85,6 +87,41 @@ def test_catalog_rejects_substitution_at_same_count(global_install):
     assert result.returncode == 1
     assert "recon.toml" in result.stdout
     assert "substitute.toml" in result.stdout
+
+
+@pytest.mark.parametrize("workflow", ["quality/constitution.toml", "research/recon.toml"])
+def test_later_example_cannot_replace_notepad_template(global_install, workflow):
+    path = global_install / workflow
+    text = path.read_text(encoding="utf-8")
+    heading = text.index("## NOTEPAD TEMPLATE")
+    start = text.index("```markdown", heading)
+    end = text.index("\n```", start) + len("\n```")
+    assert "```markdown" in text[end:]
+    path.write_text(text[:start] + text[end:], encoding="utf-8")
+
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 1
+    assert path.name in result.stdout
+    assert "Notepad template incomplete" in result.stdout
+
+
+@pytest.mark.parametrize("workflow", ["development/dev.toml", "quality/constitution.toml"])
+@pytest.mark.parametrize("length, exit_code", [(19, 1), (20, 0)])
+def test_description_minimum_length(global_install, workflow, length, exit_code):
+    path = global_install / workflow
+    text = path.read_text(encoding="utf-8")
+    description = "x" * length
+    text, count = re.subn(r'^description = ".*"$', f'description = "{description}"',
+                          text, count=1, flags=re.MULTILINE)
+    assert count == 1
+    path.write_text(text, encoding="utf-8")
+
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == exit_code, result.stdout
+    if exit_code:
+        assert path.name in result.stdout
+        assert "description" in result.stdout.lower()
+        assert "20" in result.stdout
 
 
 @pytest.mark.parametrize("prompt", ['"   "', '[]', '{content = 12}', '"Only a title"'])

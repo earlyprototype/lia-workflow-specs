@@ -36,6 +36,36 @@ CATALOG = {
 }
 
 
+def count_notepad_sections(prompt: str) -> int:
+    """Count headings in the Markdown template inside the notepad section."""
+    lines = iter(prompt.splitlines())
+    notepad_level = 0
+    for line in lines:
+        heading = re.fullmatch(r" {0,3}(#{1,6})(?:[ \t]+(.*))?", line)
+        if heading:
+            level = len(heading[1])
+            if notepad_level and level <= notepad_level:
+                break
+            if (heading[2] or "").strip().casefold() in {"0-notepad template", "notepad template"}:
+                notepad_level = level
+
+        fence = re.fullmatch(r" {0,3}(`{3,}|~{3,})(.*)", line)
+        if fence:
+            marker, language = fence.groups()
+            closing = re.compile(rf" {{0,3}}{marker}{marker[0]}*[ \t]*")
+            is_template = notepad_level > 0 and language.strip().lower() in {"markdown", "md"}
+            sections = set()
+            # Headings inside a fenced example cannot open or close a document section.
+            for code_line in lines:
+                if closing.fullmatch(code_line):
+                    if is_template:
+                        return len(sections)
+                    break
+                if is_template and code_line.startswith("## ") and code_line[3:].strip():
+                    sections.add(code_line[3:].strip())
+    return 0
+
+
 class Colors:
     """ANSI color codes for terminal output"""
     GREEN = '\033[92m'
@@ -113,7 +143,7 @@ class SpecValidator:
     def _validate_description(self, description: str):
         """Validate description field"""
         if len(description) < 20:
-            self.warnings.append("Description is very short (< 20 chars)")
+            self.errors.append("Description must contain at least 20 characters")
         else:
             self.info.append(f"✓ Description length: {len(description)} chars")
     
@@ -169,11 +199,7 @@ class SpecValidator:
     
     def _validate_notepad_template(self, prompt: str):
         """Validate notepad template structure"""
-        template = re.search(
-            r"^#{1,6} (?:0-)?notepad template[^\n]*\n.*?^```(?:markdown|md)\s*\n(.*?)^```",
-            prompt, re.IGNORECASE | re.MULTILINE | re.DOTALL,
-        )
-        found_sections = len(set(re.findall(r"^## (.+)$", template[1], re.MULTILINE))) if template else 0
+        found_sections = count_notepad_sections(prompt)
         
         if found_sections >= 5:
             self.info.append(f"✓ Found {found_sections} notepad sections")

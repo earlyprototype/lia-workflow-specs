@@ -143,30 +143,27 @@ Connect any MCP-compatible AI agent to your workflow specs with the built-in MCP
 
 ### Quick Setup
 
-From the repository root, install the server and copy the catalog to `~/.lia/specs`:
+From the repository root, run the installer to copy the catalog to `~/.lia/specs`.
 
 ```bash
 ./mcp-server/install.sh --global
 ```
 
-For an editable install that reads directly from the checkout, run
-`python3 -m pip install -e ./mcp-server` and set `LIA_SPECS_DIR` to the absolute
-path of the checkout's `specs` directory. Use the same Python interpreter in the client.
+To read specs directly from the checkout, run `./mcp-server/install.sh` without
+`--global`, or install the package manually with `python3 -m pip install -e ./mcp-server`.
 
 ### Configure Your Client
 
-**Claude Desktop** (`~/.config/claude/claude_desktop_config.json`):
-```json
-{
-  "mcpServers": {
-    "lia-workflow-specs": {
-      "command": "python3",
-      "args": ["-m", "lia_workflow_mcp.server"],
-      "env": {"LIA_SPECS_DIR": "~/.lia/specs"}
-    }
-  }
-}
-```
+Copy the `lia-workflow-specs` entry from
+`mcp-server/config/generated-config.json` into your client's `mcpServers`
+object. On Linux, Claude Desktop uses `~/.config/claude/claude_desktop_config.json`.
+The generated command contains the full path to the installing interpreter.
+Restart the client and open `specs://index` to see all 19 workflows.
+
+For a manual install, set `command` to the path printed by
+`python3 -c "import sys; print(sys.executable)"`, set `args` to
+`["-m", "lia_workflow_mcp.server"]`, and set `env.LIA_SPECS_DIR` to the absolute
+path of the checkout's `specs` directory.
 
 ### Available Features
 

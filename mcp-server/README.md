@@ -44,6 +44,10 @@ pip install -e .
 
 ## Configuration
 
+After running `install.sh`, copy the server entry from `config/generated-config.json`
+into your client's `mcpServers` object. For a manual setup, replace `python3` in
+the examples below with the full path to the interpreter that installed the package.
+
 ### Environment Variables
 
 | Variable | Description | Default |

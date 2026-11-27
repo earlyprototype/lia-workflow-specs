@@ -103,45 +103,23 @@ install_specs_global() {
 }
 
 generate_config() {
-    local config_type=$1
-    local output_file=$2
+    local output_file=$1
     local config_specs_dir="$SPECS_DIR"
     if [ "$INSTALL_GLOBAL" = true ]; then
         config_specs_dir='~/.lia/specs'
     fi
     
-    case $config_type in
-        "claude-desktop")
-            cat > "$output_file" << EOF
-{
-  "mcpServers": {
-    "lia-workflow-specs": {
-      "command": "$PYTHON_CMD",
-      "args": ["-m", "lia_workflow_mcp.server"],
-      "env": {
-        "LIA_SPECS_DIR": "$config_specs_dir"
-      }
-    }
-  }
+    "$PYTHON_CMD" - "$config_specs_dir" > "$output_file" <<'PY'
+import json
+import sys
+
+server = {
+    "command": sys.executable,
+    "args": ["-m", "lia_workflow_mcp.server"],
+    "env": {"LIA_SPECS_DIR": sys.argv[1]},
 }
-EOF
-            ;;
-        "cursor")
-            cat > "$output_file" << EOF
-{
-  "mcpServers": {
-    "lia-workflow-specs": {
-      "command": "$PYTHON_CMD",
-      "args": ["-m", "lia_workflow_mcp.server"],
-      "env": {
-        "LIA_SPECS_DIR": "$config_specs_dir"
-      }
-    }
-  }
-}
-EOF
-            ;;
-    esac
+print(json.dumps({"mcpServers": {"lia-workflow-specs": server}}, indent=2))
+PY
 }
 
 show_next_steps() {
@@ -217,7 +195,7 @@ fi
 
 # Generate config
 mkdir -p "$SCRIPT_DIR/config"
-generate_config "claude-desktop" "$SCRIPT_DIR/config/generated-config.json"
+generate_config "$SCRIPT_DIR/config/generated-config.json"
 print_success "Generated config file"
 
 # Show completion
