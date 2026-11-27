@@ -6,6 +6,8 @@ on:
     paths:
       - 'specs/**/*.toml'
       - 'tools/**'
+      - 'schemas/**'
+      - 'mcp-server/src/lia_workflow_mcp/workflow_format.py'
   pull_request:
     branches: [ master, main, develop ]
 
@@ -69,6 +71,8 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '24'
+    - name: Install schema validator
+      run: python -m pip install -r tools/requirements.txt
     - name: Install diagram parser
       run: npm ci --prefix tools --ignore-scripts
     - name: Validate the shipped workflow catalog

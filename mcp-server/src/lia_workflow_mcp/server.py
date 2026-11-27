@@ -603,7 +603,7 @@ async def list_tools() -> list[Tool]:
         ),
         Tool(
             name="validate_spec",
-            description="Validate a workflow spec file for required sections and formatting.",
+            description="Check prompt structure and diagram block presence. Use the repository validator for full validation.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -958,13 +958,14 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> Sequence[TextConten
 
 
 def validate_spec_content(spec: WorkflowSpec) -> str:
-    """Validate a spec and return results."""
+    """Report structural checks available from the loaded prompt."""
     errors = []
     warnings = []
     passed = []
     
     # Check required sections
     document = WorkflowDocument(spec.prompt)
+    errors.extend(document.phase_instruction_errors())
     for section, present in document.required_sections().items():
         if present:
             passed.append(f"✓ Found required section: {section}")
@@ -973,7 +974,7 @@ def validate_spec_content(spec: WorkflowSpec) -> str:
     
     if any(block.content.strip() and block.language in {"", "text", "mermaid"}
            for block in document.section_fences("workflow diagram")):
-        passed.append("✓ Contains a workflow diagram")
+        passed.append("✓ Found a nonempty workflow diagram block")
     else:
         errors.append("✗ No Mermaid diagram or plain-text diagram found in Workflow Diagram")
     
@@ -1008,8 +1009,10 @@ def validate_spec_content(spec: WorkflowSpec) -> str:
         output.extend(passed)
         output.append("")
     
-    status = "❌ INVALID" if errors else ("⚠️ VALID with warnings" if warnings else "✅ VALID")
+    status = "❌ INVALID prompt structure" if errors else "Prompt structure passed"
     output.append(f"\n**Status**: {status}")
+    output.append("Run `python tools/spec-validator.py specs/` in the repository to check "
+                  "the TOML schema, Mermaid syntax and elements, and notepad template contents.")
     
     return "\n".join(output)
 

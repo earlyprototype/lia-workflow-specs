@@ -17,6 +17,9 @@ from pathlib import Path
 from typing import List, Tuple, Dict
 import re
 
+from jsonschema import Draft7Validator
+from jsonschema.exceptions import best_match
+
 try:
     import tomllib as tomli
 except ImportError:
@@ -26,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "mcp-server" / "src"))
 from lia_workflow_mcp.workflow_format import WorkflowDocument, workflow_files, workflow_text
 
+SCHEMA = Draft7Validator(json.loads((ROOT / "schemas/workflow-spec.schema.json").read_text(encoding="utf-8")))
 
 # The paths advertised by category in the README.
 CATALOG = {
@@ -129,25 +133,26 @@ class SpecValidator:
             self.errors.append(f"TOML syntax error: {str(e)}")
             return
         
+        for error in SCHEMA.iter_errors(data):
+            detail = best_match([error])
+            # Report the constraint without echoing a potentially long workflow prompt.
+            self.errors.append(f"Schema error at {detail.json_path}: "
+                               f"{detail.validator} requires {json.dumps(detail.validator_value)}")
+        if self.errors:
+            return
+
         try:
-            description, prompt = workflow_text(data)
+            _, prompt = workflow_text(data)
         except ValueError as exc:
             self.errors.append(str(exc))
         else:
-            self._validate_description(description)
             self._validate_prompt_content(prompt, filepath.stem)
-    
-    def _validate_description(self, description: str):
-        """Validate description field"""
-        if len(description) < 20:
-            self.errors.append("Description must contain at least 20 characters")
-        else:
-            self.info.append(f"✓ Description length: {len(description)} chars")
     
     def _validate_prompt_content(self, prompt: str, name: str):
         """Validate prompt content for required sections"""
         # Check required sections
         document = WorkflowDocument(prompt)
+        self.errors.extend(document.phase_instruction_errors())
         for section, present in document.required_sections().items():
             if not present:
                 self.errors.append(f"Missing required section: '{section}'")

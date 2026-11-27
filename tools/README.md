@@ -20,8 +20,8 @@ Validates workflow specification files for compliance with Lia standards.
 **Usage:**
 
 ```bash
-# Install the TOML reader on Python 3.10 (Python 3.11 and later include it)
-pip install tomli
+# Install the schema validator and TOML reader
+python -m pip install -r tools/requirements.txt
 
 # Install the diagram parser once with Node.js 24
 npm ci --prefix tools --ignore-scripts
@@ -46,9 +46,11 @@ The repository-wide check also reports missing and unexpected workflow files.
 Directory discovery skips `_common`. The validator reads both top-level
 `description` and `prompt` strings and the `metadata.description` and
 `prompt.content` table fields used by `constitution` and `recon`.
-The validator looks for phase headings and instructions outside fenced examples.
-It parses Mermaid blocks in the Workflow Diagram section locally and accepts
-nonempty plain-text diagram blocks. It checks the six standard notepad headings
+Each workflow must match the [workflow schema](../schemas/workflow-spec.schema.json).
+Each declared phase needs instructions outside fenced examples.
+The validator parses Mermaid blocks in the Workflow Diagram section and checks
+for workflow elements. It also accepts nonempty plain-text diagram blocks.
+It checks the six standard notepad headings
 and the custom templates used by `constitution`, `recon`, `paper` and `nexus`.
 
 **Example Output:**
@@ -111,7 +113,7 @@ pip install -e .
 - `list_specs` - List all specs by category
 - `get_spec` - Get full spec content
 - `get_spec_prompt` - Get workflow instructions only
-- `validate_spec` - Check spec validity
+- `validate_spec` - Check the structure of a loaded prompt
 - `search_specs` - Keyword search
 - `get_spec_metadata` - Extract structured metadata
 - `compare_specs` - Compare two specs
@@ -197,6 +199,8 @@ These tools are used in GitHub Actions:
 
 ```yaml
 # .github/workflows/validate-specs.yml
+- name: Install schema validator
+  run: python -m pip install -r tools/requirements.txt
 - name: Install diagram parser
   run: npm ci --prefix tools --ignore-scripts
 - name: Validate the shipped workflow catalog

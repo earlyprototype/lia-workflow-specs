@@ -1,7 +1,10 @@
 # Lia Workflow Specs - Tool Requirements
 
 # TOML parsing
-tomli==2.0.1
+tomli==2.0.1; python_version < "3.11"
+
+# Draft 7 workflow schema validation
+jsonschema>=4.18,<5
 
 # Future tools may require:
 # pillow>=10.0.0        # For image generation

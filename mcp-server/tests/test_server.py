@@ -84,7 +84,7 @@ Template here.
         )
         
         result = validate_spec_content(spec)
-        assert "VALID" in result
+        assert "Prompt structure passed" in result
         assert "INVALID" not in result
         assert "✓ Found required section" in result
     

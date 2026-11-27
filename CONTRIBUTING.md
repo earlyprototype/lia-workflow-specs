@@ -66,7 +66,8 @@ Follow the guidelines below for your specific contribution type.
 
 ### 4. Test Your Changes
 ```bash
-# Install the diagram parser with Node.js 24
+# Install the validation dependencies with Python and Node.js 24
+python -m pip install -r tools/requirements.txt
 npm ci --prefix tools --ignore-scripts
 
 # Validate the workflow
@@ -312,6 +313,7 @@ required_fields = [
 ### Spec Validation
 All specs must pass validation:
 ```bash
+python -m pip install -r tools/requirements.txt
 npm ci --prefix tools --ignore-scripts
 python tools/spec-validator.py specs/your-category/your-spec.toml
 ```

@@ -110,10 +110,55 @@ def test_fenced_example_cannot_supply_goal(global_install):
     assert "Goal" in result.stdout
 
 
+@pytest.mark.parametrize("workflow, heading, next_heading, number", [
+    ("development/dev.toml", "### 1.", "### 2.", 1),
+    ("research/recon.toml", "## PHASE 2:", "## PHASE 3:", 2),
+])
+def test_each_declared_phase_needs_instructions(global_install, workflow, heading, next_heading, number):
+    path = global_install / workflow
+    text = path.read_text(encoding="utf-8")
+    start = text.index("\n", text.index("\n" + heading) + 1)
+    end = text.index("\n" + next_heading, start)
+    path.write_text(text[:start] + "\n\n```text\nExample only\n```\n" + text[end:], encoding="utf-8")
+
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 1, result.stdout
+    diagnostic = next(line.lower() for line in result.stdout.splitlines() if path.name in line)
+    assert f"phase {number}" in diagnostic and "instruction" in diagnostic
+
+
+@pytest.mark.asyncio
+async def test_contributor_phase_headings_are_discoverable(global_install):
+    path = global_install / "development/dev.toml"
+    text = path.read_text(encoding="utf-8")
+    text, count = re.subn(r"^### (\d+)\. ", r"### Phase \1: ", text, flags=re.MULTILINE)
+    assert count == 7
+    path.write_text(text, encoding="utf-8")
+
+    server.initialise_specs()
+    phases = await server.call_tool("get_workflow_phases", {"spec_name": "dev"})
+    assert re.findall(r"^(\d+)\. ", phases[0].text, re.MULTILINE) == list("1234567")
+    result = validate(path, "-q")
+    assert result.returncode == 0, result.stdout
+
+
+@pytest.mark.parametrize("field, value", [("metadata", "17"), ("config.resumable", '"yes"')])
+def test_catalog_reports_schema_field(global_install, field, value):
+    path = global_install / "development/dev.toml"
+    text = path.read_text(encoding="utf-8")
+    path.write_text(f"{field} = {value}\n" + text, encoding="utf-8")
+    result = validate(global_install, "--catalog", "-q")
+    assert result.returncode == 1, result.stdout
+    assert any(path.name in line and field in line for line in result.stdout.splitlines())
+
+
 @pytest.mark.parametrize("replacement", [
     "",
     "```mermaid\n   \n```",
     "```mermaid\ngraph TD\n%% phases pending\n```",
+    "```mermaid\nsequenceDiagram\n```",
+    "```mermaid\ngraph TD\nclassDef step fill:#fff\n```",
+    "```mermaid\ngraph TD; style A fill:#fff\n```",
     "```mermaid\ngraph TD\n    B --> [*] : Update\n```",
     "```mermaid\ngraph LR\n    A --> B[unfinished\n```",
 ])
@@ -127,6 +172,37 @@ def test_diagram_must_parse_in_its_own_section(global_install, replacement):
     result = validate(path, "-q")
     assert result.returncode == 1 and path.name in result.stdout
     assert "diagram" in result.stdout.lower()
+
+
+def test_mermaid_accepts_declared_workflow_elements():
+    diagrams = [
+        "graph TD; Plan; style Plan fill:#fff",
+        "sequenceDiagram\n  User->>Lia: Start",
+        'stateDiagram-v2\n  state "Plan the work" as Plan',
+        "journey\n  section Review\n    Check requirements: 5: Team",
+    ]
+    result = subprocess.run(
+        ["node", str(ROOT / "tools/parse-mermaid.mjs")], input=json.dumps(diagrams),
+        capture_output=True, encoding="utf-8", check=True,
+    )
+    assert json.loads(result.stdout) == [None] * len(diagrams)
+
+
+@pytest.mark.asyncio
+async def test_mcp_reports_scope_for_unparsed_mermaid(global_install):
+    path = global_install / "development/dev.toml"
+    text = path.read_text(encoding="utf-8")
+    start = text.index("graph TD", text.index("## Workflow Diagram"))
+    end = text.index("\n```", start)
+    path.write_text(text[:start] + "graph TD\n  A --> B[unfinished" + text[end:], encoding="utf-8")
+
+    server.initialise_specs()
+    report, = await server.call_tool("validate_spec", {"spec_name": "dev"})
+    assert "VALID" not in report.text
+    assert "Mermaid syntax" in report.text and "tools/spec-validator.py" in report.text
+    result = validate(path, "-q")
+    assert result.returncode == 1
+    assert "Invalid Mermaid" in result.stdout
 
 
 def test_unrelated_notepad_headings_rejected(global_install):

@@ -80,7 +80,7 @@ class WorkflowDocument:
     def phase_headings(self):
         for heading in self.headings:
             if heading.level == 3:
-                match = re.fullmatch(r"(\d+)[.:]\s*(\S.*)", heading.title)
+                match = re.fullmatch(r"(?:phase\s+)?(\d+)[.:]\s*(\S.*)", heading.title, re.IGNORECASE)
             elif heading.level == 2:
                 match = re.fullmatch(r"phase\s+(\d+)[.:]\s*(\S.*)", heading.title, re.IGNORECASE)
             else:
@@ -88,19 +88,23 @@ class WorkflowDocument:
             if match:
                 yield heading, int(match[1]), match[2]
 
-    def has_instructions(self, heading: Heading) -> bool:
-        body = self.prose[heading.line + 1:self.section_end(heading)]
-        return any(line.strip() and line.strip() not in {"---", "</workflow-definition>"}
-                   and not line.lstrip().startswith("#") for line in body)
+    def phase_instruction_errors(self):
+        end = len(self.prose)
+        for heading, number, name in reversed(list(self.phase_headings())):
+            body = self.prose[heading.line + 1:min(end, self.section_end(heading))]
+            if not any(line.strip() and line.strip() not in {"---", "</workflow-definition>"}
+                       and not line.lstrip().startswith("#") for line in body):
+                yield f"Phase {number} ({name}) has no instructions"
+            end = heading.line
 
     def required_sections(self) -> dict[str, bool]:
         titles = {h.title.casefold() for h in self.headings}
         phases = self.phase_headings()
         if "your role" in titles:
-            checks = {"Phase 1": any(self.has_instructions(h) for h, n, _ in phases if h.level == 2 and n == 1)}
+            checks = {"Phase 1": any(h.level == 2 and n == 1 for h, n, _ in phases)}
         else:
             checks = {
-                "Numbered workflow phase": any(self.has_instructions(h) for h, _, _ in phases if h.level == 3),
+                "Numbered workflow phase": any(h.level == 3 for h, _, _ in phases),
                 "Workflow Modes": bool(titles & {"workflow modes", "workflow mode system"}),
                 "Goal": "goal" in titles,
                 "workflow-definition": any(line.strip() == "<workflow-definition>" for line in self.prose),

@@ -7,6 +7,7 @@ on:
       - 'mcp-server/**'
       - 'specs/**'
       - 'tools/**'
+      - 'schemas/**'
       - 'README.md'
       - '.github/workflows/mcp-server-ci.yml'
   pull_request:
@@ -15,6 +16,7 @@ on:
       - 'mcp-server/**'
       - 'specs/**'
       - 'tools/**'
+      - 'schemas/**'
       - 'README.md'
       - '.github/workflows/mcp-server-ci.yml'
 
@@ -38,6 +40,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install -r tools/requirements.txt
           cd mcp-server
           pip install -e ".[dev]"
       
@@ -94,6 +97,8 @@ jobs:
           node-version: '24'
       - name: Install diagram parser
         run: npm ci --prefix tools --ignore-scripts
+      - name: Install schema validator
+        run: python -m pip install -r tools/requirements.txt
       - name: Validate the shipped workflow catalog
         run: python tools/spec-validator.py specs/
 
